@@ -1,4 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-<p>index.html test</p>
+<div class="collections">
+  <ul>
+    {% if collections %}
+      {% for coll in collections %}
+        <li class="coll">{{ coll.title }}</li>
+      {% endfor %}
+    {% endif %}
+  </ul>
+</div>
 {% endblock %}

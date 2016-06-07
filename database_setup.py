@@ -1,0 +1,46 @@
+import os
+import sys
+from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy.ext.declarative import declarative_base
+from sqlalchemy.orm import relationship
+
+Base = declarative_base()
+
+
+class Collection(Base):
+    __tablename__ = 'collection'
+
+    coll_id = Column(Integer, primary_key=True)
+    title = Column(String(80), nullable=False)
+    description = Column(String(250))
+    path = Column(String(20), nullable=False)
+
+
+class Category(Base):
+    __tablename__ = 'category'
+
+    cat_id = Column(Integer, primary_key=True)
+    title = Column(String(80), nullable=False)
+    description = Column(String(250))
+    path = Column(String(20))
+    submitter = Column(String(250))
+    coll_id = Column(Integer, ForeignKey('collection.coll_id'))
+    collection = relationship(Collection)
+
+
+class Link(Base):
+    __tablename__ = 'link'
+
+    link_id = Column(Integer, primary_key=True)
+    title = Column(String(80), nullable=False)
+    url = Column(String(250), nullable=False)
+    submitter = Column(String(250), nullable=False)
+    cat_id = Column(Integer, ForeignKey('category.cat_id'))
+    category = relationship(Category)
+    coll_id = Column(Integer, ForeignKey('collection.coll_id'))
+    collection = relationship(Collection)
+
+
+engine = create_engine('sqlite:///links.db')
+
+Base.metadata.create_all(engine)
