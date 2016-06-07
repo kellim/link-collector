@@ -2,10 +2,22 @@ from flask import (Flask, render_template, request, redirect, url_for, flash,
                    jsonify, abort)
 app = Flask(__name__)
 
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from database_setup import Base, Collection, Category, Link
+
+engine = create_engine('sqlite:///links.db')
+Base.metadata.bind = engine
+
+DBSession = sessionmaker(bind=engine)
+session = DBSession()
+
+
 @app.route('/')
 def index():
     """Render the index page"""
-    return render_template('index.html')
+    collections = session.query(Collection)
+    return render_template('index.html', collections=collections)
 
 
 @app.route('/links/<collection>/')
@@ -53,6 +65,7 @@ def edit_link(collection, category, link):
 def delete_link(collection, category, link):
     """Delete a Link"""
     return render_template('linkdelete.html', collection=collection, category=category, link=link)
+
 
 if __name__ == '__main__':
     app.debug = True
