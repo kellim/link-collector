@@ -12,7 +12,7 @@ class Collection(Base):
     __tablename__ = 'collection'
 
     coll_id = Column(Integer, primary_key=True)
-    title = Column(String(80), nullable=False)
+    name = Column(String(80), nullable=False)
     description = Column(String(250))
     submit_date = Column(DateTime, default=func.now())
     path = Column(String(20), nullable=False)
@@ -22,7 +22,7 @@ class Category(Base):
     __tablename__ = 'category'
 
     cat_id = Column(Integer, primary_key=True)
-    title = Column(String(80), nullable=False)
+    name = Column(String(80), nullable=False)
     description = Column(String(250))
     submit_date = Column(DateTime, default=func.now())
     path = Column(String(20), nullable=False)
@@ -34,7 +34,7 @@ class Link(Base):
     __tablename__ = 'link'
 
     link_id = Column(Integer, primary_key=True)
-    title = Column(String(80), nullable=False)
+    name = Column(String(80), nullable=False)
     url = Column(String(250), nullable=False)
     description = Column(String(250))
     submitter = Column(String(250), nullable=False)
