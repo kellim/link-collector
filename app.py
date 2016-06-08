@@ -6,6 +6,8 @@ from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Collection, Category, Link
 
+import secret
+
 engine = create_engine('sqlite:///links.db')
 Base.metadata.bind = engine
 
@@ -36,10 +38,30 @@ def show_category_links(collection, category=""):
                            links=links, selected_category=selected_category)
 
 
-@app.route('/links/<collection>/edit')
+@app.route('/links/<collection>/edit', methods=['GET', 'POST'])
 def edit_collection(collection):
     """Edit a Link Collection"""
-    return render_template('collectionedit.html', collection=collection)
+    selected_coll = session.query(Collection).filter_by(path = collection).one()
+    if request.method == 'POST':
+        if 'cancel-btn' in request.form:
+            flash('Edit Collection cancelled!')
+        else:
+            coll_name = request.form['coll-name']
+            coll_desc = request.form['coll-desc']
+            if (selected_coll.name != coll_name
+                or selected_coll.description != coll_desc):
+                if selected_coll.name != coll_name:
+                    selected_coll.name = coll_name
+                if selected_coll.description != coll_desc:
+                    selected_coll.description = coll_desc
+                session.add(selected_coll)
+                session.commit()
+                flash('Collection has been edited!')
+            else:
+                flash('No change was made to collection!')
+        return redirect(url_for('index'))
+    else:
+        return render_template('collectionedit.html', collection=selected_coll)
 
 
 @app.route('/links/<collection>/delete')
@@ -74,5 +96,6 @@ def delete_link(collection, category, link):
 
 
 if __name__ == '__main__':
+    app.secret_key = secret.SECRET_KEY
     app.debug = True
     app.run(host='0.0.0.0', port=5000)
