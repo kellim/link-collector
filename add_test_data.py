@@ -9,12 +9,13 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # Add Collection 1
+
 coll1 = Collection(title="Python",
                    description="Resources for learning Python", path="python")
 session.add(coll1)
 session.commit()
 
-# Add Categories for Collection 1
+# Add Collection 1 Categories
 
 coll1cat1 = Category(title="Python Courses",
                      description="Online Python Courses",
@@ -38,6 +39,7 @@ session.add(coll1cat3)
 session.commit()
 
 # Add Links for Collection 1 Category 1
+
 coll1cat1link1 = Link(title="Udacity: Intro to Computer Science",
                       url="https://www.udacity.com/course/intro-to-computer-science--cs101",
                       description="Learn to build a search engine with this beginner-friendly Python course.",
@@ -84,6 +86,7 @@ session.add(coll1cat1link5)
 session.commit()
 
 # Add Links for Collection 1 Category 2
+
 coll1cat2link1 = Link(title="Python for Kids",
                       url="https://www.nostarch.com/pythonforkids",
                       description="A good Python book (not free) for those new to programming. It says for kids, but it would also be good for adult beginners.",
@@ -103,6 +106,7 @@ session.add(coll1cat2link2)
 session.commit()
 
 # Add Links for Collection 1 Category 3
+
 coll1cat3link1 = Link(title="Flask Mega-Tutorial",
                       url="http://blog.miguelgrinberg.com/post/the-flask-mega-tutorial-part-i-hello-world",
                       description="An 18-part Flask tutorial by Miguel Grinberg",
@@ -129,6 +133,8 @@ coll2 = Collection(title="JavaScript",
 session.add(coll2)
 session.commit()
 
+# Add Collection Categories
+
 coll2cat4 = Category(title="JavaScript Courses",
                      description="Online JavaScript Courses",
                      path="courses",
@@ -151,6 +157,7 @@ session.add(coll2cat6)
 session.commit()
 
 # Add Links for Collection 2 Category 4
+
 coll2cat4link1 = Link(title="Udacity: JavaScript Basics",
                       url="https://www.udacity.com/course/javascript-basics--ud804",
                       description="This Udacity course teaches you the basics of JavaScript. The course is a part of Udacity's Front-End Web Developer Nanodegree, but can also be taken for free.",
@@ -170,6 +177,7 @@ session.add(coll2cat4link1)
 session.commit()
 
 # Add Links for Collection 2 Category 5
+
 coll2cat5link1 = Link(title="Head First JavaScript Programming",
                       url="http://shop.oreilly.com/product/0636920027065.do",
                       description="A great JavaScript programming book (not free) that has clear explanations of object-oriented programming and closures, perhaps best for those with a little JavaScript knowledge already.",
@@ -198,6 +206,7 @@ session.add(coll2cat5link3)
 session.commit()
 
 # Add Links for Collection 2 Category 6
+
 coll2cat6link1 = Link(title="Udacity: Intro to jQuery",
                       url="https://www.udacity.com/course/intro-to-jquery--ud245",
                       description="Learn jQuery basics from Udacity.",
@@ -216,13 +225,15 @@ coll2cat6link2 = Link(title="edX: Introduction to jQuery",
 session.add(coll2cat6link2)
 session.commit()
 
-
+# Add Collection 3
 
 coll3 = Collection(title="HTML and CSS",
                    description="Resources for learning HTML and CSS",
                    path="htmlcss")
 session.add(coll3)
 session.commit()
+
+# Add Collection 3 Categories
 
 coll3cat1 = Category(title="HTML and CSS Courses",
                      description="Online HTML and CSS Courses",
@@ -246,6 +257,7 @@ session.add(coll3cat2)
 session.commit()
 
 # Add Links for Collection 3 Category 7
+
 coll3cat7link1 = Link(title="Codecademy: HTML & CSS",
                       url="https://www.codecademy.com/learn/web",
                       description="A good place for beginners to get started learning HTML and CSS",
@@ -265,6 +277,7 @@ session.add(coll3cat7link2)
 session.commit()
 
 # Add Links for Collection 3 Category 8
+
 coll3cat8link1 = Link(title="Head First HTML with CSS & XHTML",
                       url="https://www.udacity.com/course/intro-to-html-and-css--ud304",
                       description="A good book for those starting out with HTML and CSS.",
@@ -275,6 +288,7 @@ session.add(coll3cat8link1)
 session.commit()
 
 # Add Links for Collection 3 Category 9
+
 coll3cat9link1 = Link(title="MDN: HTML",
                       url="https://developer.mozilla.org/en-US/docs/Web/HTML",
                       description="HTML reference, guides, and tutorials",
