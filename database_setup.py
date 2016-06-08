@@ -1,6 +1,7 @@
 import os
 import sys
-from sqlalchemy import Column, ForeignKey, Integer, String, create_engine
+from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String,
+                        create_engine, func)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -13,6 +14,7 @@ class Collection(Base):
     coll_id = Column(Integer, primary_key=True)
     title = Column(String(80), nullable=False)
     description = Column(String(250))
+    submit_date = Column(DateTime, default=func.now())
     path = Column(String(20), nullable=False)
 
 
@@ -22,6 +24,7 @@ class Category(Base):
     cat_id = Column(Integer, primary_key=True)
     title = Column(String(80), nullable=False)
     description = Column(String(250))
+    submit_date = Column(DateTime, default=func.now())
     path = Column(String(20), nullable=False)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
@@ -35,6 +38,7 @@ class Link(Base):
     url = Column(String(250), nullable=False)
     description = Column(String(250))
     submitter = Column(String(250), nullable=False)
+    submit_date = Column(DateTime, default=func.now())
     cat_id = Column(Integer, ForeignKey('category.cat_id'))
     category = relationship(Category)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))

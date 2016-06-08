@@ -25,6 +25,7 @@ def index():
 def show_category_links(collection, category=""):
     """Render the links page for selected collection and category"""
     selected_collection = session.query(Collection).filter_by(path = collection).one()
+    # Get the selected category or set a default category if no category in path.
     if len(category) > 0:
         selected_category = session.query(Category).filter_by(path = category, coll_id=selected_collection.coll_id).one()
     else:
