@@ -22,12 +22,17 @@ def index():
 
 @app.route('/links/<collection>/')
 @app.route('/links/<collection>/<category>/')
-def show_category_links(collection, category="default"):
+def show_category_links(collection, category=""):
     """Render the links page for selected collection and category"""
-    if category == "default":
-        category = "set a default category"
-    return render_template('links.html', collection=collection,
-                           category=category)
+    selected_collection = session.query(Collection).filter_by(path = collection).one()
+    if len(category) > 0:
+        selected_category = session.query(Category).filter_by(path = category, coll_id=selected_collection.coll_id).one()
+    else:
+        selected_category = session.query(Category).filter_by(coll_id=selected_collection.coll_id).order_by(Category.cat_id).first()
+    categories = session.query(Category).filter_by(coll_id=selected_collection.coll_id)
+    links = session.query(Link).filter_by(cat_id=selected_category.cat_id)
+    return render_template('links.html', categories=categories, collection=collection,
+                           links=links, selected_category=selected_category)
 
 
 @app.route('/links/<collection>/edit')
