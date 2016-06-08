@@ -1,5 +1,8 @@
 body {
   font-family: Verdana, Geneva, sans-serif;
+  max-width: 960px;
+  margin: auto;
+  font-size: 1.3em;
 }
 
 h1, h2 {
@@ -9,4 +12,12 @@ h1, h2 {
 .message {
   color: red;
   font-weight: bold;
+}
+
+.action-btn {
+  display: inline;
+}
+
+li {
+  list-style-type: none;
 }

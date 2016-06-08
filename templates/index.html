@@ -5,7 +5,15 @@
   <ul>
     {% if collections %}
       {% for coll in collections %}
-        <li class="coll">{{ coll.name }}</li>
+        <li class="coll"><a href="{{ url_for('show_category_links', collection=coll.path) }}">{{ coll.name }}</a><br>
+        {{ coll.description }}<br>
+          <form class="action-btn" action="{{ url_for('edit_collection', collection=coll.path) }}" method = 'get'>
+            <input type='submit', value = 'Edit'>
+          </form>
+          <form class="action-btn" action="{{ url_for('delete_collection', collection=coll.path) }}" method = 'get'>
+            <input type='submit', value = 'Delete'>
+          </form>
+        </li>
       {% endfor %}
     {% endif %}
   </ul>
