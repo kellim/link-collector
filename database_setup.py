@@ -22,8 +22,7 @@ class Category(Base):
     cat_id = Column(Integer, primary_key=True)
     title = Column(String(80), nullable=False)
     description = Column(String(250))
-    path = Column(String(20))
-    submitter = Column(String(250))
+    path = Column(String(20), nullable=False)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
 
@@ -34,6 +33,7 @@ class Link(Base):
     link_id = Column(Integer, primary_key=True)
     title = Column(String(80), nullable=False)
     url = Column(String(250), nullable=False)
+    description = Column(String(250))
     submitter = Column(String(250), nullable=False)
     cat_id = Column(Integer, ForeignKey('category.cat_id'))
     category = relationship(Category)

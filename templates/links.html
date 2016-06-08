@@ -1,10 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-  <p>This page will list links for selected collection's selected category.
-  A default category should be designated in case no category is selected when
-  loading this page.</p>
-   <p>Collection: {{ collection }}<br>
-     Category: {{ category }}
-  </p>
-
+  <div class="sidebar">
+    <h2>Link Categories</h2>
+    <ul>
+      {% for cat in categories %}
+        <li class="cat">{{ cat.title }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+  <h2>{{ selected_category.title }} Links</h2>
+      <p>{{ selected_category.description }}</p>
+  <div class="links">
+    <ul>
+      {% for link in links %}
+        <li class="link"><a href="{{ link.url }}">{{ link.title }}</a> -
+        {{ link.description }}</li>
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}
