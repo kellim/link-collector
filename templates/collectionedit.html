@@ -1,5 +1,12 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Edit Collection</h2>
-  <p>Collection: {{ collection }}</p>
+  <h2>Edit Collection: {{ collection.name }}</h2>
+  <div class="edit">
+        <form action="{{ url_for('edit_collection', collection=collection.path) }}" method = "POST">
+            <label>Name: <input type="text" name="coll-name" value="{{ collection.name }}"></label><br>
+            <label>Description:<textarea name="coll-desc">{{ collection.description }}</textarea><br>
+            <input type="submit" name="submit-btn" value = "Submit">
+            <input type="submit" name="cancel-btn" value = "Cancel">
+        </form>
+    </div>
 {% endblock %}
