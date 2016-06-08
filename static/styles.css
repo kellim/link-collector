@@ -5,3 +5,8 @@ body {
 h1, h2 {
   font-family: Georgia, Times, "Times New Roman",serif;
 }
+
+.message {
+  color: red;
+  font-weight: bold;
+}
