@@ -139,11 +139,29 @@ def edit_category(collection, category):
         return render_template('categoryedit.html', collection=coll, category=selected_cat)
 
 
-@app.route('/links/<collection>/<category>/delete/')
+@app.route('/links/<collection>/<category>/delete/', methods=['GET', 'POST'])
 def delete_category(collection, category):
     """Delete a Category"""
-    return render_template('categorydelete.html', collection=collection, category=category)
+    selected_coll = session.query(Collection).filter_by(path=collection).one()
+    selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
+    links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
+    if request.method == 'POST':
+        if 'cancel-btn' in request.form:
+            flash('Delete Category cancelled!')
+        else:
+            if selected_cat != []:
+                # Delete the Category's associated links first.
+                for link in links:
+                    session.delete(link)
+                    session.commit()
 
+                session.delete(selected_cat)
+                session.commit()
+
+                flash('Category has been deleted!')
+        return redirect(url_for('show_category_links', collection=collection))
+    else:
+        return render_template('categorydelete.html', collection=selected_coll, category=selected_cat, links=links)
 
 @app.route('/links/<collection>/<category>/<link>/edit/')
 def edit_link(collection, category, link):
