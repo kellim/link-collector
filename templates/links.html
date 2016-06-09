@@ -1,22 +1,30 @@
 {% extends "base.html" %}
 {% block content %}
+
   <div class="sidebar">
     <h2>Link Categories</h2>
+    {% if categories.count() > 0 %}
     <ul>
       {% for cat in categories %}
         <li class="cat">{{ cat.name }}</li>
       {% endfor %}
     </ul>
+    {% endif %}
   </div>
+
   {% include "flashmessages.html" %}
+
   <h2>{{ selected_category.name }} Links</h2>
       <p>{{ selected_category.description }}</p>
   <div class="links">
+    {% if links %}
     <ul>
       {% for link in links %}
         <li class="link"><a href="{{ link.url }}">{{ link.name }}</a> -
         {{ link.description }}</li>
       {% endfor %}
     </ul>
+    {% endif %}
   </div>
+
 {% endblock %}

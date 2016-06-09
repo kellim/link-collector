@@ -33,7 +33,10 @@ def show_category_links(collection, category=""):
     else:
         selected_category = session.query(Category).filter_by(coll_id=selected_collection.coll_id).order_by(Category.cat_id).first()
     categories = session.query(Category).filter_by(coll_id=selected_collection.coll_id)
-    links = session.query(Link).filter_by(cat_id=selected_category.cat_id)
+    if categories.count() > 1:
+        links = session.query(Link).filter_by(cat_id=selected_category.cat_id)
+    else:
+        links = None
     return render_template('links.html', categories=categories, collection=collection,
                            links=links, selected_category=selected_category)
 
@@ -92,6 +95,21 @@ def delete_collection(collection):
         return render_template('collectiondelete.html', collection=selected_coll, cats=cats)
 
 
+@app.route('/links/collection/new', methods=['GET', 'POST'])
+def new_collection():
+    if request.method == 'POST':
+        new_coll = Collection(name = request.form['coll-name'],
+                              description = request.form['coll-desc'],
+                              path = request.form['coll-path'])
+        if 'cancel-btn' in request.form:
+            flash('Adding new Collection cancelled!')
+        else:
+            session.add(new_coll)
+            session.commit()
+            flash("New collection created!")
+        return redirect(url_for('index'))
+    else:
+        return render_template('collectionnew.html')
 
 @app.route('/links/<collection>/<category>/edit/')
 def edit_category(collection, category):

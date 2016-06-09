@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+  <h2>New Collection</h2>
+  <div class="edit">
+        <form action="{{ url_for('new_collection') }}" method = "POST">
+            <label>Name: <input type="text" name="coll-name"></label><br>
+            <label>Path: <input type="text" name="coll-path"></label><br>
+            <span class="explanation">The path should be a single word that will be used in the url to represent the collection.</span>
+            <label>Description:<textarea name="coll-desc"></textarea><br>
+            <input type="submit" name="submit-btn" value = "Submit">
+            <input type="submit" name="cancel-btn" value = "Cancel">
+        </form>
+    </div>
+{% endblock %}

@@ -21,3 +21,8 @@ h1, h2 {
 li {
   list-style-type: none;
 }
+
+.explanation {
+  font-size: 1em;
+  font-style: italic;
+}
