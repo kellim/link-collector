@@ -4,12 +4,14 @@
   <div class="delete">
     <form action="{{ url_for('delete_collection', collection=collection.path) }}" method="POST">
       Are you sure you want to delete {{ collection.name }}?<br>
-      All of the categories that are a part of this collection and their links will also be deleted:
-      <ul>
-      {% for cat in cats %}
-        <li><a href="{{ url_for('show_category_links', collection=collection.path, category=cat.path) }}">{{ cat.name }}</a></li>
-      {% endfor %}
-      </ul>
+      {% if cats.count() >= 1 %}
+        All of the categories that are a part of this collection and their links will also be deleted:
+        <ul>
+        {% for cat in cats %}
+          <li><a href="{{ url_for('show_category_links', collection=collection.path, category=cat.path) }}">{{ cat.name }}</a></li>
+        {% endfor %}
+        </ul>
+      {% endif %}
        This action cannot be undone!<br>
 
       <input type="submit" name="delete-btn" value = "Delete">
