@@ -111,6 +111,7 @@ def new_collection():
     else:
         return render_template('collectionnew.html')
 
+
 @app.route('/links/<collection>/<category>/edit/', methods=['GET', 'POST'])
 def edit_category(collection, category):
     """Edit a Category"""
@@ -184,16 +185,43 @@ def new_category(collection):
         return render_template('categorynew.html', collection=collection)
 
 
-@app.route('/links/<collection>/<category>/<link>/edit/')
-def edit_link(collection, category, link):
+@app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])
+def edit_link(collection, category, link_id):
     """Edit a Link"""
-    return render_template('linkedit.html', collection=collection, category=category, link=link)
+    coll = session.query(Collection).filter_by(path=collection).one()
+    cat = session.query(Category).filter_by(path=category,
+                                                     coll_id=coll.coll_id).one()
+    selected_link = session.query(Link).filter_by(link_id=link_id, cat_id=cat.cat_id).one()
+    if request.method == 'POST':
+        if 'cancel-btn' in request.form:
+            flash('Edit Link cancelled!')
+        else:
+            link_name = request.form['link-name']
+            link_url = request.form['link-url']
+            link_desc = request.form['link-desc']
+            if (selected_link.name != link_name
+                or selected_link.url != link_url
+                or selected_link.description != link_desc):
+                if selected_link.name != link_name:
+                    selected_link.name = link_name
+                if selected_link.url != link_url:
+                    selected_link.url = link_url
+                if selected_link.description != link_desc:
+                    selected_link.description = link_desc
+                session.add(selected_link)
+                session.commit()
+                flash('Link has been edited!')
+            else:
+                flash('No change was made to Link!')
+        return redirect(url_for('show_category_links', collection=collection, category=cat.path))
+    else:
+        return render_template('linkedit.html', collection=collection, category=category, link=selected_link)
 
 
-@app.route('/links/<collection>/<category>/<link>/delete/')
-def delete_link(collection, category, link):
+@app.route('/links/<collection>/<category>/<link_id>/delete/')
+def delete_link(collection, category, link_id):
     """Delete a Link"""
-    return render_template('linkdelete.html', collection=collection, category=category, link=link)
+    return render_template('linkdelete.html', collection=collection, category=category, link_id=link_id)
 
 
 if __name__ == '__main__':

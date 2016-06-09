@@ -38,8 +38,11 @@
       {% if links %}
       <ul>
         {% for link in links %}
-          <li class="link"><a href="{{ link.url }}">{{ link.name }}</a> -
-          {{ link.description }}</li>
+          <li class="link">
+            <a href="{{ link.url }}">{{ link.name }}</a> - {{ link.description }}
+            <a class="edit_link" href="{{ url_for('edit_link', collection=collection, category=selected_category.path, link_id=link.link_id) }}">Edit</a>
+            <a class="delete_link" href="{{ url_for('delete_link', collection=collection, category=selected_category.path, link_id=link.link_id) }}">Delete</a>
+          </li>
         {% endfor %}
       </ul>
       {% endif %}
