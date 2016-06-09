@@ -46,6 +46,7 @@
         {% endfor %}
       </ul>
       {% endif %}
+      <a href="{{ url_for('new_link', collection=collection, category=selected_category.path) }}">Add New Link</a>
     </div>
   {% endif %}
 

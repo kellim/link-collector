@@ -221,7 +221,6 @@ def edit_link(collection, category, link_id):
 @app.route('/links/<collection>/<category>/<link_id>/delete/', methods=['GET', 'POST'])
 def delete_link(collection, category, link_id):
     """Delete a Link"""
-
     coll = session.query(Collection).filter_by(path=collection).one()
     cat = session.query(Category).filter_by(path=category, coll_id=coll.coll_id).one()
     selected_link = session.query(Link).filter_by(link_id=link_id).one()
@@ -235,6 +234,29 @@ def delete_link(collection, category, link_id):
         return redirect(url_for('show_category_links', collection=collection, category=category))
     else:
         return render_template('linkdelete.html', collection=coll, category=cat, link=selected_link)
+
+
+@app.route('/links/<collection>/<category>/link/new', methods=['GET', 'POST'])
+def new_link(collection, category):
+    coll = session.query(Collection).filter_by(path=collection).one()
+    cat = session.query(Category).filter_by(path=category, coll_id = coll.coll_id).one()
+    if request.method == 'POST':
+        new_link= Link(name = request.form['link-name'],
+                       url = request.form['link-url'],
+                       description = request.form['link-desc'],
+                       submitter = 'example@example.com', # WILL CHANGE WHEN AUTH IMPLEMENTED
+                       cat_id = cat.cat_id,
+                       coll_id = coll.coll_id)
+        if 'cancel-btn' in request.form:
+            flash('Add new Link cancelled!')
+        else:
+            session.add(new_link)
+            session.commit()
+            flash("New link added!")
+        return redirect(url_for('show_category_links', collection=collection, category=category))
+    else:
+        return render_template('linknew.html', collection=collection, category=category)
+
 
 if __name__ == '__main__':
     app.secret_key = secret.SECRET_KEY
