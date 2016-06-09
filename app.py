@@ -218,11 +218,23 @@ def edit_link(collection, category, link_id):
         return render_template('linkedit.html', collection=collection, category=category, link=selected_link)
 
 
-@app.route('/links/<collection>/<category>/<link_id>/delete/')
+@app.route('/links/<collection>/<category>/<link_id>/delete/', methods=['GET', 'POST'])
 def delete_link(collection, category, link_id):
     """Delete a Link"""
-    return render_template('linkdelete.html', collection=collection, category=category, link_id=link_id)
 
+    coll = session.query(Collection).filter_by(path=collection).one()
+    cat = session.query(Category).filter_by(path=category, coll_id=coll.coll_id).one()
+    selected_link = session.query(Link).filter_by(link_id=link_id).one()
+    if request.method == 'POST':
+        if 'cancel-btn' in request.form:
+            flash('Delete Link cancelled!')
+        else:
+            session.delete(selected_link)
+            session.commit()
+            flash('Link has been deleted!')
+        return redirect(url_for('show_category_links', collection=collection, category=category))
+    else:
+        return render_template('linkdelete.html', collection=coll, category=cat, link=selected_link)
 
 if __name__ == '__main__':
     app.secret_key = secret.SECRET_KEY
