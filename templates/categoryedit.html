@@ -1,7 +1,13 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Edit Category</h2>
-   <p>Collection: {{ collection }}<br>
-     Category: {{ category }}
-  </p>
+  <h2>Edit Category: {{ category.name }}</h2>
+  <div class="edit">
+        <form action="{{ url_for('edit_category', collection=collection.path, category=category.path) }}" method = "POST">
+            <label>Name: <input type="text" name="cat-name" value="{{ category.name }}"></label><br>
+            <label>Description: <textarea name="cat-desc">{{ category.description }}</textarea><br>
+            <input type="submit" name="submit-btn" value = "Submit">
+            <input type="submit" name="cancel-btn" value = "Cancel">
+        </form>
+    </div>
+
 {% endblock %}
