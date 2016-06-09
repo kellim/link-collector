@@ -3,8 +3,9 @@
 
   <div class="sidebar">
     <h2>Link Categories</h2>
-    {% if categories.count() > 0 %}
+
     <ul>
+    {% if categories.count() > 0 %}
       {% for cat in categories %}
       <li class="cat">
         {% if cat.path != selected_category.path %}
@@ -14,8 +15,13 @@
         {% endif %}
       </li>
       {% endfor %}
-    </ul>
     {% endif %}
+      <li>
+        <a href="{{ url_for('new_category', collection=collection) }}">Create New Category</a>
+      </li>
+    </ul>
+
+
   </div>
 
   {% include "flashmessages.html" %}

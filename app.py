@@ -163,6 +163,26 @@ def delete_category(collection, category):
     else:
         return render_template('categorydelete.html', collection=selected_coll, category=selected_cat, links=links)
 
+
+@app.route('/links/<collection>/category/new', methods=['GET', 'POST'])
+def new_category(collection):
+    selected_coll = session.query(Collection).filter_by(path=collection).one()
+    if request.method == 'POST':
+        new_cat= Category(name = request.form['cat-name'],
+                              description = request.form['cat-desc'],
+                              path = request.form['cat-path'].lower(),
+                              coll_id = selected_coll.coll_id)
+        if 'cancel-btn' in request.form:
+            flash('Adding new Category cancelled!')
+        else:
+            session.add(new_cat)
+            session.commit()
+            flash("New category created!")
+        return redirect(url_for('show_category_links', collection=collection, category=new_cat.path))
+    else:
+        return render_template('categorynew.html', collection=collection)
+
+
 @app.route('/links/<collection>/<category>/<link>/edit/')
 def edit_link(collection, category, link):
     """Edit a Link"""
