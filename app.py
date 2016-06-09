@@ -174,6 +174,7 @@ def new_category(collection):
                               coll_id = selected_coll.coll_id)
         if 'cancel-btn' in request.form:
             flash('Adding new Category cancelled!')
+            return redirect(url_for('show_category_links', collection=collection))
         else:
             session.add(new_cat)
             session.commit()
