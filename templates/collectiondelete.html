@@ -1,5 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
-  <h2>Delete Collection</h2>
-  <p>Collection: {{ collection }}</p>
+  <h2>Delete Collection: {{ collection.name }}</h2>
+  <div class="delete">
+    <form action="{{ url_for('delete_collection', collection=collection.path) }}" method="POST">
+      Are you sure you want to delete {{ collection.name }}?<br>
+      All of the categories that are a part of this collection and their links will also be deleted:
+      <ul>
+      {% for cat in cats %}
+        <li><a href="{{ url_for('show_category_links', collection=collection.path, category=cat.path) }}">{{ cat.name }}</a></li>
+      {% endfor %}
+      </ul>
+       This action cannot be undone!<br>
+
+      <input type="submit" name="delete-btn" value = "Delete">
+      <input type="submit" name="cancel-btn" value = "Cancel"></p>
+    </form>
+  </div>
 {% endblock %}

@@ -38,10 +38,10 @@ def show_category_links(collection, category=""):
                            links=links, selected_category=selected_category)
 
 
-@app.route('/links/<collection>/edit', methods=['GET', 'POST'])
+@app.route('/links/<collection>/edit/', methods=['GET', 'POST'])
 def edit_collection(collection):
     """Edit a Link Collection"""
-    selected_coll = session.query(Collection).filter_by(path = collection).one()
+    selected_coll = session.query(Collection).filter_by(path=collection).one()
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Edit Collection cancelled!')
@@ -64,32 +64,54 @@ def edit_collection(collection):
         return render_template('collectionedit.html', collection=selected_coll)
 
 
-@app.route('/links/<collection>/delete')
+@app.route('/links/<collection>/delete/', methods=['GET', 'POST'])
 def delete_collection(collection):
     """Delete a Link Collection"""
-    return render_template('collectiondelete.html', collection=collection)
+    selected_coll = session.query(Collection).filter_by(path=collection).one()
+    cats = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    if request.method == 'POST':
+        if 'cancel-btn' in request.form:
+            flash('Delete Collection cancelled!')
+        else:
+            if selected_coll != []:
+                # Delete the Collection's categories and associated links first.
+                for cat in cats:
+                    links = session.query(Link).filter_by(cat_id=cat.cat_id)
+                    for link in links:
+                        session.delete(link)
+                        session.commit()
+
+                    session.delete(cat)
+                    session.commit()
+
+                session.delete(selected_coll)
+                session.commit()
+                flash('Collection has been deleted!')
+        return redirect(url_for('index'))
+    else:
+        return render_template('collectiondelete.html', collection=selected_coll, cats=cats)
 
 
 
-@app.route('/links/<collection>/<category>/edit')
+@app.route('/links/<collection>/<category>/edit/')
 def edit_category(collection, category):
     """Edit a Category"""
     return render_template('categoryedit.html', collection=collection, category=category)
 
 
-@app.route('/links/<collection>/<category>/delete')
+@app.route('/links/<collection>/<category>/delete/')
 def delete_category(collection, category):
     """Delete a Category"""
     return render_template('categorydelete.html', collection=collection, category=category)
 
 
-@app.route('/links/<collection>/<category>/<link>/edit')
+@app.route('/links/<collection>/<category>/<link>/edit/')
 def edit_link(collection, category, link):
     """Edit a Link"""
     return render_template('linkedit.html', collection=collection, category=category, link=link)
 
 
-@app.route('/links/<collection>/<category>/<link>/delete')
+@app.route('/links/<collection>/<category>/<link>/delete/')
 def delete_link(collection, category, link):
     """Delete a Link"""
     return render_template('linkdelete.html', collection=collection, category=category, link=link)
