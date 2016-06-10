@@ -33,7 +33,7 @@ def show_category_links(collection, category=""):
     else:
         selected_category = session.query(Category).filter_by(coll_id=selected_collection.coll_id).order_by(Category.cat_id).first()
     categories = session.query(Category).filter_by(coll_id=selected_collection.coll_id)
-    if categories.count() > 1:
+    if categories.count() >= 1:
         links = session.query(Link).filter_by(cat_id=selected_category.cat_id)
     else:
         links = None
