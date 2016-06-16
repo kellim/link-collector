@@ -1,10 +1,22 @@
 {% extends "base.html" %}
 {% block content %}
   <h2>Edit Collection: {{ collection.name }}</h2>
+  {% include "flashmessages.html" %}
   <div class="edit">
         <form action="{{ url_for('edit_collection', collection=collection.path) }}" method = "POST">
-            <label>Name: <input type="text" name="coll-name" value="{{ collection.name }}"></label><br>
-            <label>Description:<textarea name="coll-desc">{{ collection.description }}</textarea><br>
+            {{ form.csrf_token }}
+            <!--<label>Name: <input type="text" name="coll-name" value="{{ collection.name }}"></label><br>
+            <label>Description:<textarea name="coll-desc">{{ collection.description }}</textarea><br> -->
+            {{ form.name.label }} {{ form.name (value = collection.name) }}
+            {% for error in form.name.errors %}
+              <br><span class="field-error">{{ error }}</span>
+            {% endfor %}
+            <br>
+            {{ form.description.label }} {{ form.description (rows=4) }}
+            {% for error in form.description.errors %}
+              <br><span class="field-error">{{ error }}</span>
+            {% endfor %}
+            <br>
             <input type="submit" name="submit-btn" value = "Submit">
             <input type="submit" name="cancel-btn" value = "Cancel">
         </form>
