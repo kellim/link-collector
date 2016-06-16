@@ -1,12 +1,13 @@
 from flask import (Flask, render_template, request, redirect, url_for, flash,
                    jsonify, abort)
 app = Flask(__name__)
-
+from flask_bootstrap import Bootstrap
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from database_setup import Base, Collection, Category, Link
 
 import secret
+import forms
 
 engine = create_engine('sqlite:///links.db')
 Base.metadata.bind = engine
@@ -44,27 +45,38 @@ def show_category_links(collection, category=""):
 @app.route('/links/<collection>/edit/', methods=['GET', 'POST'])
 def edit_collection(collection):
     """Edit a Link Collection"""
+    form = forms.EditCollectionForm()
     selected_coll = session.query(Collection).filter_by(path=collection).one()
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Edit Collection cancelled!')
         else:
-            coll_name = request.form['coll-name']
-            coll_desc = request.form['coll-desc']
-            if (selected_coll.name != coll_name
-                or selected_coll.description != coll_desc):
-                if selected_coll.name != coll_name:
-                    selected_coll.name = coll_name
-                if selected_coll.description != coll_desc:
-                    selected_coll.description = coll_desc
-                session.add(selected_coll)
-                session.commit()
-                flash('Collection has been edited!')
+            if form.validate_on_submit():
+                coll_name = request.form['name']
+                coll_desc = request.form['description']
+                # Make sure at least one field was changed before updating the
+                # database. Also, don't update fields that were not changed.
+                # This logic deals with multiple fields so did not add it
+                # to forms.py
+                if (selected_coll.name != coll_name
+                    or selected_coll.description != coll_desc):
+                    if selected_coll.name != coll_name:
+                        selected_coll.name = coll_name
+                    if selected_coll.description != coll_desc:
+                        selected_coll.description = coll_desc
+                    session.add(selected_coll)
+                    session.commit()
+                    flash('Collection has been edited!')
+                else:
+                    flash('No change was made to collection!')
             else:
-                flash('No change was made to collection!')
+                # flash('Please fill out both fields.')
+                form.description.data = selected_coll.description
+                return render_template('collectionedit.html', collection=selected_coll, form=form)
         return redirect(url_for('index'))
     else:
-        return render_template('collectionedit.html', collection=selected_coll)
+        form.description.data = selected_coll.description
+        return render_template('collectionedit.html', collection=selected_coll, form=form)
 
 
 @app.route('/links/<collection>/delete/', methods=['GET', 'POST'])
