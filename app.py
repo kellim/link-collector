@@ -4,7 +4,7 @@ app = Flask(__name__)
 from flask_bootstrap import Bootstrap
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from database_setup import Base, Collection, Category, Link
+from models import Base, Collection, Category, Link
 
 import secret
 import forms
@@ -14,7 +14,6 @@ Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
-
 
 @app.route('/')
 def index():
@@ -109,19 +108,36 @@ def delete_collection(collection):
 
 @app.route('/links/collection/new', methods=['GET', 'POST'])
 def new_collection():
+    path_unique = True
+    form = forms.NewCollectionForm()
     if request.method == 'POST':
-        new_coll = Collection(name = request.form['coll-name'],
-                              description = request.form['coll-desc'],
-                              path = request.form['coll-path'])
+        new_coll = Collection(name = request.form['name'],
+                              description = request.form['description'],
+                              path = request.form['path'])
         if 'cancel-btn' in request.form:
             flash('Adding new Collection cancelled!')
+            return redirect(url_for('index'))
         else:
-            session.add(new_coll)
-            session.commit()
-            flash("New collection created!")
-        return redirect(url_for('index'))
+            if form.validate_on_submit():
+                # Check if the path already exists here instead of forms.py
+                # to simplify forms.py by not having database logic in it.
+                try:
+                    db_coll = session.query(Collection).filter_by(path=new_coll.path).one()
+                except:
+                    path = None
+                else:
+                    path = db_coll.path
+
+                if path != new_coll.path:
+                    session.add(new_coll)
+                    session.commit()
+                    flash("New collection created!")
+                    return redirect(url_for('index'))
+                else:
+                    path_unique = False
+            return render_template('collectionnew.html', form=form, path_unique=path_unique)
     else:
-        return render_template('collectionnew.html')
+        return render_template('collectionnew.html', form=form, path_unique=path_unique)
 
 
 @app.route('/links/<collection>/<category>/edit/', methods=['GET', 'POST'])
