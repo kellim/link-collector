@@ -143,6 +143,7 @@ def new_collection():
 @app.route('/links/<collection>/<category>/edit/', methods=['GET', 'POST'])
 def edit_category(collection, category):
     """Edit a Category"""
+    form = forms.EditCategoryForm()
     coll = session.query(Collection).filter_by(path=collection).one()
     selected_cat = session.query(Category).filter_by(path=category,
                                                      coll_id=coll.coll_id).one()
@@ -150,22 +151,33 @@ def edit_category(collection, category):
         if 'cancel-btn' in request.form:
             flash('Edit Category cancelled!')
         else:
-            cat_name = request.form['cat-name']
-            cat_desc = request.form['cat-desc']
-            if (selected_cat.name != cat_name
-                or selected_cat.description != cat_desc):
-                if selected_cat.name != cat_name:
-                    selected_cat.name = cat_name
-                if selected_cat.description != cat_desc:
-                    selected_cat.description = cat_desc
-                session.add(selected_cat)
-                session.commit()
-                flash('Category has been edited!')
+            if form.validate_on_submit():
+                cat_name = request.form['name']
+                cat_desc = request.form['description']
+                # Make sure at least one field was changed before updating the
+                # database. Also, don't update fields that were not changed.
+                # This logic deals with multiple fields so did not add it
+                # to forms.py
+                if (selected_cat.name != cat_name
+                    or selected_cat.description != cat_desc):
+                    if selected_cat.name != cat_name:
+                        selected_cat.name = cat_name
+                    if selected_cat.description != cat_desc:
+                        selected_cat.description = cat_desc
+                    session.add(selected_cat)
+                    session.commit()
+                    flash('Category has been edited!')
+                else:
+                    flash('No change was made to Category!')
             else:
-                flash('No change was made to Category!')
+                return render_template('categoryedit.html', collection=coll, category=selected_cat, form=form)
         return redirect(url_for('show_category_links', collection=collection, category=selected_cat.path))
     else:
-        return render_template('categoryedit.html', collection=coll, category=selected_cat)
+        # Populate description field from database when method is GET.
+        # Description gets updated here since it is a TextArea; name is updated
+        # in the template.
+        form.description.data = selected_cat.description
+        return render_template('categoryedit.html', collection=coll, category=selected_cat, form=form)
 
 
 @app.route('/links/<collection>/<category>/delete/', methods=['GET', 'POST'])
