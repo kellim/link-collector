@@ -207,22 +207,43 @@ def delete_category(collection, category):
 
 @app.route('/links/<collection>/category/new', methods=['GET', 'POST'])
 def new_category(collection):
-    selected_coll = session.query(Collection).filter_by(path=collection).one()
+    """Add a New Category"""
+    path_unique = True
+    form = forms.NewCategoryForm()
+    try:
+        selected_coll = session.query(Collection).filter_by(path=collection).one()
+    except:
+        abort(404)
     if request.method == 'POST':
-        new_cat= Category(name = request.form['cat-name'],
-                              description = request.form['cat-desc'],
-                              path = request.form['cat-path'].lower(),
+        new_cat= Category(name = request.form['name'],
+                              description = request.form['description'],
+                              path = request.form['path'].lower(),
                               coll_id = selected_coll.coll_id)
         if 'cancel-btn' in request.form:
             flash('Adding new Category cancelled!')
             return redirect(url_for('show_category_links', collection=collection))
         else:
-            session.add(new_cat)
-            session.commit()
-            flash("New category created!")
-        return redirect(url_for('show_category_links', collection=collection, category=new_cat.path))
-    else:
-        return render_template('categorynew.html', collection=collection)
+            if form.validate_on_submit():
+                try:
+                    db_cat = session.query(Category).filter_by(path=new_cat.path, coll_id=selected_coll.coll_id).one()
+                except:
+                    path = None
+                else:
+                    path = db_cat.path
+                if new_cat.path != path:
+                    session.add(new_cat)
+                    session.commit()
+                    flash("New category created!")
+                    return redirect(url_for('show_category_links',
+                        collection=collection,
+                        category=new_cat.path))
+                else:
+                    path_unique = False
+
+    return render_template('categorynew.html',
+                                collection=collection,
+                                form=form,
+                                path_unique=path_unique)
 
 
 @app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])

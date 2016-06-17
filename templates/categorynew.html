@@ -3,12 +3,28 @@
   <h2>New Category</h2>
   <div class="edit">
         <form action="{{ url_for('new_category', collection=collection) }}" method="POST">
-            <label>Name: <input type="text" name="cat-name"></label><br>
-            <label>Description: <textarea name="cat-desc"></textarea><br>
-            <label>Path: <input type="text" name="cat-path"></label><br>
-            <span class="explanation">The path should be a single word that will be used in the url to represent the category.</span>
-            <input type="submit" name="submit-btn" value = "Submit">
-            <input type="submit" name="cancel-btn" value = "Cancel">
+      {{ form.csrf_token }}
+      {{ form.name.label }} {{ form.name }}
+      {% for error in form.name.errors %}
+        <br><span class="field-error">{{ error }}</span>
+      {% endfor %}
+      <br>
+      {{ form.path.label }} {{ form.path }}
+      {% for error in form.path.errors %}
+        <br><span class="field-error">{{ error }}</span>
+      {% endfor %}
+      {% if not path_unique %}
+        <br><span class="field-error">Path must be unique!</span>
+      {% endif %}
+      <br>
+      <span class="explanation">The path should be a single word that will be used in the url to represent the collection.</span>
+      {{ form.description.label }} {{ form.description (rows=4) }}
+      {% for error in form.description.errors %}
+        <br><span class="field-error">{{ error }}</span>
+      {% endfor %}
+      <br>
+      <input type="submit" name="submit-btn" value = "Submit">
+      <input type="submit" name="cancel-btn" value = "Cancel">
         </form>
     </div>
 {% endblock %}
