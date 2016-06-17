@@ -249,35 +249,46 @@ def new_category(collection):
 @app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])
 def edit_link(collection, category, link_id):
     """Edit a Link"""
+    form = forms.EditLinkForm()
     coll = session.query(Collection).filter_by(path=collection).one()
     cat = session.query(Category).filter_by(path=category,
-                                                     coll_id=coll.coll_id).one()
+                                            coll_id=coll.coll_id).one()
     selected_link = session.query(Link).filter_by(link_id=link_id, cat_id=cat.cat_id).one()
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Edit Link cancelled!')
         else:
-            link_name = request.form['link-name']
-            link_url = request.form['link-url']
-            link_desc = request.form['link-desc']
-            if (selected_link.name != link_name
-                or selected_link.url != link_url
-                or selected_link.description != link_desc):
-                if selected_link.name != link_name:
-                    selected_link.name = link_name
-                if selected_link.url != link_url:
-                    selected_link.url = link_url
-                if selected_link.description != link_desc:
-                    selected_link.description = link_desc
-                session.add(selected_link)
-                session.commit()
-                flash('Link has been edited!')
+            if form.validate_on_submit():
+                link_name = request.form['name']
+                link_url = request.form['url']
+                link_desc = request.form['description']
+                # Make sure at least one field was changed before updating the
+                # database. Also, don't update fields that were not changed.
+                # This logic deals with multiple fields so did not add it
+                # to forms.py
+                if (selected_link.name != link_name
+                    or selected_link.url != link_url
+                    or selected_link.description != link_desc):
+                    if selected_link.name != link_name:
+                        selected_link.name = link_name
+                    if selected_link.url != link_url:
+                        selected_link.url = link_url
+                    if selected_link.description != link_desc:
+                        selected_link.description = link_desc
+                    session.add(selected_link)
+                    session.commit()
+                    flash('Link has been edited!')
+                else:
+                    flash('No change was made to Link!')
             else:
-                flash('No change was made to Link!')
+                return render_template('linkedit.html', collection=collection, category=category, link=selected_link, form=form)
         return redirect(url_for('show_category_links', collection=collection, category=cat.path))
     else:
-        return render_template('linkedit.html', collection=collection, category=category, link=selected_link)
-
+        # Populate description field from database when method is GET.
+        # Description gets updated here since it is a TextArea; name is updated
+        # in the template.
+        form.description.data = selected_link.description
+        return render_template('linkedit.html', collection=collection, category=category, link=selected_link, form=form)
 
 @app.route('/links/<collection>/<category>/<link_id>/delete/', methods=['GET', 'POST'])
 def delete_link(collection, category, link_id):
