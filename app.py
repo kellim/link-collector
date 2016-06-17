@@ -126,6 +126,7 @@ def delete_collection(collection):
 
 @app.route('/links/collection/new/', methods=['GET', 'POST'])
 def new_collection():
+    """Add a New Collection"""
     path_unique = True
     form = forms.NewCollectionForm()
     if request.method == 'POST':
@@ -341,6 +342,7 @@ def delete_link(collection, category, link_id):
 
 @app.route('/links/<collection>/<category>/link/new/', methods=['GET', 'POST'])
 def new_link(collection, category):
+    """Add a New Link"""
     form = forms.NewLinkForm()
     try:
         coll = session.query(Collection).filter_by(path=collection).one()
