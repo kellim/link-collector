@@ -5,9 +5,12 @@
   <div class="edit">
         <form action="{{ url_for('edit_collection', collection=collection.path) }}" method = "POST">
             {{ form.csrf_token }}
-            <!--<label>Name: <input type="text" name="coll-name" value="{{ collection.name }}"></label><br>
-            <label>Description:<textarea name="coll-desc">{{ collection.description }}</textarea><br> -->
-            {{ form.name.label }} {{ form.name (value = collection.name) }}
+            {{ form.name.label }}
+            {% if request.method == "GET" %}
+              {{ form.name (value = collection.name) }}
+            {% else %}
+              {{ form.name }}
+            {% endif %}
             {% for error in form.name.errors %}
               <br><span class="field-error">{{ error }}</span>
             {% endfor %}
