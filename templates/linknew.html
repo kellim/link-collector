@@ -2,13 +2,27 @@
 {% block content %}
   <h2>Add Link</h2>
   <div class="edit">
-        <form action="{{ url_for('new_link', collection=collection, category=category) }}" method="POST">
-            <label>Name: <input type="text" name="link-name"></label><br>
-            <label>URL: <input type="text" name="link-url"></label><br>
-            <span class="explanation">Links must start with http:// or https://</span><br>
-            <label>Description: <textarea name="link-desc"></textarea><br>
-            <input type="submit" name="submit-btn" value = "Submit">
-            <input type="submit" name="cancel-btn" value = "Cancel">
+  <div class="edit">
+    <form action="{{ url_for('new_link', collection=collection, category=category) }}" method = "POST">
+      {{ form.csrf_token }}
+      {{ form.name.label }} {{ form.name }}
+      {% for error in form.name.errors %}
+        <br><span class="field-error">{{ error }}</span>
+      {% endfor %}
+      <br>
+      {{ form.url.label }} {{ form.url }}
+      {% for error in form.url.errors %}
+        <br><span class="field-error">{{ error }}</span>
+      {% endfor %}
+      <br>
+      {{ form.description.label }} {{ form.description (rows = 4) }}
+      {% for error in form.description.errors %}
+        <br><span class="field-error">{{ error }}</span>
+      {% endfor %}
+      <br>
+      <input type="submit" name="submit-btn" value = "Submit">
+      <input type="submit" name="cancel-btn" value = "Cancel">
         </form>
+    </div>
     </div>
 {% endblock %}

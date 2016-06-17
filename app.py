@@ -310,24 +310,33 @@ def delete_link(collection, category, link_id):
 
 @app.route('/links/<collection>/<category>/link/new', methods=['GET', 'POST'])
 def new_link(collection, category):
-    coll = session.query(Collection).filter_by(path=collection).one()
-    cat = session.query(Category).filter_by(path=category, coll_id = coll.coll_id).one()
+    form = forms.NewLinkForm()
+    try:
+        coll = session.query(Collection).filter_by(path=collection).one()
+        cat = session.query(Category).filter_by(path=category, coll_id = coll.coll_id).one()
+    except:
+        abort(404)
     if request.method == 'POST':
-        new_link= Link(name = request.form['link-name'],
-                       url = request.form['link-url'],
-                       description = request.form['link-desc'],
+        new_link= Link(name = request.form['name'],
+                       url = request.form['url'],
+                       description = request.form['description'],
                        submitter = 'example@example.com', # WILL CHANGE WHEN AUTH IMPLEMENTED
                        cat_id = cat.cat_id,
                        coll_id = coll.coll_id)
         if 'cancel-btn' in request.form:
             flash('Add new Link cancelled!')
         else:
-            session.add(new_link)
-            session.commit()
-            flash("New link added!")
-        return redirect(url_for('show_category_links', collection=collection, category=category))
-    else:
-        return render_template('linknew.html', collection=collection, category=category)
+            if form.validate_on_submit():
+                session.add(new_link)
+                session.commit()
+                flash("New link added!")
+                return redirect(url_for('show_category_links',
+                                          collection=collection,
+                                          category=category))
+    return render_template('linknew.html',
+                            collection=collection,
+                            category=category,
+                            form=form)
 
 
 if __name__ == '__main__':
