@@ -83,10 +83,12 @@ def edit_collection(collection):
                     flash('No change was made to collection!')
             else:
                 # flash('Please fill out both fields.')
-                form.description.data = selected_coll.description
                 return render_template('collectionedit.html', collection=selected_coll, form=form)
         return redirect(url_for('index'))
     else:
+        # Populate description field from database when method is GET.
+        # Description gets updated here since it is a TextArea; name is updated
+        # in the template.
         form.description.data = selected_coll.description
         return render_template('collectionedit.html', collection=selected_coll, form=form)
 
