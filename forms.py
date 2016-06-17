@@ -118,3 +118,28 @@ class EditLinkForm(Form):
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
                                  ]))
+class NewLinkForm(Form):
+    input_error = ('Invalid input. Please remove special characters and '
+                   'try again.')
+
+    url_input_error = ('Invalid input. Please format the url like '
+                       'http://www.example.com or https://www.example.com')
+
+    name = (
+        StringField('Name: ',
+                    validators=[DataRequired(),
+                                Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
+                                       message=input_error)
+                                ]))
+    url = StringField('Path: ',
+                        validators = [DataRequired(),
+                                      URL(require_tld=True,
+                                          message=url_input_error)
+                                     ])
+    description = (
+        TextAreaField('Description: ',
+                      validators=[DataRequired(),
+                                 Regexp(
+                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                    message=input_error)
+                                 ]))
