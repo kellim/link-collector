@@ -1,6 +1,6 @@
 from flask import (Flask, render_template, request, redirect, url_for, flash,
                    jsonify, abort)
-app = Flask(__name__)
+
 from flask_bootstrap import Bootstrap
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
@@ -8,6 +8,9 @@ from models import Base, Collection, Category, Link
 
 import secret
 import forms
+
+app = Flask(__name__)
+Bootstrap(app)
 
 engine = create_engine('sqlite:///links.db')
 Base.metadata.bind = engine
