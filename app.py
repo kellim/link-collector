@@ -21,15 +21,25 @@ def index():
     collections = session.query(Collection)
     return render_template('index.html', collections=collections)
 
+@app.route('/links/')
+def link_redirect():
+    """Redirect to index page"""
+    return redirect(url_for('index'))
 
 @app.route('/links/<collection>/')
 @app.route('/links/<collection>/<category>/')
 def show_category_links(collection, category=""):
     """Render the links page for selected collection and category"""
-    selected_collection = session.query(Collection).filter_by(path = collection).one()
+    try:
+        selected_collection = session.query(Collection).filter_by(path = collection).one()
+    except:
+        abort(404)
     # Get the selected category or set a default category if no category in path.
     if len(category) > 0:
-        selected_category = session.query(Category).filter_by(path = category, coll_id=selected_collection.coll_id).one()
+        try:
+            selected_category = session.query(Category).filter_by(path = category, coll_id=selected_collection.coll_id).one()
+        except:
+            abort(404)
     else:
         selected_category = session.query(Category).filter_by(coll_id=selected_collection.coll_id).order_by(Category.cat_id).first()
     categories = session.query(Category).filter_by(coll_id=selected_collection.coll_id)
@@ -45,7 +55,10 @@ def show_category_links(collection, category=""):
 def edit_collection(collection):
     """Edit a Link Collection"""
     form = forms.EditCollectionForm()
-    selected_coll = session.query(Collection).filter_by(path=collection).one()
+    try:
+        selected_coll = session.query(Collection).filter_by(path=collection).one()
+    except:
+        abort(404)
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Edit Collection cancelled!')
@@ -81,7 +94,10 @@ def edit_collection(collection):
 @app.route('/links/<collection>/delete/', methods=['GET', 'POST'])
 def delete_collection(collection):
     """Delete a Link Collection"""
-    selected_coll = session.query(Collection).filter_by(path=collection).one()
+    try:
+        selected_coll = session.query(Collection).filter_by(path=collection).one()
+    except:
+        abort(404)
     cats = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
@@ -106,7 +122,7 @@ def delete_collection(collection):
         return render_template('collectiondelete.html', collection=selected_coll, cats=cats)
 
 
-@app.route('/links/collection/new', methods=['GET', 'POST'])
+@app.route('/links/collection/new/', methods=['GET', 'POST'])
 def new_collection():
     path_unique = True
     form = forms.NewCollectionForm()
@@ -144,9 +160,13 @@ def new_collection():
 def edit_category(collection, category):
     """Edit a Category"""
     form = forms.EditCategoryForm()
-    coll = session.query(Collection).filter_by(path=collection).one()
-    selected_cat = session.query(Category).filter_by(path=category,
-                                                     coll_id=coll.coll_id).one()
+    try:
+        coll = session.query(Collection).filter_by(path=collection).one()
+        selected_cat = (
+            session.query(Category).filter_by(path=category,
+                                              coll_id=coll.coll_id).one())
+    except:
+        abort(404)
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Edit Category cancelled!')
@@ -183,8 +203,11 @@ def edit_category(collection, category):
 @app.route('/links/<collection>/<category>/delete/', methods=['GET', 'POST'])
 def delete_category(collection, category):
     """Delete a Category"""
-    selected_coll = session.query(Collection).filter_by(path=collection).one()
-    selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
+    try:
+        selected_coll = session.query(Collection).filter_by(path=collection).one()
+        selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
+    except:
+        abort(404)
     links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
@@ -205,7 +228,7 @@ def delete_category(collection, category):
         return render_template('categorydelete.html', collection=selected_coll, category=selected_cat, links=links)
 
 
-@app.route('/links/<collection>/category/new', methods=['GET', 'POST'])
+@app.route('/links/<collection>/category/new/', methods=['GET', 'POST'])
 def new_category(collection):
     """Add a New Category"""
     path_unique = True
@@ -250,10 +273,13 @@ def new_category(collection):
 def edit_link(collection, category, link_id):
     """Edit a Link"""
     form = forms.EditLinkForm()
-    coll = session.query(Collection).filter_by(path=collection).one()
-    cat = session.query(Category).filter_by(path=category,
-                                            coll_id=coll.coll_id).one()
-    selected_link = session.query(Link).filter_by(link_id=link_id, cat_id=cat.cat_id).one()
+    try:
+        coll = session.query(Collection).filter_by(path=collection).one()
+        cat = session.query(Category).filter_by(path=category,
+                                                coll_id=coll.coll_id).one()
+        selected_link = session.query(Link).filter_by(link_id=link_id, cat_id=cat.cat_id).one()
+    except:
+        abort(404)
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Edit Link cancelled!')
@@ -293,9 +319,12 @@ def edit_link(collection, category, link_id):
 @app.route('/links/<collection>/<category>/<link_id>/delete/', methods=['GET', 'POST'])
 def delete_link(collection, category, link_id):
     """Delete a Link"""
-    coll = session.query(Collection).filter_by(path=collection).one()
-    cat = session.query(Category).filter_by(path=category, coll_id=coll.coll_id).one()
-    selected_link = session.query(Link).filter_by(link_id=link_id).one()
+    try:
+        coll = session.query(Collection).filter_by(path=collection).one()
+        cat = session.query(Category).filter_by(path=category, coll_id=coll.coll_id).one()
+        selected_link = session.query(Link).filter_by(link_id=link_id).one()
+    except:
+        abort(404)
     if request.method == 'POST':
         if 'cancel-btn' in request.form:
             flash('Delete Link cancelled!')
@@ -308,7 +337,7 @@ def delete_link(collection, category, link_id):
         return render_template('linkdelete.html', collection=coll, category=cat, link=selected_link)
 
 
-@app.route('/links/<collection>/<category>/link/new', methods=['GET', 'POST'])
+@app.route('/links/<collection>/<category>/link/new/', methods=['GET', 'POST'])
 def new_link(collection, category):
     form = forms.NewLinkForm()
     try:
