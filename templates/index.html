@@ -1,10 +1,9 @@
 {% extends "base.html" %}
-{% block content %}
-<div class="sidebar">
+{% block title %}{{ super() }} Collections{% endblock %}
+{% block sidebar %}
   <a href="{{ url_for('new_collection') }}">Create new collection</a>
-</div>
-{% include "flashmessages.html" %}
-<div class="collections">
+{% endblock %}
+{% block main %}
   <ul>
     {% if collections %}
       {% for coll in collections %}
@@ -20,5 +19,4 @@
       {% endfor %}
     {% endif %}
   </ul>
-</div>
 {% endblock %}

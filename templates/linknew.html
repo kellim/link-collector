@@ -1,27 +1,17 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}{{ super() }} New Link{% endblock %}
+{% block main %}
   <h2>Add Link</h2>
   <div class="edit">
   <div class="edit">
     <form action="{{ url_for('new_link', collection=collection, category=category) }}" method = "POST">
       {{ form.csrf_token }}
-      {{ form.name.label }} {{ form.name }}
-      {% for error in form.name.errors %}
-        <br><span class="field-error">{{ error }}</span>
-      {% endfor %}
-      <br>
-      {{ form.url.label }} {{ form.url }}
-      {% for error in form.url.errors %}
-        <br><span class="field-error">{{ error }}</span>
-      {% endfor %}
-      <br>
-      {{ form.description.label }} {{ form.description (rows = 4) }}
-      {% for error in form.description.errors %}
-        <br><span class="field-error">{{ error }}</span>
-      {% endfor %}
-      <br>
-      <input type="submit" name="submit-btn" value = "Submit">
-      <input type="submit" name="cancel-btn" value = "Cancel">
+      {{ wtf.form_field(form.name) }}
+      {{ wtf.form_field(form.url) }}
+       <p class="explanation">The URL must be a link formatted like http://www.example.com or https://www.example.com</p>
+      {{ wtf.form_field(form.description, rows=5) }}
+      <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
+      <a class="btn btn-default" href="{{ url_for('show_category_links', collection=collection, category=category) }}">Cancel</a>
         </form>
     </div>
     </div>

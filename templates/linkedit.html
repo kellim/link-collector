@@ -1,36 +1,21 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}{{ super() }} Edit Link{% endblock %}
+{% block main %}
   <h2>Edit Link: {{ link.name }}</h2>
   <div class="edit">
     <form action="{{ url_for('edit_link', collection=collection, category=category, link_id=link.link_id) }}" method = "POST">
       {{ form.csrf_token }}
-      {{ form.name.label }}
-      {% if request.method == 'GET'%}
-        {{ form.name (value = link.name) }}
+      {% if request.method == "GET" %}
+        {{ wtf.form_field(form.name, value = link.name) }}
+        {{ wtf.form_field(form.url, value = link.url) }}
       {% else %}
-         {{ form.name }}
+        {{ wtf.form_field(form.name) }}
+        {{ wtf.form_field(form.url) }}
       {% endif %}
-      {% for error in form.name.errors %}
-        <br><span class="field-error">{{ error }}</span>
-      {% endfor %}
-      <br>
-      {{ form.url.label }}
-      {% if request.method == 'GET'%}
-        {{ form.url (value = link.url) }}
-      {% else %}
-         {{ form.url }}
-      {% endif %}
-      {% for error in form.url.errors %}
-        <br><span class="field-error">{{ error }}</span>
-      {% endfor %}
-      <br>
-      {{ form.description.label }} {{ form.description (rows = 4) }}
-      {% for error in form.description.errors %}
-        <br><span class="field-error">{{ error }}</span>
-      {% endfor %}
-      <br>
-      <input type="submit" name="submit-btn" value = "Submit">
-      <input type="submit" name="cancel-btn" value = "Cancel">
+      <p class="explanation">The URL must be a link formatted like http://www.example.com or https://www.example.com</p>
+      {{ wtf.form_field(form.description, rows=5) }}
+      <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
+      <a class="btn btn-default" href="{{ url_for('show_category_links', collection=collection, category=category) }}">Cancel</a>
         </form>
     </div>
 {% endblock %}
