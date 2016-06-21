@@ -22,7 +22,6 @@ class EditCollectionForm(Form):
                                     message=input_error)
                                  ]))
 
-
 class NewCollectionForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
                    'try again.')
@@ -47,7 +46,6 @@ class NewCollectionForm(Form):
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
                                  ]))
-
 
 class EditCategoryForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
@@ -97,8 +95,8 @@ class EditLinkForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
                    'try again.')
 
-    url_input_error = ('Invalid input. Please format the url like '
-                       'http://www.example.com or https://www.example.com')
+    url_input_error = ('Invalid URL entered. Make sure URL starts '
+                       'with http:// or https://')
 
     name = (
         StringField('Name: ',
@@ -106,7 +104,7 @@ class EditLinkForm(Form):
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
-    url = StringField('Path: ',
+    url = StringField('URL: ',
                         validators = [DataRequired(),
                                       URL(require_tld=True,
                                           message=url_input_error)
@@ -122,8 +120,9 @@ class NewLinkForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
                    'try again.')
 
-    url_input_error = ('Invalid input. Please format the url like '
-                       'http://www.example.com or https://www.example.com')
+    url_input_error = ('Invalid URL entered. Make sure URL starts '
+                       'with http:// or https://')
+
 
     name = (
         StringField('Name: ',
@@ -131,7 +130,7 @@ class NewLinkForm(Form):
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
-    url = StringField('Path: ',
+    url = StringField('URL: ',
                         validators = [DataRequired(),
                                       URL(require_tld=True,
                                           message=url_input_error)

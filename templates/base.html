@@ -1,14 +1,26 @@
 {% extends "bootstrap/base.html" %}
+{% import "bootstrap/wtf.html" as wtf %}
 {% block styles %}
-{{ super() }}
-<link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
-{% block title %}Link Collector{% endblock %}
-<body>
-    <h1>Link Collector</h1>
-    <div id="content">
-        {% block content %}
-        {% endblock %}
+{% block title %}Link Collector: {% endblock %}
+
+{% block content %}
+  <div id="container">
+    <div class="row">
+      <div class="col-sm-12">
+        <h1>Link Collector</h1>
+      </div>
+      {% include "flashmessages.html" %}
+    <div class="row">
+      <div class="col-sm-4">
+      {% block sidebar %}
+      {% endblock %}
     </div>
-</body>
-</html>
+    <div class="col-sm-8">
+    {% block main %}
+    {% endblock %}
+    </div>
+  </div>
+{% endblock %}

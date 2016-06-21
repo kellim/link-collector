@@ -1,5 +1,6 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}{{ super() }} Delete Link{% endblock %}
+{% block main %}
   <h2>Delete Link: {{ link.name }}</h2>
   <div class="delete">
     <form action="{{ url_for('delete_link', collection=collection.path,

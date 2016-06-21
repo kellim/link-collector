@@ -1,26 +1,18 @@
 {% extends "base.html" %}
-{% block content %}
+{% block title %}{{ super() }} Edit Category{% endblock %}
+{% block main %}
   <h2>Edit Category: {{ category.name }}</h2>
   <div class="edit">
         <form action="{{ url_for('edit_category', collection=collection.path, category=category.path) }}" method = "POST">
           {{ form.csrf_token }}
-          {{ form.name.label }}
-          {% if request.method == 'GET'%}
-            {{ form.name (value = category.name) }}
+          {% if request.method == "GET" %}
+            {{ wtf.form_field(form.name, value = category.name) }}
           {% else %}
-             {{ form.name }}
+            {{ wtf.form_field(form.name) }}
           {% endif %}
-          {% for error in form.name.errors %}
-            <br><span class="field-error">{{ error }}</span>
-          {% endfor %}
-          <br>
-          {{ form.description.label }} {{ form.description (rows = 4) }}
-          {% for error in form.description.errors %}
-            <br><span class="field-error">{{ error }}</span>
-          {% endfor %}
-          <br>
-          <input type="submit" name="submit-btn" value = "Submit">
-          <input type="submit" name="cancel-btn" value = "Cancel">
+          {{ wtf.form_field(form.description, rows=5) }}
+          <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
+          <a class="btn btn-default" href="{{ url_for('show_category_links', collection=collection.path, category=category.path) }}">Cancel</a>
         </form>
     </div>
 {% endblock %}
