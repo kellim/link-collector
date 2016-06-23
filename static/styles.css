@@ -1,23 +1,39 @@
 body {
-  font-family: Verdana, Geneva, sans-serif;
-  max-width: 960px;
+  max-width: 940px;
   margin: auto;
-  font-size: 1.3em;
 }
 
-h1, h2 {
-  font-family: Georgia, Times, "Times New Roman",serif;
+h2 {
+  font-size: 20px;
 }
-
-.message {
-  color: red;
-  font-weight: bold;
-}
-
 li {
   list-style-type: none;
 }
 
+/* navbar */
+.btn-login {
+  margin: 1.75px 30px 0 10px;
+}
+
+/* Main */
+.edit-link,
+.delete-link {
+  font-size: 0.7em;
+}
+
+.flash-messages {
+  max-width: 100%;
+}
+
+.main {
+  padding: 0 0 0 20px;
+}
+
+.main-item {
+  margin: 0 0 10px -40px;
+}
+
+/* Forms */
 .explanation {
   /* Using negative margin to place explanatory text under a form field.
    * Bootstrap adds 15px margin to the bottom of the div containing
@@ -29,7 +45,45 @@ li {
   font-style: italic;
 }
 
-.edit-link,
-.delete-link {
-  font-size: 0.7em;
+/* Sidebar */
+.selected-coll {
+  font-weight: bold;
+}
+
+.selected-cat {
+  font-weight: bold;
+}
+
+.sidebar-list {
+  padding: 0 0 0 15px;
+}
+/* Bootstrap Classes */
+.navbar {
+  margin: 5px 0 0 0;
+}
+
+.panel {
+  margin: 30px 0 0 0;
+}
+
+.panel-body {
+  padding: 10px 10px 10px 0;
+  margin: 0;
+}
+
+
+
+/* Font Awesome Class */
+.fa {
+  padding: 0 0.25em 0 0.2em;
+}
+
+/* Media Queries */
+@media screen and (max-width: 768px) {
+
+/* Bootstrap Class */
+  .nav {
+  margin: 0;
+  }
+
 }

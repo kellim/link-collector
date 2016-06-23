@@ -1,50 +1,23 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} Links{% endblock %}
-
-{% block sidebar %}
-  <div class="sidebar">
-    <h2>Link Categories</h2>
-    <ul>
-    {% if categories.count() > 0 %}
-      {% for cat in categories %}
-      <li class="cat">
-        {% if cat.path != selected_category.path %}
-          <a href="{{ url_for('show_category_links', collection=collection, category=cat.path) }}">{{ cat.name }}</a>
-        {% else %}
-          <li class="cat">{{ cat.name }}
-        {% endif %}
-      </li>
-      {% endfor %}
-    {% endif %}
-      <li>
-        <a href="{{ url_for('new_category', collection=collection, previous_cat = selected_category.path) }}">Add New Category</a>
-      </li>
-    </ul>
-  </div>
-{% endblock %}
-
 {% block main %}
-  <h2>{{ selected_category.name }}</h2>
-  {% if selected_category %}
-    <div class="admin">
-      Make changes to {{ selected_category.name }} Category:
-      <span class="edit-link"><a href="{{ url_for('edit_category', collection=collection, category=selected_category.path) }}">Edit</a></span>
-      <span class="delete-link"><a href="{{ url_for('delete_category', collection=collection, category=selected_category.path) }}">Delete</a></span>
-    </div>
-      <p>{{ selected_category.description }}</p>
+  <h2>{{ selected_cat.name }}
+    <a href="{{ url_for('edit_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Edit Category</span><span class="fa fa-pencil" aria-hidden="true"></a>
+    <a href="{{ url_for('delete_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Delete Category</span><span class="fa fa-trash-o" aria-hidden="true"></a>
+  </h2>
+      <p>{{ selected_cat.description }}</p>
     <div class="links">
       {% if links %}
       <ul>
         {% for link in links %}
-          <li class="link">
+          <li class="link main-item">
             <a href="{{ link.url }}" target="_blank" rel="nofollow">{{ link.name }}</a> - {{ link.description }}
-            <a class="edit-link" href="{{ url_for('edit_link', collection=collection, category=selected_category.path, link_id=link.link_id) }}">Edit</a>
-            <a class="delete-link" href="{{ url_for('delete_link', collection=collection, category=selected_category.path, link_id=link.link_id) }}">Delete</a>
+            <a class="edit-link" href="{{ url_for('edit_link', collection=collection, category=selected_cat.path, link_id=link.link_id) }}">Edit</a>
+            <a class="delete-link" href="{{ url_for('delete_link', collection=collection, category=selected_cat.path, link_id=link.link_id) }}">Delete</a>
           </li>
         {% endfor %}
       </ul>
       {% endif %}
-      <a href="{{ url_for('new_link', collection=collection, category=selected_category.path) }}">Add New Link</a>
+      <a href="{{ url_for('new_link', collection=collection, category=selected_cat.path) }}">Add New Link</a>
     </div>
-  {% endif %}
 {% endblock %}

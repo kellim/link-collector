@@ -2,25 +2,41 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% block styles %}
   {{ super() }}
+  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
+{% block scripts %}
+  {{super()}}
+  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
+{% endblock %}
+
 {% block title %}Link Collector: {% endblock %}
 
 {% block content %}
+
+  <nav class="navbar navbar-default">
+    <div class="navbar-header">
+      <a href="{{ url_for('index') }}" class="navbar-brand">Link Collector</a>
+    </div>
+    <ul class="nav navbar-nav navbar-right">
+    <!-- <li><a href="{{ url_for('index') }}">Home</a></li> -->
+      <li><a href="#">About</a></li>
+      <li><a href="#">Contact</a></li>
+      <li><a href="#">Help</a></li>
+      <li><p class="navbar-btn"><a href="#" class="btn btn-info btn-login">Login</a></p></li>
+    </ul>
+  </nav>
+
   <div id="container">
     <div class="row">
-      <div class="col-sm-12">
-        <h1>Link Collector</h1>
+      <div class="col-sm-8 main">
+        {% include "flashmessages.html" %}
+        {% block main %}
+        {% endblock %}
       </div>
-      {% include "flashmessages.html" %}
-    <div class="row">
       <div class="col-sm-4">
-      {% block sidebar %}
-      {% endblock %}
-    </div>
-    <div class="col-sm-8">
-    {% block main %}
-    {% endblock %}
+        {% include "sidebar.html" %}
+      </div>
     </div>
   </div>
 {% endblock %}

@@ -1,7 +1,7 @@
 from flask_wtf import Form
 from wtforms import StringField, TextAreaField
 from wtforms.validators import (DataRequired, Regexp, ValidationError,
-                                URL)
+                                URL, Length)
 
 
 class EditCollectionForm(Form):
@@ -11,6 +11,7 @@ class EditCollectionForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
+                                Length(min=2, max=30),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
@@ -31,6 +32,7 @@ class NewCollectionForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
+                                Length(min=2, max=30),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
@@ -54,6 +56,7 @@ class EditCategoryForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
+                                Length(min=2, max=30),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
@@ -74,6 +77,7 @@ class NewCategoryForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
+                                Length(min=2, max=30),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))

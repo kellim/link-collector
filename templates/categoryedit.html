@@ -1,18 +1,18 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} Edit Category{% endblock %}
 {% block main %}
-  <h2>Edit Category: {{ category.name }}</h2>
+  <h2>Edit Category: {{ selected_cat.name }}</h2>
   <div class="edit">
-        <form action="{{ url_for('edit_category', collection=collection.path, category=category.path) }}" method = "POST">
+        <form action="{{ url_for('edit_category', collection=selected_coll.path, category=selected_cat.path) }}" method = "POST">
           {{ form.csrf_token }}
           {% if request.method == "GET" %}
-            {{ wtf.form_field(form.name, value = category.name) }}
+            {{ wtf.form_field(form.name, value = selected_cat.name) }}
           {% else %}
             {{ wtf.form_field(form.name) }}
           {% endif %}
           {{ wtf.form_field(form.description, rows=5) }}
           <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
-          <a class="btn btn-default" href="{{ url_for('show_category_links', collection=collection.path, category=category.path) }}">Cancel</a>
+          <a class="btn btn-default" href="{{ url_for('show_category_links', collection=selected_coll.path, category=selected_cat.path) }}">Cancel</a>
         </form>
     </div>
 {% endblock %}

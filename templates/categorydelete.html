@@ -1,13 +1,13 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} Delete Category{% endblock %}
 {% block main %}
-  <h2>Delete Category: {{ category.name }}</h2>
+  <h2>Delete Category: {{ selected_cat.name }}</h2>
   <div class="delete">
-    <form action="{{ url_for('delete_category', collection=collection.path,
-                  category=category.path) }}" method="POST">
-      Are you sure you want to delete {{ category.name }}?<br>
+    <form action="{{ url_for('delete_category', collection=selected_coll.path,
+                  category=selected_cat.path) }}" method="POST">
+      Are you sure you want to delete {{ selected_cat.name }}?<br>
       {% if links.count() >= 1 %}
-        This category has <a href="{{ url_for('show_category_links', collection=collection.path, category=category.path) }}">{{ links.count() }} link{% if links.count() > 1 %}s{% endif %}</a> that will be deleted along with this category.
+        This category has <a href="{{ url_for('show_category_links', collection=selected_coll.path, category=selected_cat.path) }}">{{ links.count() }} link{% if links.count() > 1 %}s{% endif %}</a> that will be deleted along with this category.
       {% endif %}
        This action cannot be undone!<br>
       <input type="submit" name="delete-btn" value = "Delete">

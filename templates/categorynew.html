@@ -1,20 +1,16 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} New Category{% endblock %}
-{% block scripts %}
-  <script src="{{url_for('.static', filename='new-container.js')}}"></script>
-  {{super()}}
-{% endblock %}
 {% block main %}
   <h2>New Category</h2>
   <div class="edit">
-        <form action="{{ url_for('new_category', collection=collection) }}" method="POST">
+        <form action="{{ url_for('new_category', collection=selected_coll) }}" method="POST">
       {{ form.csrf_token }}
       {{ wtf.form_field(form.name) }}
       {{ wtf.form_field(form.path) }}
       <p class="explanation">Path should be a single word (or multiple words separated by hyphens) that will be used in the link to the category's page.</p>
       {{ wtf.form_field(form.description, rows=5) }}
       <input class="btn btn-primary" type="submit" name="submit-btn" value="Submit">
-      <a class="btn btn-default" href="{{ url_for('show_category_links', collection=collection, category = request.args.get('previous_cat')) }}">Cancel</a>
+      <a class="btn btn-default" href="{{ url_for('show_category_links', collection=selected_coll.path, category = request.args.get('previous_cat')) }}">Cancel</a>
         </form>
     </div>
 {% endblock %}

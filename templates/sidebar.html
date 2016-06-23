@@ -1,0 +1,43 @@
+{% if selected_coll %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Collections</h3>
+    </div>
+    <div class="panel-body">
+      <ul class="sidebar-list">
+          <li class="selected-coll">{{ selected_coll.name }}</li>
+        <li><a href="{{ url_for('index') }}">Select Collection</a></li></li>
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
+{% if categories %}
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      <h3 class="panel-title">Categories</h3>
+    </div>
+    <div class="panel-body">
+      <ul class="sidebar-list">
+        {% if categories.count() > 0 %}
+          {% for cat in categories %}
+            {% if cat.path != selected_cat.path %}
+              <li>
+                <a href="{{ url_for('show_category_links', collection=selected_coll.path, category=cat.path) }}">{{ cat.name }}</a>
+              </li>
+            {% else %}
+              <li class="selected-cat">{{ cat.name }}</li>
+            {% endif %}
+          </li>
+          {% endfor %}
+        {% endif %}
+      </ul>
+    </div>
+  </div>
+{% endif %}
+
+
+
+
+
+

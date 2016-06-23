@@ -34,24 +34,24 @@ def link_redirect():
 def show_category_links(collection, category=''):
     """Render the links page for selected collection and category"""
     try:
-        selected_collection = session.query(Collection).filter_by(path = collection).one()
+        selected_coll = session.query(Collection).filter_by(path = collection).one()
     except:
         abort(404)
     # Get the selected category or set a default category if no category in path.
     if len(category) > 0:
         try:
-            selected_category = session.query(Category).filter_by(path = category, coll_id=selected_collection.coll_id).one()
+            selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
         except:
             abort(404)
     else:
-        selected_category = session.query(Category).filter_by(coll_id=selected_collection.coll_id).order_by(Category.cat_id).first()
-    categories = session.query(Category).filter_by(coll_id=selected_collection.coll_id)
+        selected_cat = session.query(Category).filter_by(coll_id=selected_coll.coll_id).order_by(Category.cat_id).first()
+    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     if categories.count() >= 1:
-        links = session.query(Link).filter_by(cat_id=selected_category.cat_id)
+        links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
     else:
         links = None
     return render_template('links.html', categories=categories, collection=collection,
-                           links=links, selected_category=selected_category)
+                           links=links, selected_coll=selected_coll, selected_cat=selected_cat)
 
 
 @app.route('/links/<collection>/edit/', methods=['GET', 'POST'])
@@ -158,10 +158,11 @@ def edit_category(collection, category):
     """Edit a Category"""
     form = forms.EditCategoryForm()
     try:
-        coll = session.query(Collection).filter_by(path=collection).one()
+        selected_coll = session.query(Collection).filter_by(path=collection).one()
         selected_cat = (
-            session.query(Category).filter_by(path=category,
-                                              coll_id=coll.coll_id).one())
+            session.query(Category).filter_by(
+                                        path=category,
+                                        coll_id=selected_coll.coll_id).one())
     except:
         abort(404)
     if request.method == 'POST':
@@ -183,15 +184,17 @@ def edit_category(collection, category):
                 flash('Category has been edited!')
             else:
                 flash('No change was made to Category!')
-            return redirect(url_for('show_category_links', collection=collection, category=selected_cat.path))
-        else:
-            return render_template('categoryedit.html', collection=coll, category=selected_cat, form=form)
+            return redirect(url_for('show_category_links', collection=collection, category=category))
     else:
         # Populate description field from database when method is GET.
         # Description gets updated here since it is a TextArea; name is updated
         # in the template.
         form.description.data = selected_cat.description
-        return render_template('categoryedit.html', collection=coll, category=selected_cat, form=form)
+    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    return render_template('categoryedit.html', selected_coll=selected_coll,
+                                                selected_cat=selected_cat,
+                                                categories=categories,
+                                                form=form)
 
 
 @app.route('/links/<collection>/<category>/delete/', methods=['GET', 'POST'])
@@ -199,7 +202,10 @@ def delete_category(collection, category):
     """Delete a Category"""
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
-        selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
+        selected_cat = (
+            session.query(Category).filter_by(
+                                        path=category,
+                                        coll_id=selected_coll.coll_id).one())
     except:
         abort(404)
     links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
@@ -218,8 +224,13 @@ def delete_category(collection, category):
 
                 flash('Category has been deleted!')
         return redirect(url_for('show_category_links', collection=collection))
-    else:
-        return render_template('categorydelete.html', collection=selected_coll, category=selected_cat, links=links)
+
+    categories = session.query(Category).filter_by(
+                                            coll_id=selected_coll.coll_id)
+    return render_template('categorydelete.html', selected_coll=selected_coll,
+                                                  selected_cat=selected_cat,
+                                                  categories=categories,
+                                                  links=links)
 
 
 @app.route('/links/<collection>/category/new/', methods=['GET', 'POST'])
@@ -257,21 +268,28 @@ def new_category(collection, previous_cat=''):
                     category=new_cat.path))
             else:
                 form.path.errors.append("Path must be unique!")
+    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     return render_template('categorynew.html',
-                                collection=collection,
+                                selected_coll=selected_coll,
                                 previous_cat=previous_cat,
+                                selected_cat=previous_cat,
+                                categories=categories,
                                 form=form)
-
 
 @app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])
 def edit_link(collection, category, link_id):
     """Edit a Link"""
     form = forms.EditLinkForm()
     try:
-        coll = session.query(Collection).filter_by(path=collection).one()
-        cat = session.query(Category).filter_by(path=category,
-                                                coll_id=coll.coll_id).one()
-        selected_link = session.query(Link).filter_by(link_id=link_id, cat_id=cat.cat_id).one()
+        selected_coll = session.query(Collection).filter_by(
+                                                    path=collection).one()
+        selected_cat = (
+            session.query(Category).filter_by(
+                                        path=category,
+                                        coll_id=selected_coll.coll_id).one())
+        selected_link = (
+            session.query(Link).filter_by(link_id=link_id,
+                                          cat_id=selected_cat.cat_id).one())
     except:
         abort(404)
     if request.method == 'POST':
@@ -297,22 +315,30 @@ def edit_link(collection, category, link_id):
                 flash('Link has been edited!')
             else:
                 flash('No change was made to Link!')
-            return redirect(url_for('show_category_links', collection=collection, category=cat.path))
-        else:
-            return render_template('linkedit.html', collection=collection, category=category, link=selected_link, form=form)
+            return redirect(url_for('show_category_links', collection=collection, category=category))
     else:
-        # Populate description field from database when method is GET.
-        # Description gets updated here since it is a TextArea; name is updated
-        # in the template.
+    # Populate description field from database when method is GET.
+    # Description gets updated here since it is a TextArea; name is updated
+    # in the template.
         form.description.data = selected_link.description
-        return render_template('linkedit.html', collection=collection, category=category, link=selected_link, form=form)
+    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    return render_template('linkedit.html', selected_link=selected_link,
+                                            selected_cat=selected_cat,
+                                            selected_coll=selected_coll,
+                                            categories=categories,
+                                            form=form)
+
 
 @app.route('/links/<collection>/<category>/<link_id>/delete/', methods=['GET', 'POST'])
 def delete_link(collection, category, link_id):
     """Delete a Link"""
     try:
-        coll = session.query(Collection).filter_by(path=collection).one()
-        cat = session.query(Category).filter_by(path=category, coll_id=coll.coll_id).one()
+        selected_coll = session.query(Collection).filter_by(
+                                                    path=collection).one()
+        selected_cat = (
+            session.query(Category).filter_by(
+                                       path=category,
+                                       coll_id=selected_coll.coll_id).one())
         selected_link = session.query(Link).filter_by(link_id=link_id).one()
     except:
         abort(404)
@@ -323,9 +349,14 @@ def delete_link(collection, category, link_id):
             session.delete(selected_link)
             session.commit()
             flash('Link has been deleted!')
-        return redirect(url_for('show_category_links', collection=collection, category=category))
-    else:
-        return render_template('linkdelete.html', collection=coll, category=cat, link=selected_link)
+        return redirect(url_for('show_category_links', collection=collection,
+                                                       category=category))
+
+    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    return render_template('linkdelete.html', selected_coll=selected_coll,
+                                              selected_cat=selected_cat,
+                                              selected_link=selected_link,
+                                              categories=categories)
 
 
 @app.route('/links/<collection>/<category>/link/new/', methods=['GET', 'POST'])
@@ -333,8 +364,12 @@ def new_link(collection, category):
     """Add a New Link"""
     form = forms.NewLinkForm()
     try:
-        coll = session.query(Collection).filter_by(path=collection).one()
-        cat = session.query(Category).filter_by(path=category, coll_id = coll.coll_id).one()
+        selected_coll = session.query(Collection).filter_by(
+                                                    path=collection).one()
+        selected_cat = (
+            session.query(Category).filter_by(
+                                        path=category,
+                                        coll_id = selected_coll.coll_id).one())
     except:
         abort(404)
     if request.method == 'POST':
@@ -342,8 +377,8 @@ def new_link(collection, category):
                        url = request.form['url'],
                        description = request.form['description'],
                        submitter = 'example@example.com', # WILL CHANGE WHEN AUTH IMPLEMENTED
-                       cat_id = cat.cat_id,
-                       coll_id = coll.coll_id)
+                       cat_id = selected_cat.cat_id,
+                       coll_id = selected_coll.coll_id)
         if form.validate_on_submit():
             session.add(new_link)
             session.commit()
@@ -351,9 +386,13 @@ def new_link(collection, category):
             return redirect(url_for('show_category_links',
                                       collection=collection,
                                       category=category))
+    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     return render_template('linknew.html',
                             collection=collection,
                             category=category,
+                            selected_coll=selected_coll,
+                            selected_cat=selected_cat,
+                            categories=categories,
                             form=form)
 
 

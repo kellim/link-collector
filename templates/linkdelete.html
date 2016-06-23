@@ -1,11 +1,11 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} Delete Link{% endblock %}
 {% block main %}
-  <h2>Delete Link: {{ link.name }}</h2>
+  <h2>Delete Link: {{ selected_link.name }}</h2>
   <div class="delete">
-    <form action="{{ url_for('delete_link', collection=collection.path,
-                  category=category.path, link_id=link.link_id) }}" method="POST">
-      Are you sure you want to delete {{ link.name }} ({{ link.url }})?<br>
+    <form action="{{ url_for('delete_link', collection=selected_coll.path,
+                  category=selected_cat.path, link_id=selected_link.link_id) }}" method="POST">
+      Are you sure you want to delete {{ selected_link.name }} ({{ selected_link.url }})?<br>
       This action cannot be undone!<br>
       <input type="submit" name="delete-btn" value = "Delete">
       <input type="submit" name="cancel-btn" value = "Cancel"></p>
