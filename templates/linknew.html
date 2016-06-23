@@ -3,8 +3,7 @@
 {% block main %}
   <h2>Add Link</h2>
   <div class="edit">
-  <div class="edit">
-    <form action="{{ url_for('new_link', collection=collection, category=category) }}" method = "POST">
+    <form action="{{ url_for('new_link', collection=collection, category=category, selected_coll=selected_coll, selected_cat=selected_cat) }}" method = "POST">
       {{ form.csrf_token }}
       {{ wtf.form_field(form.name) }}
       {{ wtf.form_field(form.url) }}
@@ -13,6 +12,5 @@
       <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
       <a class="btn btn-default" href="{{ url_for('show_category_links', collection=collection, category=category) }}">Cancel</a>
         </form>
-    </div>
-    </div>
+  </div>
 {% endblock %}
