@@ -3,14 +3,22 @@
 {% block main %}
   <h2>New Category</h2>
   <div class="edit">
-        <form action="{{ url_for('new_category', collection=selected_coll) }}" method="POST">
+        <form class="form-horizontal" action="{{ url_for('new_category', collection=selected_coll) }}" method="POST">
       {{ form.csrf_token }}
-      {{ wtf.form_field(form.name) }}
-      {{ wtf.form_field(form.path) }}
-      <p class="explanation">Path should be a single word (or multiple words separated by hyphens) that will be used in the link to the category's page.</p>
-      {{ wtf.form_field(form.description, rows=5) }}
-      <input class="btn btn-primary" type="submit" name="submit-btn" value="Submit">
-      <a class="btn btn-default" href="{{ url_for('show_category_links', collection=selected_coll.path, category = request.args.get('previous_cat')) }}">Cancel</a>
+      <div>
+        {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
+      </div>
+      <div>
+        {{ wtf.form_field(form.path, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
+        <p class="help-block col-sm-offset-2 col-sm-10">Path should be a single word (or multiple words separated by hyphens) that will be used in the link to the category's page.</p>
+      </div>
+      <div>
+        {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
+      </div>
+      <div class="col-sm-offset-2 col-sm-10 form-buttons">
+        <input class="btn btn-primary" type="submit" name="submit-btn" value="Submit">
+        <a class="btn btn-default" href="{{ url_for('show_category_links', collection=selected_coll.path, category = request.args.get('previous_cat')) }}">Cancel</a>
+      </div>
         </form>
     </div>
 {% endblock %}
