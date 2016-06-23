@@ -6,6 +6,7 @@ body {
 h2 {
   font-size: 20px;
 }
+
 li {
   list-style-type: none;
 }
@@ -34,15 +35,9 @@ li {
 }
 
 /* Forms */
-.explanation {
-  /* Using negative margin to place explanatory text under a form field.
-   * Bootstrap adds 15px margin to the bottom of the div containing
-   * each form field.
-   */
-  margin-top: -14px;
-  font-size: .9em;
-  color: #a9a9a9;
-  font-style: italic;
+
+.form-buttons {
+  padding: 0 0 0 5px;
 }
 
 /* Sidebar */
@@ -57,6 +52,7 @@ li {
 .sidebar-list {
   padding: 0 0 0 15px;
 }
+
 /* Bootstrap Classes */
 .navbar {
   margin: 5px 0 0 0;
@@ -71,7 +67,17 @@ li {
   margin: 0;
 }
 
+.control-label {
+  padding: 0;
+}
 
+.help-block {
+  color: #a9a9a9;
+  font-size: 0.9em;
+  font-style: italic;
+  margin-top: -14px; /* shorthand would interfere with margins on Bootstrap columns */
+  padding: 0 0 0 5px;
+}
 
 /* Font Awesome Class */
 .fa {
@@ -80,6 +86,14 @@ li {
 
 /* Media Queries */
 @media screen and (max-width: 768px) {
+
+  body {
+    padding: 0 0.5em 0.5em 0.5em;
+  }
+
+  .main {
+    padding: 0 1em;
+  }
 
 /* Bootstrap Class */
   .nav {
