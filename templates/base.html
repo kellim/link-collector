@@ -5,15 +5,8 @@
   <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
-{% block scripts %}
-  {{super()}}
-  <script src="{{ url_for('static', filename='scripts.js') }}"></script>
-{% endblock %}
-
 {% block title %}Link Collector: {% endblock %}
-
 {% block content %}
-
   <nav class="navbar navbar-default">
     <div class="navbar-header">
       <a href="{{ url_for('index') }}" class="navbar-brand">Link Collector</a>
