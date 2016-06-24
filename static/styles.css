@@ -27,7 +27,7 @@ li {
 }
 
 .main {
-  padding: 0 0 0 20px;
+  padding: 0 0 0 30px;
 }
 
 .main-item {
@@ -72,11 +72,7 @@ li {
 }
 
 .help-block {
-  color: #a9a9a9;
-  font-size: 0.85em;
-  font-style: italic;
-  margin-top: -14px; /* shorthand would interfere with margins on Bootstrap columns */
-  padding: 0 0 0 5px;
+  margin-bottom: 0;
 }
 
 /* Font Awesome Class */

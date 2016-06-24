@@ -29,6 +29,10 @@ class NewCollectionForm(Form):
 
     path_input_error = ('Invalid input. The only allowed characters for '
                         'path are letters and numbers.')
+
+    path_desc = ('Path should be a single word (or multiple words separated '
+                 'by hyphens) that will be used in the link to the '
+                 'collection\'s page.')
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
@@ -37,9 +41,11 @@ class NewCollectionForm(Form):
                                        message=input_error)
                                 ]))
     path = StringField('Path: ',
+                        description=path_desc,
                         validators = [DataRequired(),
-                                     Regexp(regex=r'^[a-zA-Z0-9]+$',
-                                            message=path_input_error)
+                                     Regexp(regex=r'^[a-zA-Z0-9\-]+$',
+                                            message=path_input_error +
+                                                    ' ' + path_desc)
                                      ])
     description = (
         TextAreaField('Description: ',
@@ -48,6 +54,7 @@ class NewCollectionForm(Form):
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
                                  ]))
+
 
 class EditCategoryForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
@@ -74,6 +81,10 @@ class NewCategoryForm(Form):
 
     path_input_error = ('Invalid input. The only allowed characters for '
                         'path are letters and numbers.')
+
+    path_desc = ('Path should be a single word (or multiple words separated '
+                 'by hyphens) that will be used in the link to the '
+                 'collection\'s page.')
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
@@ -82,9 +93,11 @@ class NewCategoryForm(Form):
                                        message=input_error)
                                 ]))
     path = StringField('Path: ',
+                        description=path_desc,
                         validators = [DataRequired(),
                                      Regexp(regex=r'^[a-zA-Z0-9]+$',
-                                            message=path_input_error)
+                                            message=path_input_error + ' ' +
+                                                    path_desc)
                                      ])
     description = (
         TextAreaField('Description: ',
@@ -99,8 +112,9 @@ class EditLinkForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
                    'try again.')
 
-    url_input_error = ('Invalid URL entered. Make sure URL starts '
-                       'with http:// or https://')
+    url_input_error = ('Invalid URL entered.')
+
+    url_desc = 'The URL should be a link formatted like http://www.example.com'
 
     name = (
         StringField('Name: ',
@@ -109,9 +123,11 @@ class EditLinkForm(Form):
                                        message=input_error)
                                 ]))
     url = StringField('URL: ',
+                        description = url_desc,
                         validators = [DataRequired(),
                                       URL(require_tld=True,
-                                          message=url_input_error)
+                                          message=url_input_error + ' ' +
+                                                  url_desc)
                                      ])
     description = (
         TextAreaField('Description: ',
@@ -124,9 +140,9 @@ class NewLinkForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
                    'try again.')
 
-    url_input_error = ('Invalid URL entered. Make sure URL starts '
-                       'with http:// or https://')
+    url_input_error = ('Invalid URL entered.')
 
+    url_desc = 'The URL should be a link formatted like http://www.example.com'
 
     name = (
         StringField('Name: ',
@@ -135,9 +151,11 @@ class NewLinkForm(Form):
                                        message=input_error)
                                 ]))
     url = StringField('URL: ',
+                        description = url_desc,
                         validators = [DataRequired(),
                                       URL(require_tld=True,
-                                          message=url_input_error)
+                                          message=url_input_error + ' ' +
+                                                  url_desc)
                                      ])
     description = (
         TextAreaField('Description: ',
