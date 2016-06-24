@@ -83,13 +83,13 @@ def edit_collection(collection):
                 flash('No change was made to collection!')
             return redirect(url_for('index'))
         else:
-            return render_template('collectionedit.html', collection=selected_coll, form=form)
+            return render_template('collectionedit.html', selected_coll=selected_coll, form=form)
     else:
         # Populate description field from database when method is GET.
         # Description gets updated here since it is a TextArea; name is updated
         # in the template.
         form.description.data = selected_coll.description
-        return render_template('collectionedit.html', collection=selected_coll, form=form)
+        return render_template('collectionedit.html', selected_coll=selected_coll, form=form)
 
 
 @app.route('/links/<collection>/delete/', methods=['GET', 'POST'])
