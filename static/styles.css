@@ -95,6 +95,9 @@ li {
     padding: 0 1em;
   }
 
+form {
+  padding: 0 0 0 1em;
+}
 /* Bootstrap Class */
   .nav {
   margin: 0;
