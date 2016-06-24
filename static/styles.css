@@ -34,6 +34,9 @@ li {
   margin: 0 0 10px -40px;
 }
 
+.btn-add {
+  margin: 1em 0;
+}
 /* Forms */
 
 .form-buttons {
