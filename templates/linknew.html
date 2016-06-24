@@ -7,7 +7,6 @@
       {{ form.csrf_token }}
       {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
       {{ wtf.form_field(form.url, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
-      <p class="help-block col-sm-offset-2 col-sm-10">The URL must be a link formatted like http://www.example.com or https://www.example.com</p>
       {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
       <div class="col-sm-offset-2 col-sm-10 form-buttons">
         <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
