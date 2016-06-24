@@ -17,7 +17,7 @@
             </h2>
             {{ coll.description }}
           </div>
-      {% if count % 2 == 0 %}
+      {% if count % 2 == 0 or count == collections.count() %}
         </div>
       {% endif %}
         {% set count = count + 1 %}
