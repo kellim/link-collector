@@ -317,9 +317,9 @@ def edit_link(collection, category, link_id):
                 flash('No change was made to Link!')
             return redirect(url_for('show_category_links', collection=collection, category=category))
     else:
-    # Populate description field from database when method is GET.
-    # Description gets updated here since it is a TextArea; name is updated
-    # in the template.
+        # Populate description field from database when method is GET.
+        # Description gets updated here since it is a TextArea;
+        # name and url are updated in the template.
         form.description.data = selected_link.description
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     return render_template('linkedit.html', selected_link=selected_link,
