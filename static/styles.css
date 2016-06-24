@@ -37,6 +37,11 @@ li {
 .btn-add {
   margin: 1em 0;
 }
+
+.coll {
+  padding: 0px 30px;
+}
+
 /* Forms */
 
 .form-buttons {
