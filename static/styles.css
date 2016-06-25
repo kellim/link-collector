@@ -17,11 +17,6 @@ li {
 }
 
 /* Main */
-.edit-link,
-.delete-link {
-  font-size: 0.7em;
-}
-
 .flash-messages {
   max-width: 100%;
 }
@@ -39,7 +34,11 @@ li {
 }
 
 .coll {
-  padding: 0px 30px;
+  padding: 0px 20px;
+}
+
+.page-title {
+
 }
 
 /* Forms */
@@ -58,7 +57,8 @@ li {
 }
 
 .sidebar-list {
-  padding: 0 0 0 15px;
+  padding: 0;
+  margin: 0;
 }
 
 /* Bootstrap Classes */
@@ -68,11 +68,6 @@ li {
 
 .panel {
   margin: 30px 0 0 0;
-}
-
-.panel-body {
-  padding: 10px 10px 10px 0;
-  margin: 0;
 }
 
 .control-label {
