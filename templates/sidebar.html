@@ -19,7 +19,7 @@
 {% endif %}
 
 <!-- Show Categories sidebar panel if there are any Categories -->
-{% if categories %}
+{% if categories.count() >= 1 %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Categories</h3>
