@@ -41,6 +41,10 @@ li {
 
 }
 
+.update {
+  padding: 0 0.25em 0 0.2em;
+}
+
 /* Forms */
 
 .form-buttons {
@@ -61,6 +65,10 @@ li {
   margin: 0;
 }
 
+.unselected-cat {
+  padding: 0 0 0 12px;
+}
+
 /* Bootstrap Classes */
 .navbar {
   margin: 5px 0 0 0;
@@ -78,10 +86,6 @@ li {
   margin-bottom: 0;
 }
 
-/* Font Awesome Class */
-.fa {
-  padding: 0 0.25em 0 0.2em;
-}
 
 /* Media Queries */
 @media screen and (max-width: 768px) {
