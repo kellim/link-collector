@@ -19,28 +19,31 @@
 {% endif %}
 
 <!-- Show Categories sidebar panel if there are any Categories -->
-{% if categories.count() >= 1 %}
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      <h3 class="panel-title">Categories</h3>
+{% if categories %}
+  {% if categories.count() >= 1 %}
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        <h3 class="panel-title">Categories</h3>
+      </div>
+      <div class="panel-body">
+        <ul class="sidebar-list">
+            {% for cat in categories %}
+              {% if cat.path != selected_cat.path %}
+                <li class="unselected-cat">
+                  <a href="{{ url_for('show_category_links', collection=selected_coll.path, category=cat.path) }}">{{ cat.name }}</a>
+                </li>
+              {% else %}
+                <li class="selected-cat">
+                  <span class="sr-only">Current Category</span>
+                  <span class="fa fa-angle-double-right" aria-hidden="true"></span>
+                  {{ cat.name }}
+                </li>
+              {% endif %}
+            {% endfor %}
+        </ul>
+      </div>
     </div>
-    <div class="panel-body">
-      <ul class="sidebar-list">
-        {% if categories.count() > 0 %}
-          {% for cat in categories %}
-            {% if cat.path != selected_cat.path %}
-              <li>
-                <a href="{{ url_for('show_category_links', collection=selected_coll.path, category=cat.path) }}">{{ cat.name }}</a>
-              </li>
-            {% else %}
-              <li class="selected-cat">{{ cat.name }}</li>
-            {% endif %}
-          </li>
-          {% endfor %}
-        {% endif %}
-      </ul>
-    </div>
-  </div>
+  {% endif %}
 {% endif %}
 
 

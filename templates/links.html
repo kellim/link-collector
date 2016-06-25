@@ -3,8 +3,8 @@
 {% block main %}
   {% if selected_cat %}
   <h2>{{ selected_cat.name }}
-    <a href="{{ url_for('edit_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Edit Category</span><span class="fa fa-pencil" aria-hidden="true"></a>
-    <a href="{{ url_for('delete_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Delete Category</span><span class="fa fa-trash-o" aria-hidden="true"></a>
+    <a href="{{ url_for('edit_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Edit Category</span><span class="fa fa-pencil update" aria-hidden="true"></a>
+    <a href="{{ url_for('delete_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Delete Category</span><span class="fa fa-trash-o update" aria-hidden="true"></a>
   </h2>
   {% else %}
     <p class="lead text-center">There are currently no categories for this collection.</p>
