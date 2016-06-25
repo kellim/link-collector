@@ -1,23 +1,24 @@
+<!-- Show Collections sidebar panel if there are any Collections -->
+{% if collections.count() >= 1 %}
   <div class="panel panel-default">
     <div class="panel-heading">
-      <h3 class="panel-title">Collections</h3>
+      <h3 class="panel-title">Select Collection</h3>
     </div>
     <div class="panel-body">
-    {% if collections.count() >= 1 %}
       <form id="frm-select-coll" action="{{ url_for('select_collection') }}" method="POST">
       <select id="select-coll" name="select-coll" class="form-control">
         {% for coll in collections %}
-            <option value="{{ coll.path }}"
-                           {% if coll == selected_coll %}selected="selected"{% endif %}>{{ coll.name }}
-             </option>
+          <option value="{{ coll.path }}"
+                  {% if coll == selected_coll %}selected="selected"{% endif %}>{{ coll.name }}
+          </option>
         {% endfor %}
-    {% endif %}
       </select>
       </form>
     </div>
   </div>
+{% endif %}
 
-
+<!-- Show Categories sidebar panel if there are any Categories -->
 {% if categories %}
   <div class="panel panel-default">
     <div class="panel-heading">
