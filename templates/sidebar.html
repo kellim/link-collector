@@ -1,16 +1,22 @@
-{% if selected_coll %}
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Collections</h3>
     </div>
     <div class="panel-body">
-      <ul class="sidebar-list">
-          <li class="selected-coll">{{ selected_coll.name }}</li>
-        <li><a href="{{ url_for('index') }}">Select Collection</a></li></li>
-      </ul>
+    {% if collections.count() >= 1 %}
+      <form id="frm-select-coll" action="{{ url_for('select_collection') }}" method="POST">
+      <select id="select-coll" name="select-coll" class="form-control">
+        {% for coll in collections %}
+            <option value="{{ coll.path }}"
+                           {% if coll == selected_coll %}selected="selected"{% endif %}>{{ coll.name }}
+             </option>
+        {% endfor %}
+    {% endif %}
+      </select>
+      </form>
     </div>
   </div>
-{% endif %}
+
 
 {% if categories %}
   <div class="panel panel-default">

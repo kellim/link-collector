@@ -24,10 +24,22 @@ def index():
     collections = session.query(Collection)
     return render_template('index.html', collections=collections)
 
+
 @app.route('/links/')
 def link_redirect():
     """Redirect to index page"""
     return redirect(url_for('index'))
+
+
+@app.route('/links/collection/select/', methods=['GET', 'POST'])
+def select_collection():
+    """Redirect to show_category_links based on collection selected
+        in dropwdown"""
+    selected_coll_path = request.form['select-coll']
+    print "in select_collection " + selected_coll_path
+    return redirect(url_for('show_category_links',
+                             collection=selected_coll_path))
+
 
 @app.route('/links/<collection>/')
 @app.route('/links/<collection>/<category>/')
@@ -50,14 +62,20 @@ def show_category_links(collection, category=''):
         links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
     else:
         links = None
-    return render_template('links.html', categories=categories, collection=collection,
-                           links=links, selected_coll=selected_coll, selected_cat=selected_cat)
+    collections = session.query(Collection) # Needed for sidebar
+    return render_template('links.html', categories=categories,
+                                         collection=collection,
+                                         links=links,
+                                         selected_coll=selected_coll,
+                                         selected_cat=selected_cat,
+                                         collections=collections)
 
 
 @app.route('/links/<collection>/edit/', methods=['GET', 'POST'])
 def edit_collection(collection):
     """Edit a Link Collection"""
     form = forms.EditCollectionForm()
+    collections = session.query(Collection) # Needed for sidebar
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
     except:
@@ -83,13 +101,19 @@ def edit_collection(collection):
                 flash('No change was made to collection!')
             return redirect(url_for('index'))
         else:
-            return render_template('collectionedit.html', selected_coll=selected_coll, form=form)
+            return render_template('collectionedit.html',
+                                    selected_coll=selected_coll,
+                                    form=form,
+                                    collections=collections)
     else:
         # Populate description field from database when method is GET.
         # Description gets updated here since it is a TextArea; name is updated
         # in the template.
         form.description.data = selected_coll.description
-        return render_template('collectionedit.html', selected_coll=selected_coll, form=form)
+        return render_template('collectionedit.html',
+                                selected_coll=selected_coll,
+                                collections=collections,
+                                form=form)
 
 
 @app.route('/links/<collection>/delete/', methods=['GET', 'POST'])
@@ -120,7 +144,11 @@ def delete_collection(collection):
                 flash('Collection has been deleted!')
         return redirect(url_for('index'))
     else:
-        return render_template('collectiondelete.html', collection=selected_coll, cats=cats)
+        collections = session.query(Collection) # Needed for sidebar
+        return render_template('collectiondelete.html',
+                                collection=selected_coll,
+                                cats=cats,
+                                collections=collections)
 
 
 @app.route('/links/collection/new/', methods=['GET', 'POST'])
@@ -148,9 +176,10 @@ def new_collection():
                 return redirect(url_for('index'))
             else:
                 form.path.errors.append("Path must be unique!")
-        return render_template('collectionnew.html', form=form)
-    else:
-        return render_template('collectionnew.html', form=form)
+    collections = session.query(Collection) # Needed for sidebar
+    return render_template('collectionnew.html',
+                            form=form,
+                            collections=collections)
 
 
 @app.route('/links/<collection>/<category>/edit/', methods=['GET', 'POST'])
@@ -190,10 +219,14 @@ def edit_category(collection, category):
         # Description gets updated here since it is a TextArea; name is updated
         # in the template.
         form.description.data = selected_cat.description
-    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    # Both collections and categories are needed for sidebar
+    categories = (
+        session.query(Category).filter_by(coll_id=selected_coll.coll_id))
+    collections = session.query(Collection)
     return render_template('categoryedit.html', selected_coll=selected_coll,
                                                 selected_cat=selected_cat,
                                                 categories=categories,
+                                                collections=collections,
                                                 form=form)
 
 
@@ -224,13 +257,15 @@ def delete_category(collection, category):
 
                 flash('Category has been deleted!')
         return redirect(url_for('show_category_links', collection=collection))
-
+    # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(
                                             coll_id=selected_coll.coll_id)
+    collections = session.query(Collection)
     return render_template('categorydelete.html', selected_coll=selected_coll,
                                                   selected_cat=selected_cat,
                                                   categories=categories,
-                                                  links=links)
+                                                  links=links,
+                                                  collections=collections)
 
 
 @app.route('/links/<collection>/category/new/', methods=['GET', 'POST'])
@@ -268,13 +303,17 @@ def new_category(collection, previous_cat=''):
                     category=new_cat.path))
             else:
                 form.path.errors.append("Path must be unique!")
+    # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    collections = session.query(Collection)
     return render_template('categorynew.html',
                                 selected_coll=selected_coll,
                                 previous_cat=previous_cat,
                                 selected_cat=previous_cat,
                                 categories=categories,
+                                collections=collections,
                                 form=form)
+
 
 @app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])
 def edit_link(collection, category, link_id):
@@ -321,11 +360,14 @@ def edit_link(collection, category, link_id):
         # Description gets updated here since it is a TextArea;
         # name and url are updated in the template.
         form.description.data = selected_link.description
+    # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    collections = session.query(Collection)
     return render_template('linkedit.html', selected_link=selected_link,
                                             selected_cat=selected_cat,
                                             selected_coll=selected_coll,
                                             categories=categories,
+                                            collections=collections,
                                             form=form)
 
 
@@ -351,12 +393,14 @@ def delete_link(collection, category, link_id):
             flash('Link has been deleted!')
         return redirect(url_for('show_category_links', collection=collection,
                                                        category=category))
-
+    # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    collections = session.query(Collection)
     return render_template('linkdelete.html', selected_coll=selected_coll,
                                               selected_cat=selected_cat,
                                               selected_link=selected_link,
-                                              categories=categories)
+                                              categories=categories,
+                                              collections=collections)
 
 
 @app.route('/links/<collection>/<category>/link/new/', methods=['GET', 'POST'])
@@ -386,13 +430,16 @@ def new_link(collection, category):
             return redirect(url_for('show_category_links',
                                       collection=collection,
                                       category=category))
+    # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    collections = session.query(Collection)
     return render_template('linknew.html',
                             collection=collection,
                             category=category,
                             selected_coll=selected_coll,
                             selected_cat=selected_cat,
                             categories=categories,
+                            collections=collections,
                             form=form)
 
 
