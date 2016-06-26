@@ -96,9 +96,9 @@ def edit_collection(collection):
                     selected_coll.description = coll_desc
                 session.add(selected_coll)
                 session.commit()
-                flash('Collection has been edited!')
+                flash('Collection has been edited!', 'success')
             else:
-                flash('No change was made to collection!')
+                flash('No change was made to collection!', 'warning')
             return redirect(url_for('index'))
         else:
             return render_template('collectionedit.html',
@@ -141,7 +141,7 @@ def delete_collection(collection):
 
                 session.delete(selected_coll)
                 session.commit()
-                flash('Collection has been deleted!')
+                flash('Collection has been deleted!', 'success')
         return redirect(url_for('index'))
     else:
         collections = session.query(Collection) # Needed for sidebar
@@ -172,10 +172,10 @@ def new_collection():
             if path != new_coll.path:
                 session.add(new_coll)
                 session.commit()
-                flash("New collection created!")
+                flash('New collection created!', 'success')
                 return redirect(url_for('index'))
             else:
-                form.path.errors.append("Path must be unique!")
+                form.path.errors.append('Path must be unique!')
     collections = session.query(Collection) # Needed for sidebar
     return render_template('collectionnew.html',
                             form=form,
@@ -210,9 +210,9 @@ def edit_category(collection, category):
                     selected_cat.description = cat_desc
                 session.add(selected_cat)
                 session.commit()
-                flash('Category has been edited!')
+                flash('Category has been edited!', 'success')
             else:
-                flash('No change was made to Category!')
+                flash('No change was made to Category!', 'warning')
             return redirect(url_for('show_category_links', collection=collection, category=category))
     else:
         # Populate description field from database when method is GET.
@@ -255,7 +255,7 @@ def delete_category(collection, category):
                 session.delete(selected_cat)
                 session.commit()
 
-                flash('Category has been deleted!')
+                flash('Category has been deleted!', 'success')
         return redirect(url_for('show_category_links', collection=collection))
     # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(
@@ -297,7 +297,7 @@ def new_category(collection, previous_cat=''):
             if new_cat.path != path:
                 session.add(new_cat)
                 session.commit()
-                flash("New category created!")
+                flash('New category created!', 'success')
                 return redirect(url_for('show_category_links',
                     collection=collection,
                     category=new_cat.path))
@@ -351,9 +351,9 @@ def edit_link(collection, category, link_id):
                     selected_link.description = link_desc
                 session.add(selected_link)
                 session.commit()
-                flash('Link has been edited!')
+                flash('Link has been edited!', 'success')
             else:
-                flash('No change was made to Link!')
+                flash('No change was made to Link!', 'warning')
             return redirect(url_for('show_category_links', collection=collection, category=category))
     else:
         # Populate description field from database when method is GET.
@@ -390,7 +390,7 @@ def delete_link(collection, category, link_id):
         else:
             session.delete(selected_link)
             session.commit()
-            flash('Link has been deleted!')
+            flash('Link has been deleted!', 'success')
         return redirect(url_for('show_category_links', collection=collection,
                                                        category=category))
     # Both categories and collections are needed for sidebar
@@ -426,7 +426,7 @@ def new_link(collection, category):
         if form.validate_on_submit():
             session.add(new_link)
             session.commit()
-            flash("New link added!")
+            flash('New link added!', 'success')
             return redirect(url_for('show_category_links',
                                       collection=collection,
                                       category=category))
