@@ -1,22 +1,24 @@
-{% extends "base.html" %}
-{% block title %}{{ super() }} Delete collection{% endblock %}
-{% block main %}
-  <h2>Delete Collection: {{ collection.name }}</h2>
-  <div class="delete">
-    <form action="{{ url_for('delete_collection', collection=collection.path) }}" method="POST">
-      Are you sure you want to delete {{ collection.name }}?<br>
-      {% if cats.count() >= 1 %}
-        All of the categories that are a part of this collection and their links will also be deleted:
-        <ul>
-        {% for cat in cats %}
-          <li><a href="{{ url_for('show_category_links', collection=collection.path, category=cat.path) }}">{{ cat.name }}</a></li>
-        {% endfor %}
-        </ul>
-      {% endif %}
-       This action cannot be undone!<br>
-
-      <input type="submit" name="delete-btn" value = "Delete">
-      <input type="submit" name="cancel-btn" value = "Cancel"></p>
-    </form>
+  <!-- Collection Delete Modal -->
+  <div class="modal fade" id="collectiondelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel2" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h3 class="modal-title" id="myModalLabel2">Delete Collection: {{ selected_coll.name }}</h3>
+        </div>
+        <div class="modal-body">
+            <p class="delete-warning"><strong>Are you sure you want to delete the collection {{ selected_coll.name }}?</strong></p>
+            {% if cats and cats.count() >= 1 %}
+              <p> This collection has {{ cats.count() }} {% if cats.count() > 1 %} categories {% else %} category {% endif %}
+              that will be also deleted, along with any associated links.</p>
+            {% endif %}
+            <p>This action cannot be undone!</p>
+        </div>
+        <div class="modal-footer">
+          <form class="form-delete" action="{{ url_for('delete_collection', collection=selected_coll.path) }}" method="POST">
+            <button class="btn btn-danger" type="submit" name="delete-btn">Delete</button>
+          </form>
+          <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+        </div>
+      </div>
+    </div>
   </div>
-{% endblock %}

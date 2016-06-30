@@ -1,14 +1,22 @@
-{% extends "base.html" %}
-{% block title %}{{ super() }} Delete Link{% endblock %}
-{% block main %}
-  <h2>Delete Link: {{ selected_link.name }}</h2>
-  <div class="delete">
-    <form action="{{ url_for('delete_link', collection=selected_coll.path,
+<!-- Link Delete Modal -->
+<div class="modal fade" id="linkdelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel3" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="myModalLabel3">Delete link: {{ selected_link.name }}</h3>
+      </div>
+      <div class="modal-body">
+          <p class="delete-warning"><strong>Are you sure you want to delete the link {{ selected_link.name }}?</strong></p>
+          <p><em>The URL for this link is {{ selected_link.url }}</em>
+          <p>This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <form class="form-delete" action="{{ url_for('delete_link', collection=selected_coll.path,
                   category=selected_cat.path, link_id=selected_link.link_id) }}" method="POST">
-      Are you sure you want to delete {{ selected_link.name }} ({{ selected_link.url }})?<br>
-      This action cannot be undone!<br>
-      <input type="submit" name="delete-btn" value = "Delete">
-      <input type="submit" name="cancel-btn" value = "Cancel"></p>
-    </form>
+            <button class="btn btn-danger" type="submit" name="delete-btn">Delete</button>
+        </form>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
   </div>
-{% endblock %}
+</div>

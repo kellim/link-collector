@@ -1,7 +1,10 @@
 body {
   max-width: 940px;
   margin: auto;
+  /* Fix for page shifting when modal is open */
+  padding-right: 0 !important;
 }
+
 
 h2 {
   font-size: 20px;
@@ -9,6 +12,20 @@ h2 {
 
 li {
   list-style-type: none;
+}
+
+/* Removes the blue border around delete (trash icon) link after
+ * clicking cancel button on modal */
+a:active,
+a:focus {
+  outline: none;
+}
+
+
+/* Removes the blue border around buttons in modal after
+ * the buttons are clicked */
+button:focus {
+ outline:0 !important;
 }
 
 /* navbar */
@@ -46,6 +63,10 @@ li {
 
 .form-buttons {
   padding: 0 0 0 5px;
+}
+
+.form-delete {
+  display: inline;
 }
 
 /* Sidebar */
@@ -88,6 +109,8 @@ li {
   margin: 1em 0 -20px -30px;
   font-weight: bold;
 }
+
+/* Fix for opening modal causing page to shift */
 
 
 /* Media Queries */
