@@ -19,11 +19,23 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 @app.route('/')
-def index():
+@app.route('/_del-coll/<collection>')
+def index(collection=''):
     """Render the index page"""
     collections = session.query(Collection)
+    # If the delete link was clicked, get the selected collection
+    # for the delete collection modal
+    if len(collection) > 0:
+        try:
+            selected_coll = session.query(Collection).filter_by(path=collection).one()
+        except:
+            flash('Unable to delete this collection. Please contact the site admin for assistance.', 'danger')
+            return redirect(url_for('index'))
+        categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+        return render_template('index.html', collections=collections,
+                                             selected_coll=selected_coll,
+                                             cats=categories)
     return render_template('index.html', collections=collections)
-
 
 @app.route('/links/')
 def link_redirect():
@@ -43,20 +55,39 @@ def select_collection():
 
 @app.route('/links/<collection>/')
 @app.route('/links/<collection>/<category>/')
-def show_category_links(collection, category=''):
+@app.route('/links/<collection>/<category>/_del-link/<link_id>')
+def show_category_links(collection, category='', link_id=0):
     """Render the links page for selected collection and category"""
     try:
+        print('getting selected_coll')
         selected_coll = session.query(Collection).filter_by(path = collection).one()
     except:
+        print('getting selected_coll abort')
         abort(404)
     # Get the selected category or set a default category if no category in path.
     if len(category) > 0:
         try:
+            print('getting selected_cat')
             selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
         except:
+            print('getting selected_cat abort')
             abort(404)
     else:
         selected_cat = session.query(Category).filter_by(coll_id=selected_coll.coll_id).order_by(Category.cat_id).first()
+    # If the delete link was clicked, get the selected link
+    # for the delete link modal
+    if link_id > 0:
+        try:
+            print('getting selected_link')
+            selected_link = (
+                session.query(Link).filter_by(
+                                        link_id=link_id,
+                                        cat_id=selected_cat.cat_id).one())
+        except:
+            flash('Unable to delete this link. Please contact the site admin for assistance.', 'danger')
+            return redirect(url_for('show_category_links'))
+    else:
+        selected_link = None
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     if categories.count() >= 1:
         links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
@@ -68,6 +99,7 @@ def show_category_links(collection, category=''):
                                          links=links,
                                          selected_coll=selected_coll,
                                          selected_cat=selected_cat,
+                                         selected_link = selected_link,
                                          collections=collections)
 
 
@@ -116,40 +148,30 @@ def edit_collection(collection):
                                 form=form)
 
 
-@app.route('/links/<collection>/delete/', methods=['GET', 'POST'])
+@app.route('/links/<collection>/delete/', methods=['POST'])
 def delete_collection(collection):
     """Delete a Link Collection"""
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
     except:
-        abort(404)
-    cats = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
-    if request.method == 'POST':
-        if 'cancel-btn' in request.form:
-            flash('Delete Collection cancelled!')
-        else:
-            if selected_coll != []:
-                # Delete the Collection's categories and associated links first.
-                for cat in cats:
-                    links = session.query(Link).filter_by(cat_id=cat.cat_id)
-                    for link in links:
-                        session.delete(link)
-                        session.commit()
-
-                    session.delete(cat)
-                    session.commit()
-
-                session.delete(selected_coll)
-                session.commit()
-                flash('Collection has been deleted!', 'success')
+        flash('Unable to delete this collection. Please contact the site admin for assistance.', 'danger')
         return redirect(url_for('index'))
+    cats = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+    if selected_coll != []:
+        # Delete the Collection's categories and associated links first.
+        for cat in cats:
+            links = session.query(Link).filter_by(cat_id=cat.cat_id)
+            for link in links:
+                session.delete(link)
+                session.commit()
+            session.delete(cat)
+            session.commit()
+        session.delete(selected_coll)
+        session.commit()
+        flash('Collection has been deleted!', 'success')
     else:
-        collections = session.query(Collection) # Needed for sidebar
-        return render_template('collectiondelete.html',
-                                collection=selected_coll,
-                                cats=cats,
-                                collections=collections)
-
+        flash('An error has occurred deleting collection', 'danger')
+    return redirect(url_for('index'))
 
 @app.route('/links/collection/new/', methods=['GET', 'POST'])
 def new_collection():
@@ -230,7 +252,7 @@ def edit_category(collection, category):
                                                 form=form)
 
 
-@app.route('/links/<collection>/<category>/delete/', methods=['GET', 'POST'])
+@app.route('/links/<collection>/<category>/delete/', methods=['POST'])
 def delete_category(collection, category):
     """Delete a Category"""
     try:
@@ -242,31 +264,17 @@ def delete_category(collection, category):
     except:
         abort(404)
     links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
-    if request.method == 'POST':
-        if 'cancel-btn' in request.form:
-            flash('Delete Category cancelled!')
-        else:
-            if selected_cat != []:
-                # Delete the Category's associated links first.
-                for link in links:
-                    session.delete(link)
-                    session.commit()
-
-                session.delete(selected_cat)
-                session.commit()
-
-                flash('Category has been deleted!', 'success')
-        return redirect(url_for('show_category_links', collection=collection))
-    # Both categories and collections are needed for sidebar
-    categories = session.query(Category).filter_by(
-                                            coll_id=selected_coll.coll_id)
-    collections = session.query(Collection)
-    return render_template('categorydelete.html', selected_coll=selected_coll,
-                                                  selected_cat=selected_cat,
-                                                  categories=categories,
-                                                  links=links,
-                                                  collections=collections)
-
+    if selected_cat != []:
+        # Delete the Category's associated links first.
+        for link in links:
+            session.delete(link)
+            session.commit()
+        session.delete(selected_cat)
+        session.commit()
+        flash('Category has been deleted!', 'success')
+    else:
+        flash('An error has occurred deleting category', 'danger')
+    return redirect(url_for('show_category_links', collection=collection))
 
 @app.route('/links/<collection>/category/new/', methods=['GET', 'POST'])
 def new_category(collection, previous_cat=''):
@@ -384,23 +392,11 @@ def delete_link(collection, category, link_id):
         selected_link = session.query(Link).filter_by(link_id=link_id).one()
     except:
         abort(404)
-    if request.method == 'POST':
-        if 'cancel-btn' in request.form:
-            flash('Delete Link cancelled!')
-        else:
-            session.delete(selected_link)
-            session.commit()
-            flash('Link has been deleted!', 'success')
-        return redirect(url_for('show_category_links', collection=collection,
-                                                       category=category))
-    # Both categories and collections are needed for sidebar
-    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
-    collections = session.query(Collection)
-    return render_template('linkdelete.html', selected_coll=selected_coll,
-                                              selected_cat=selected_cat,
-                                              selected_link=selected_link,
-                                              categories=categories,
-                                              collections=collections)
+    session.delete(selected_link)
+    session.commit()
+    flash('Link has been deleted!', 'success')
+    return redirect(url_for('show_category_links', collection=collection,
+                                                    category=category))
 
 
 @app.route('/links/<collection>/<category>/link/new/', methods=['GET', 'POST'])

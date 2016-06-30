@@ -1,17 +1,24 @@
-{% extends "base.html" %}
-{% block title %}{{ super() }} Delete Category{% endblock %}
-{% block main %}
-  <h2>Delete Category: {{ selected_cat.name }}</h2>
-  <div class="delete">
-    <form action="{{ url_for('delete_category', collection=selected_coll.path,
-                  category=selected_cat.path) }}" method="POST">
-      Are you sure you want to delete {{ selected_cat.name }}?<br>
-      {% if links.count() >= 1 %}
-        This category has <a href="{{ url_for('show_category_links', collection=selected_coll.path, category=selected_cat.path) }}">{{ links.count() }} link{% if links.count() > 1 %}s{% endif %}</a> that will be deleted along with this category.
-      {% endif %}
-       This action cannot be undone!<br>
-      <input type="submit" name="delete-btn" value = "Delete">
-      <input type="submit" name="cancel-btn" value = "Cancel"></p>
-    </form>
+<!-- Category Delete Modal -->
+<div class="modal fade" id="categorydelete" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 class="modal-title" id="myModalLabel">Delete Category: {{ selected_cat.name }}</h3>
+      </div>
+      <div class="modal-body">
+          <p class="delete-warning"><strong>Are you sure you want to delete the category {{ selected_cat.name }}?</strong></p>
+          {% if links and links.count() >= 1 %}
+            <p> This category has {{ links.count() }} link{% if links.count() > 1 %}s{% endif %}</a> that will be deleted as well.</p>
+          {% endif %}
+          <p>This action cannot be undone!</p>
+      </div>
+      <div class="modal-footer">
+        <form class="form-delete" action="{{ url_for('delete_category', collection=selected_coll.path,
+                     category=selected_cat.path) }}" method="POST">
+          <button class="btn btn-danger" type="submit" name="delete-btn">Delete</button>
+        </form>
+        <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
   </div>
-{% endblock %}
+</div>
