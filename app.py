@@ -37,11 +37,17 @@ def index(collection=''):
                                              cats=categories)
     return render_template('index.html', collections=collections)
 
+
 @app.route('/links/')
 def link_redirect():
     """Redirect to index page"""
     return redirect(url_for('index'))
 
+
+@app.route('/about')
+def about():
+    """Render about page"""
+    return render_template('about.html')
 
 @app.route('/links/collection/select/', methods=['GET', 'POST'])
 def select_collection():
