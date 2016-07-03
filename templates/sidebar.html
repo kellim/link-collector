@@ -41,6 +41,9 @@
               {% endif %}
             {% endfor %}
         </ul>
+        <div class="add-cat">
+          <a class="btn btn-primary" href="{{ url_for('new_category', collection=selected_coll.path) }}">Add New Category</a>
+        </div>
       </div>
     </div>
   {% endif %}
