@@ -1,5 +1,5 @@
-<!-- Show Collections sidebar panel if there are any Collections -->
 {% if collections.count() >= 1 %}
+  <!-- Collections sidebar panel -->
   <div class="panel panel-default">
     <div class="panel-heading">
       <h3 class="panel-title">Select Collection</h3>
@@ -18,8 +18,8 @@
   </div>
 {% endif %}
 
-<!-- Show Categories sidebar panel if there are any Categories -->
 {% if categories %}
+  <!-- Categories sidebar panel -->
   {% if categories.count() >= 1 %}
     <div class="panel panel-default">
       <div class="panel-heading">
