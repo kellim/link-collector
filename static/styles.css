@@ -5,13 +5,17 @@ body {
   padding-right: 0 !important;
 }
 
-
 h2 {
   font-size: 20px;
 }
 
 li {
   list-style-type: none;
+}
+
+hr {
+  margin: 10px 0 10px 0;
+  width: 99%;
 }
 
 /* Removes the blue border around delete (trash icon) link after
@@ -25,7 +29,7 @@ a:focus {
 /* Removes the blue border around buttons in modal after
  * the buttons are clicked */
 button:focus {
- outline:0 !important;
+ outline: 0 !important;
 }
 
 /* navbar */
@@ -36,7 +40,7 @@ button:focus {
 /* Main */
 
 .main {
-  padding: 0 0 0 30px;
+  padding: 31px 0 0 30px;
 }
 
 .main-item {
@@ -48,11 +52,15 @@ button:focus {
 }
 
 .coll {
-  padding: 0px 20px;
+  padding: 0 20px 20px 17px;
+}
+
+.coll-name {
+  margin: 0 0 2px 0;
 }
 
 .page-title {
-
+  margin: 0 0 3px 0;
 }
 
 .update {
@@ -70,6 +78,7 @@ button:focus {
 }
 
 /* Sidebar */
+
 .selected-coll {
   font-weight: bold;
 }
@@ -88,6 +97,7 @@ button:focus {
 }
 
 /* Flask-Bootstrap Classes */
+
 .navbar {
   margin: 5px 0 0 0;
 }
@@ -110,8 +120,6 @@ button:focus {
   font-weight: bold;
 }
 
-/* Fix for opening modal causing page to shift */
-
 
 /* Media Queries */
 @media screen and (max-width: 768px) {
@@ -122,6 +130,10 @@ button:focus {
 
   .main {
     padding: 0 1em;
+  }
+
+  .page-title {
+    padding: 0.5em 0 0 0;
   }
 
 form {
