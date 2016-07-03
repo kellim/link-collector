@@ -14,8 +14,7 @@ li {
 }
 
 hr {
-  margin: 10px 0 10px 0;
-  width: 99%;
+  margin: 10px 15px 15px 0;
 }
 
 /* Removes the blue border around delete (trash icon) link after
@@ -44,7 +43,7 @@ button:focus {
 }
 
 .main-item {
-  margin: 0 0 10px -40px;
+  margin: 0 15px 10px -40px;
 }
 
 .btn-add {
@@ -75,6 +74,14 @@ button:focus {
 
 .form-delete {
   display: inline;
+}
+
+.main-form {
+  margin: 0 15px 0 0;
+}
+
+.form-title {
+  margin: 0 15px 0 0;
 }
 
 /* Sidebar */
@@ -116,8 +123,11 @@ button:focus {
 
 .flashed-messages {
   width: 100%;
-  margin: 1em 0 -20px -30px;
   font-weight: bold;
+}
+
+.alert {
+  margin: 0 0 15px -30px;
 }
 
 

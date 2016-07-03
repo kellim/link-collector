@@ -1,17 +1,16 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} New Collection{% endblock %}
 {% block main %}
-  <h2>New Collection</h2>
-  <div class="edit">
-        <form class="form-horizontal" action="{{ url_for('new_collection') }}" method = "POST">
-          {{ form.csrf_token }}
-          {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
-          {{ wtf.form_field(form.path, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
-          {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
-          <div class="col-sm-offset-2 col-sm-10 form-buttons">
-            <input class="btn btn-primary" type="submit" name="submit-btn" value="Submit">
-            <a class="btn btn-default" href="{{ url_for('index') }}">Cancel</a>
-        </div>
-        </form>
+  <h2 class="form-title">New Collection</h2>
+  <hr>
+    <form class="form-horizontal main-form" action="{{ url_for('new_collection') }}" method = "POST">
+      {{ form.csrf_token }}
+      {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
+      {{ wtf.form_field(form.path, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
+      {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
+      <div class="col-sm-offset-2 col-sm-10 form-buttons">
+        <input class="btn btn-primary" type="submit" name="submit-btn" value="Submit">
+        <a class="btn btn-default" href="{{ url_for('index') }}">Cancel</a>
     </div>
+    </form>
 {% endblock %}

@@ -1,23 +1,22 @@
 {% extends "base.html" %}
 {% block title %}{{ super() }} Edit Collection{% endblock %}
 {% block main %}
-  <h2>Edit Collection: {{ selected_coll.name }}</h2>
+  <h2 class="form-title">Edit Collection: {{ selected_coll.name }}</h2>
+  <hr>
   {% include "flashmessages.html" %}
-  <div class="edit">
-        <form class="form-horizontal" action="{{ url_for('edit_collection', collection=selected_coll.path) }}" method = "POST" role="form">
-            {{ form.csrf_token }}
-            <div>
-              {% if request.method == "GET" %}
-                  {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10), value = selected_coll.name) }}
-              {% else %}
-                {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
-              {% endif %}
-            </div>
-            {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
-            <div class="col-sm-offset-2 col-sm-10 form-buttons">
-              <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
-              <a class="btn btn-default" href="{{ url_for('index') }}">Cancel</a>
-            </div>
-        </form>
-    </div>
+    <form class="form-horizontal main-form" action="{{ url_for('edit_collection', collection=selected_coll.path) }}" method = "POST" role="form">
+        {{ form.csrf_token }}
+        <div>
+          {% if request.method == "GET" %}
+              {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10), value = selected_coll.name) }}
+          {% else %}
+            {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
+          {% endif %}
+        </div>
+        {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
+        <div class="col-sm-offset-2 col-sm-10 form-buttons">
+          <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
+          <a class="btn btn-default" href="{{ url_for('index') }}">Cancel</a>
+        </div>
+    </form>
 {% endblock %}
