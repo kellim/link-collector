@@ -135,7 +135,16 @@ button:focus {
 @media screen and (max-width: 768px) {
 
   body {
-    padding: 0 0.5em 0.5em 0.5em;
+    margin: 10px;
+    max-width: 100%;
+  }
+
+  form {
+  padding: 0 0 0 1em;
+}
+
+  .form-title {
+    margin: 10px 0 0 5px;
   }
 
   .main {
@@ -146,9 +155,9 @@ button:focus {
     padding: 0.5em 0 0 0;
   }
 
-form {
-  padding: 0 0 0 1em;
-}
+
+
+
 /* Bootstrap Class */
   .nav {
   margin: 0;
