@@ -135,7 +135,7 @@ button:focus {
 @media screen and (max-width: 768px) {
 
   body {
-    margin: 10px;
+    margin: 0.5em 1em;
     max-width: 100%;
   }
 
