@@ -49,6 +49,12 @@ def about():
     """Render about page"""
     return render_template('about.html')
 
+
+@app.route('/contact')
+def contact():
+    """Render contact page"""
+    return render_template('contact.html')
+
 @app.route('/links/collection/select/', methods=['GET', 'POST'])
 def select_collection():
     """Redirect to show_category_links based on collection selected
