@@ -11,12 +11,10 @@
         <hr>
     </div>
   {% else %}
-    <div class="add-cat">
       <p class="lead text-center">There are currently no categories for this collection.</p>
       <p class="text-center">
         <a class="btn btn-primary btn-lg" href="{{ url_for('new_category', collection=selected_coll.path) }}">Add New Category</a>
       </p>
-    </div>
   {% endif %}
 
   {% if links and links.count() >= 1 %}
