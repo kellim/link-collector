@@ -6,8 +6,7 @@
         <h3 class="modal-title" id="myModalLabel3">Delete link: {{ selected_link.name }}</h3>
       </div>
       <div class="modal-body">
-          <p class="delete-warning"><strong>Are you sure you want to delete the link {{ selected_link.name }}?</strong></p>
-          <p><em>The URL for this link is {{ selected_link.url }}</em>
+          <p class="delete-warning"><strong>Are you sure you want to delete the link <a rel="nofollow" href="{{ selected_link.url }}" target="_blank">{{ selected_link.name }}</a>?</strong></p>
           <p>This action cannot be undone!</p>
       </div>
       <div class="modal-footer">
