@@ -12,7 +12,8 @@
       <div class="modal-footer">
         <form class="form-delete" action="{{ url_for('delete_link', collection=selected_coll.path,
                   category=selected_cat.path, link_id=selected_link.link_id) }}" method="POST">
-            <button class="btn btn-danger" type="submit" name="delete-btn">Delete</button>
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button class="btn btn-danger" type="submit" name="delete-btn">Delete</button>
         </form>
         <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
       </div>
