@@ -11,6 +11,8 @@ import secret
 import forms
 
 # See https://pythonhosted.org/Flask-WTF/csrf.html
+# which mentions views need CSRF protection even
+# if they don't have forms.
 csrf = CsrfProtect()
 
 app = Flask(__name__)
@@ -59,6 +61,7 @@ def about():
 def contact():
     """Render contact page"""
     return render_template('contact.html')
+
 
 @app.route('/links/collection/select/', methods=['GET', 'POST'])
 def select_collection():
