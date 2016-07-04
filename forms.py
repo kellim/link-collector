@@ -100,7 +100,7 @@ class NewCategoryForm(Form):
                         description=path_desc,
                         validators = [DataRequired(),
                                       Length(min=2, max=20),
-                                      Regexp(regex=r'^[a-zA-Z0-9]+$',
+                                      Regexp(regex=r'^[a-zA-Z0-9\-]+$',
                                             message=path_input_error + ' ' +
                                                     path_desc)
                                      ])
