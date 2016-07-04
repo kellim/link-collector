@@ -2,6 +2,7 @@ from flask import (Flask, render_template, request, redirect, url_for, flash,
                    jsonify, abort)
 
 from flask_bootstrap import Bootstrap
+from flask_wtf.csrf import CsrfProtect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 from models import Base, Collection, Category, Link
@@ -9,7 +10,11 @@ from models import Base, Collection, Category, Link
 import secret
 import forms
 
+# See https://pythonhosted.org/Flask-WTF/csrf.html
+csrf = CsrfProtect()
+
 app = Flask(__name__)
+csrf.init_app(app)
 Bootstrap(app)
 
 engine = create_engine('sqlite:///links.db')
