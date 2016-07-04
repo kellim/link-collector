@@ -156,6 +156,14 @@ button:focus {
   padding: 0 0 0 1em;
 }
 
+  .alert {
+    margin: 0.5em 0 0 0;
+  }
+
+  .flashed-messages {
+    padding: 0;
+  }
+
   .form-title {
     margin: 10px 0 0 5px;
   }
@@ -167,9 +175,6 @@ button:focus {
   .page-title {
     padding: 0.5em 0 0 0;
   }
-
-
-
 
 /* Bootstrap Class */
   .nav {
