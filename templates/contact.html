@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block title %}{{ super() }} Contact{% endblock %}
+{% block main %}
+<h2 class="page-title">Contact</h2>
+<hr>
+<p class="info">You can contact the developer of this app via Twitter <a href="https://twitter.com/kellimc123">@kellimc123</a> or email
+<!-- mailhide code in the following link is from https://www.google.com/recaptcha/admin#mailhide -->
+<a href="http://www.google.com/recaptcha/mailhide/d?k=018MhcsJhw52MgxGF03VQNgw==&amp;c=tP0MIabAUadDJkbq6UFcFBHJuNHpyiGG6ExcLuOvPf4=" onclick="window.open('http://www.google.com/recaptcha/mailhide/d?k\x3d018MhcsJhw52MgxGF03VQNgw\x3d\x3d\x26c\x3dtP0MIabAUadDJkbq6UFcFBHJuNHpyiGG6ExcLuOvPf4\x3d', '', 'toolbar=0,scrollbars=0,location=0,statusbar=0,menubar=0,resizable=0,width=500,height=300'); return false;" title="Reveal this e-mail address">k...</a>@gmail.com
+(Click on the link in the e-mail address to solve captcha and reveal full e-mail address.)</p>
+{% endblock %}
