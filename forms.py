@@ -11,13 +11,14 @@ class EditCollectionForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
-                                Length(min=2, max=30),
+                                Length(min=2, max=20),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
+                                  Length(min=2, max=130),
                                  Regexp(
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
@@ -36,13 +37,14 @@ class NewCollectionForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
-                                Length(min=2, max=30),
+                                Length(min=2, max=20),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
     path = StringField('Path: ',
                         description=path_desc,
                         validators = [DataRequired(),
+                                      Length(min=2, max=20),
                                      Regexp(regex=r'^[a-zA-Z0-9\-]+$',
                                             message=path_input_error +
                                                     ' ' + path_desc)
@@ -50,7 +52,8 @@ class NewCollectionForm(Form):
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
-                                 Regexp(
+                                  Length(min=2, max=130),
+                                  Regexp(
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
                                  ]))
@@ -63,13 +66,14 @@ class EditCategoryForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
-                                Length(min=2, max=30),
+                                Length(min=2, max=20),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
+                                  Length(min=2, max=200),
                                  Regexp(
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
@@ -88,21 +92,23 @@ class NewCategoryForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
-                                Length(min=2, max=30),
+                                Length(min=2, max=20),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
     path = StringField('Path: ',
                         description=path_desc,
                         validators = [DataRequired(),
-                                     Regexp(regex=r'^[a-zA-Z0-9]+$',
+                                      Length(min=2, max=20),
+                                      Regexp(regex=r'^[a-zA-Z0-9]+$',
                                             message=path_input_error + ' ' +
                                                     path_desc)
                                      ])
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
-                                 Regexp(
+                                  Length(min=2, max=200),
+                                  Regexp(
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
                                  ]))
@@ -119,12 +125,14 @@ class EditLinkForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
+                                Length(min=2, max=20),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
     url = StringField('URL: ',
                         description = url_desc,
                         validators = [DataRequired(),
+                                      Length(min=10, max=200),
                                       URL(require_tld=True,
                                           message=url_input_error + ' ' +
                                                   url_desc)
@@ -132,7 +140,8 @@ class EditLinkForm(Form):
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
-                                 Regexp(
+                                  Length(min=2, max=200),
+                                  Regexp(
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)
                                  ]))
@@ -147,12 +156,14 @@ class NewLinkForm(Form):
     name = (
         StringField('Name: ',
                     validators=[DataRequired(),
+                                Length(min=2, max=20),
                                 Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
                                        message=input_error)
                                 ]))
     url = StringField('URL: ',
                         description = url_desc,
                         validators = [DataRequired(),
+                                      Length(min=2, max=200),
                                       URL(require_tld=True,
                                           message=url_input_error + ' ' +
                                                   url_desc)
@@ -160,6 +171,7 @@ class NewLinkForm(Form):
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
+                                  Length(min=2, max=200),
                                  Regexp(
                                     regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
                                     message=input_error)

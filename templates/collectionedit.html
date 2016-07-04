@@ -13,7 +13,7 @@
             {{ wtf.form_field(form.name, form_type="horizontal", horizontal_columns=('sm', 2, 10)) }}
           {% endif %}
         </div>
-        {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=5) }}
+        {{ wtf.form_field(form.description, form_type="horizontal", horizontal_columns=('sm', 2, 10), rows=2) }}
         <div class="col-sm-offset-2 col-sm-10 form-buttons">
           <input class="btn btn-primary" type="submit" name="submit-btn" value = "Submit">
           <a class="btn btn-default" href="{{ url_for('index') }}">Cancel</a>
