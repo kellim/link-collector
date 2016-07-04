@@ -58,6 +58,10 @@ button:focus {
   margin: 0 0 2px 0;
 }
 
+.cats {
+  width: 97%;
+}
+
 .page-title {
   margin: 0 0 3px 0;
 }
