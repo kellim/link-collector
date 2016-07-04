@@ -143,7 +143,6 @@ button:focus {
   margin: 0 0 15px -30px;
 }
 
-
 /* Media Queries */
 @media screen and (max-width: 768px) {
 
@@ -154,7 +153,7 @@ button:focus {
 
   form {
   padding: 0 0 0 1em;
-}
+  }
 
   .alert {
     margin: 0.5em 0 0 0;
