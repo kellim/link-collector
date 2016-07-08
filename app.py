@@ -46,6 +46,9 @@ def index(collection=''):
     # If the delete link was clicked, get the selected collection
     # for the delete collection modal
     if len(collection) > 0:
+        if 'username' not in login_session:
+            flash('You must login before deleting a collection.', 'warning')
+            return redirect('/login')
         try:
             selected_coll = session.query(Collection).filter_by(path=collection).one()
         except:
@@ -110,6 +113,9 @@ def show_category_links(collection, category='', link_id=0):
     # If the delete link was clicked, get the selected link
     # for the delete link modal
     if link_id > 0:
+        if 'username' not in login_session:
+            flash('You must login before deleting a link.', 'warning')
+            return redirect('/login')
         try:
             print('getting selected_link')
             selected_link = (
@@ -139,6 +145,10 @@ def show_category_links(collection, category='', link_id=0):
 @app.route('/links/<collection>/edit/', methods=['GET', 'POST'])
 def edit_collection(collection):
     """Edit a Link Collection"""
+    print login_session
+    if 'username' not in login_session:
+        flash('You must login before editing a collection.', 'warning')
+        return redirect('/login')
     form = forms.EditCollectionForm()
     collections = session.query(Collection) # Needed for sidebar
     try:
@@ -184,6 +194,10 @@ def edit_collection(collection):
 @app.route('/links/<collection>/delete/', methods=['POST'])
 def delete_collection(collection):
     """Delete a Link Collection"""
+    print login_session
+    if 'username' not in login_session:
+        flash('You must login before deleting a collection.', 'warning')
+        return redirect('/login')
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
     except:
@@ -209,6 +223,9 @@ def delete_collection(collection):
 @app.route('/links/collection/new/', methods=['GET', 'POST'])
 def new_collection():
     """Add a New Collection"""
+    if 'username' not in login_session:
+        flash('You must login before adding a new collection.', 'warning')
+        return redirect('/login')
     form = forms.NewCollectionForm()
     if request.method == 'POST':
         new_coll = Collection(name = request.form['name'],
@@ -240,6 +257,9 @@ def new_collection():
 @app.route('/links/<collection>/<category>/edit/', methods=['GET', 'POST'])
 def edit_category(collection, category):
     """Edit a Category"""
+    if 'username' not in login_session:
+        flash('You must login before editing a category.', 'warning')
+        return redirect('/login')
     form = forms.EditCategoryForm()
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
@@ -288,6 +308,9 @@ def edit_category(collection, category):
 @app.route('/links/<collection>/<category>/delete/', methods=['POST'])
 def delete_category(collection, category):
     """Delete a Category"""
+    flash('You must login before deleting a category.', 'warning')
+    if 'username' not in login_session:
+        return redirect('/login')
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
         selected_cat = (
@@ -313,6 +336,9 @@ def delete_category(collection, category):
 @app.route('/links/<collection>/category/new/', methods=['GET', 'POST'])
 def new_category(collection, previous_cat=''):
     """Add a New Category"""
+    if 'username' not in login_session:
+        flash('You must login before adding a new category.', 'warning')
+        return redirect('/login')
     form = forms.NewCategoryForm()
     try:
         selected_coll = session.query(Collection).filter_by(path=collection).one()
@@ -360,6 +386,9 @@ def new_category(collection, previous_cat=''):
 @app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])
 def edit_link(collection, category, link_id):
     """Edit a Link"""
+    if 'username' not in login_session:
+        flash('You must login before editing a link.', 'warning')
+        return redirect('/login')
     form = forms.EditLinkForm()
     try:
         selected_coll = session.query(Collection).filter_by(
@@ -416,6 +445,9 @@ def edit_link(collection, category, link_id):
 @app.route('/links/<collection>/<category>/<link_id>/delete/', methods=['GET', 'POST'])
 def delete_link(collection, category, link_id):
     """Delete a Link"""
+    if 'username' not in login_session:
+        flash('You must login before deleting a link.', 'warning')
+        return redirect('/login')
     try:
         selected_coll = session.query(Collection).filter_by(
                                                     path=collection).one()
@@ -428,7 +460,7 @@ def delete_link(collection, category, link_id):
         abort(404)
     session.delete(selected_link)
     session.commit()
-    flash('Link has been deleted!', 'success')
+    flash('Link has been deleted.', 'success')
     return redirect(url_for('show_category_links', collection=collection,
                                                     category=category))
 
@@ -436,6 +468,9 @@ def delete_link(collection, category, link_id):
 @app.route('/links/<collection>/<category>/link/new/', methods=['GET', 'POST'])
 def new_link(collection, category):
     """Add a New Link"""
+    if 'username' not in login_session:
+        flash('You must login before adding a new link.', 'warning')
+        return redirect('/login')
     form = forms.NewLinkForm()
     try:
         selected_coll = session.query(Collection).filter_by(
