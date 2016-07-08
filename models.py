@@ -12,20 +12,20 @@ class Collection(Base):
     __tablename__ = 'collection'
 
     coll_id = Column(Integer, primary_key=True)
-    name = Column(String(80), nullable=False)
-    description = Column(String(250))
+    name = Column(String(50), nullable=False)
+    description = Column(String(130))
     submit_date = Column(DateTime, default=func.now())
-    path = Column(String(20), nullable=False)
+    path = Column(String(50), nullable=False)
 
 
 class Category(Base):
     __tablename__ = 'category'
 
     cat_id = Column(Integer, primary_key=True)
-    name = Column(String(80), nullable=False)
-    description = Column(String(250))
+    name = Column(String(50), nullable=False)
+    description = Column(String(200))
     submit_date = Column(DateTime, default=func.now())
-    path = Column(String(20), nullable=False)
+    path = Column(String(50), nullable=False)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
 
@@ -34,9 +34,9 @@ class Link(Base):
     __tablename__ = 'link'
 
     link_id = Column(Integer, primary_key=True)
-    name = Column(String(80), nullable=False)
-    url = Column(String(250), nullable=False)
-    description = Column(String(250))
+    name = Column(String(50), nullable=False)
+    url = Column(String(200), nullable=False)
+    description = Column(String(200))
     submitter = Column(String(250), nullable=False)
     submit_date = Column(DateTime, default=func.now())
     cat_id = Column(Integer, ForeignKey('category.cat_id'))
