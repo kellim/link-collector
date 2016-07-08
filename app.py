@@ -75,7 +75,7 @@ def contact():
     """Render contact page"""
     return render_template('contact.html')
 
-
+@csrf.exempt
 @app.route('/links/collection/select/', methods=['GET', 'POST'])
 def select_collection():
     """Redirect to show_category_links based on collection selected
