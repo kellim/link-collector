@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import Base, Collection, Category, Link
+from models import User, Base, Collection, Category, Link
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -507,6 +507,9 @@ def new_link(collection, category):
                             collections=collections,
                             form=form)
 
+# Login and connection/disconnection code adapted from Udacity's
+# Authentication & Authorization: OAuth Course
+# www.udacity.com/course/authentication-authorization-oauth--ud330
 
 @app.route('/login')
 def login():
@@ -591,6 +594,12 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
+   # see if user exists, if it doesn't make a new one
+    user_id = getUserID(login_session['email'])
+    if not user_id:
+        user_id = createUser(login_session)
+    login_session['user_id'] = user_id
+
     output = ''
     output += '<h3>Welcome, '
     output += login_session['username']
@@ -627,6 +636,33 @@ def gdisconnect():
         response = make_response(json.dumps('Failed to revoke token for given user.', 400))
         response.headers['Content-Type'] = 'application/json'
         return response
+
+# Code for Helper Functions adapted from Udacity's
+# Authentication & Authorization: OAuth Course
+# www.udacity.com/course/authentication-authorization-oauth--ud330
+def createUser(login_session):
+    """Add logged in user to database"""
+    newUser = User(name=login_session['username'], provider='google', email=login_session[
+                   'email'], picture=login_session['picture'])
+    session.add(newUser)
+    session.commit()
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.user_id
+
+
+def getUserInfo(user_id):
+    """Look up user in database by user id and return record"""
+    user = session.query(User).filter_by(id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    """Look up user in database by email and return record"""
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.user_id
+    except:
+        return None
 
 
 if __name__ == '__main__':
