@@ -5,14 +5,30 @@ $("#select-coll").change(function() {
 
 var url = window.location.href;
 
-// Open modal after user clicks delete collection
+// If user is authorized to delete selected collection,
+// open modal after user clicks delete collection.
+// Currently only admins can delete collections.
 if (url.search("_del-coll") >= 0) {
-    $('#collectiondelete').modal('toggle');
+  $.getJSON($SCRIPT_ROOT+"/_auth-to-del", function(r){
+    if (r.is_auth_to_delete) {
+      $('#collectiondelete').modal('toggle');
+    }
+  });
 }
 
-// Open modal after user clicks delete link
+// If user is authorized to delete selected link,
+// open modal after user clicks delete link
 if (url.search("_del-link") >= 0) {
-    $('#linkdelete').modal('toggle');
+  var link = url.substr(url.indexOf('/_del-link/') + 11);
+  $.getJSON($SCRIPT_ROOT+"/_auth-to-del",
+    {
+        link: link
+    },
+    function(data) {
+      if (data.is_auth_to_delete) {
+        $('#linkdelete').modal('toggle');
+    }
+  });
 }
 
 // When the collection delete modal closes, go back to main

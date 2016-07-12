@@ -38,11 +38,78 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 
+# Helper Functions
+
+def createUser(login_session):
+    """Add logged in user to database"""
+    # Adapted from Udacity's Authentication & Authorization: OAuth Course
+    # www.udacity.com/course/authentication-authorization-oauth--ud330
+    try:
+        newUser = User(name=login_session['username'], provider='google', email=login_session[
+           'email'], picture=login_session['picture'], is_admin=False)
+        session.add(newUser)
+        session.commit()
+    except:
+        return None
+    user = session.query(User).filter_by(email=login_session['email']).one()
+    return user.user_id
+
+
+def getUserInfo(user_id):
+    """Look up user in database by user id and return record"""
+    # Code from Udacity's Authentication & Authorization: OAuth Course
+    # www.udacity.com/course/authentication-authorization-oauth--ud330
+    user = session.query(User).filter_by(user_id=user_id).one()
+    return user
+
+
+def getUserID(email):
+    """Look up user in database by email and return record"""
+    # Code from Udacity's Authentication & Authorization: OAuth Course
+    # www.udacity.com/course/authentication-authorization-oauth--ud330
+    try:
+        user = session.query(User).filter_by(email=email).one()
+        return user.user_id
+    except:
+        return None
+
+
+def is_site_admin(user_id):
+    """Return True if user is an admin for site"""
+    try:
+        user = getUserInfo(user_id)
+    except:
+        return False
+    return user.is_admin
+
+
+@app.route('/_auth-to-del')
+def is_auth_to_deleteJSON():
+    """Returns True in JSON if user is authorized to delete item"""
+    is_admin = is_site_admin(login_session['user_id'])
+    # If user is on the links page, there will be one link argument.
+    # Check if logged in user is the one who submitted the link.
+    if request.args:
+        link_id = request.args.get('link', 0, type=int)
+        selected_link = session.query(Link).filter_by(link_id=link_id).one()
+        is_link_submitter = selected_link.user_id == login_session['user_id']
+    else:
+        # is_link_submitter is False if user is on the index page listing
+        # collections; there are no links to handle on index page.
+        is_link_submitter = False
+    return jsonify(is_auth_to_delete = is_link_submitter or is_admin)
+
+
 @app.route('/')
 @app.route('/_del-coll/<collection>')
 def index(collection=''):
     """Render the index page"""
     collections = session.query(Collection)
+    try:
+        is_admin = is_site_admin(login_session['user_id'])
+    except:
+        # False if user is not logged in
+        is_admin = False
     # If the delete link was clicked, get the selected collection
     # for the delete collection modal
     if len(collection) > 0:
@@ -52,13 +119,20 @@ def index(collection=''):
         try:
             selected_coll = session.query(Collection).filter_by(path=collection).one()
         except:
-            flash('Unable to delete this collection. Please contact the site admin for assistance.', 'danger')
+            flash('Unable to delete collection. Please contact the site admin for assistance.', 'danger')
             return redirect(url_for('index'))
-        categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+        if not is_admin:
+            flash('You do not have permission to perform that task. Please '
+                  'contact site admin for assistance.', 'danger')
+        categories = session.query(Category).filter_by(
+                                                coll_id=selected_coll.coll_id)
         return render_template('index.html', collections=collections,
                                              selected_coll=selected_coll,
-                                             cats=categories)
-    return render_template('index.html', collections=collections)
+                                             cats=categories,
+                                             is_admin = is_admin)
+    else:
+        return render_template('index.html', collections=collections,
+                                             is_admin = is_admin)
 
 
 @app.route('/links/')
@@ -78,13 +152,13 @@ def contact():
     """Render contact page"""
     return render_template('contact.html')
 
+
 @csrf.exempt
 @app.route('/links/collection/select/', methods=['GET', 'POST'])
 def select_collection():
     """Redirect to show_category_links based on collection selected
         in dropwdown"""
     selected_coll_path = request.form['select-coll']
-    print "in select_collection " + selected_coll_path
     return redirect(url_for('show_category_links',
                              collection=selected_coll_path))
 
@@ -95,21 +169,22 @@ def select_collection():
 def show_category_links(collection, category='', link_id=0):
     """Render the links page for selected collection and category"""
     try:
-        print('getting selected_coll')
         selected_coll = session.query(Collection).filter_by(path = collection).one()
     except:
-        print('getting selected_coll abort')
         abort(404)
     # Get the selected category or set a default category if no category in path.
     if len(category) > 0:
         try:
-            print('getting selected_cat')
             selected_cat = session.query(Category).filter_by(path=category, coll_id=selected_coll.coll_id).one()
         except:
-            print('getting selected_cat abort')
             abort(404)
     else:
         selected_cat = session.query(Category).filter_by(coll_id=selected_coll.coll_id).order_by(Category.cat_id).first()
+    try:
+        is_admin = is_site_admin(login_session['user_id'])
+    except:
+        # False if user is not logged in
+        is_admin = False
     # If the delete link was clicked, get the selected link
     # for the delete link modal
     if link_id > 0:
@@ -117,7 +192,6 @@ def show_category_links(collection, category='', link_id=0):
             flash('You must login before deleting a link.', 'warning')
             return redirect('/login')
         try:
-            print('getting selected_link')
             selected_link = (
                 session.query(Link).filter_by(
                                         link_id=link_id,
@@ -125,6 +199,10 @@ def show_category_links(collection, category='', link_id=0):
         except:
             flash('Unable to delete this link. Please contact the site admin for assistance.', 'danger')
             return redirect(url_for('show_category_links'))
+        is_link_submitter = login_session['user_id'] == selected_link.user_id
+        if not (is_link_submitter or is_admin):
+            flash('You do not have permission to perform that task. Please '
+                  'contact site admin for assistance.', 'danger')
     else:
         selected_link = None
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
@@ -139,86 +217,100 @@ def show_category_links(collection, category='', link_id=0):
                                          selected_coll=selected_coll,
                                          selected_cat=selected_cat,
                                          selected_link = selected_link,
-                                         collections=collections)
+                                         collections=collections,
+                                         is_admin= is_admin)
 
 
 @app.route('/links/<collection>/edit/', methods=['GET', 'POST'])
 def edit_collection(collection):
     """Edit a Link Collection"""
-    print login_session
     if 'username' not in login_session:
         flash('You must login before editing a collection.', 'warning')
         return redirect('/login')
-    form = forms.EditCollectionForm()
-    collections = session.query(Collection) # Needed for sidebar
-    try:
-        selected_coll = session.query(Collection).filter_by(path=collection).one()
-    except:
-        abort(404)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            coll_name = request.form['name']
-            coll_desc = request.form['description']
-            # Make sure at least one field was changed before updating the
-            # database. Also, don't update fields that were not changed.
-            # This logic deals with multiple fields so did not add it
-            # to forms.py
-            if (selected_coll.name != coll_name
-                or selected_coll.description != coll_desc):
-                if selected_coll.name != coll_name:
-                    selected_coll.name = coll_name
-                if selected_coll.description != coll_desc:
-                    selected_coll.description = coll_desc
-                session.add(selected_coll)
-                session.commit()
-                flash('Collection has been edited!', 'success')
+    if is_site_admin(login_session['user_id']):
+        form = forms.EditCollectionForm()
+        collections = session.query(Collection) # Needed for sidebar
+        try:
+            selected_coll = session.query(Collection).filter_by(
+                                                        path=collection).one()
+        except:
+            abort(404)
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                coll_name = request.form['name']
+                coll_desc = request.form['description']
+                # Make sure at least one field was changed before updating the
+                # database. Also, don't update fields that were not changed.
+                # This logic deals with multiple fields so did not add it
+                # to forms.py
+                if (selected_coll.name != coll_name
+                    or selected_coll.description != coll_desc):
+                    if selected_coll.name != coll_name:
+                        selected_coll.name = coll_name
+                    if selected_coll.description != coll_desc:
+                        selected_coll.description = coll_desc
+                    session.add(selected_coll)
+                    session.commit()
+                    flash('Collection has been edited!', 'success')
+                else:
+                    flash('No change was made to collection!', 'warning')
+                return redirect(url_for('index'))
             else:
-                flash('No change was made to collection!', 'warning')
-            return redirect(url_for('index'))
+                return render_template('collectionedit.html',
+                                        selected_coll=selected_coll,
+                                        form=form,
+                                        collections=collections)
         else:
+            # Populate description field from database when method is GET.
+            # Description gets updated here since it is a TextArea; name is
+            # updated in the template.
+            form.description.data = selected_coll.description
             return render_template('collectionedit.html',
                                     selected_coll=selected_coll,
-                                    form=form,
-                                    collections=collections)
+                                    collections=collections,
+                                    form=form)
     else:
-        # Populate description field from database when method is GET.
-        # Description gets updated here since it is a TextArea; name is updated
-        # in the template.
-        form.description.data = selected_coll.description
-        return render_template('collectionedit.html',
-                                selected_coll=selected_coll,
-                                collections=collections,
-                                form=form)
+        # User is not admin, so redirect instead of showing form
+        flash('An error occurred accessing Edit Collection page. Please '
+              'contact site admin for assistance.', 'danger')
+        return redirect(url_for('index'))
 
 
 @app.route('/links/<collection>/delete/', methods=['POST'])
 def delete_collection(collection):
     """Delete a Link Collection"""
-    print login_session
     if 'username' not in login_session:
         flash('You must login before deleting a collection.', 'warning')
         return redirect('/login')
-    try:
-        selected_coll = session.query(Collection).filter_by(path=collection).one()
-    except:
-        flash('Unable to delete this collection. Please contact the site admin for assistance.', 'danger')
-        return redirect(url_for('index'))
-    cats = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
-    if selected_coll != []:
-        # Delete the Collection's categories and associated links first.
-        for cat in cats:
-            links = session.query(Link).filter_by(cat_id=cat.cat_id)
-            for link in links:
-                session.delete(link)
+    if is_site_admin(login_session['user_id']):
+        try:
+            selected_coll = session.query(Collection).filter_by(
+                                                        path=collection).one()
+        except:
+            flash('Unable to delete this collection. Please contact the site '
+                  'admin for assistance.', 'danger')
+            return redirect(url_for('index'))
+        cats = session.query(Category).filter_by(
+                                            coll_id=selected_coll.coll_id)
+        if selected_coll != []:
+            # Delete the Collection's categories and associated links first.
+            for cat in cats:
+                links = session.query(Link).filter_by(cat_id=cat.cat_id)
+                for link in links:
+                    session.delete(link)
+                    session.commit()
+                session.delete(cat)
                 session.commit()
-            session.delete(cat)
+            session.delete(selected_coll)
             session.commit()
-        session.delete(selected_coll)
-        session.commit()
-        flash('Collection has been deleted!', 'success')
+            flash('Collection has been deleted!', 'success')
+        else:
+            flash('An error has occurred deleting collection', 'danger')
     else:
-        flash('An error has occurred deleting collection', 'danger')
+        flash('You do not have permission to perform that task. Please '
+              'contact site admin for assistance.', 'danger')
     return redirect(url_for('index'))
+
 
 @app.route('/links/collection/new/', methods=['GET', 'POST'])
 def new_collection():
@@ -226,33 +318,38 @@ def new_collection():
     if 'username' not in login_session:
         flash('You must login before adding a new collection.', 'warning')
         return redirect('/login')
-    form = forms.NewCollectionForm()
-    if request.method == 'POST':
-        new_coll = Collection(name = request.form['name'],
-                              description = request.form['description'],
-                              path = request.form['path'])
-        if form.validate_on_submit():
-            # Check if the path already exists here instead of forms.py
-            # to simplify forms.py by not having database logic in it.
-            try:
-                db_coll = session.query(Collection).filter_by(path=new_coll.path).one()
-            except:
-                path = None
-            else:
-                path = db_coll.path
-
-            if path != new_coll.path:
-                session.add(new_coll)
-                session.commit()
-                flash('New collection created!', 'success')
-                return redirect(url_for('index'))
-            else:
-                form.path.errors.append('Path must be unique!')
-    collections = session.query(Collection) # Needed for sidebar
-    return render_template('collectionnew.html',
+    if is_site_admin(login_session['user_id']):
+        form = forms.NewCollectionForm()
+        if request.method == 'POST':
+            new_coll = Collection(name = request.form['name'],
+                                  description = request.form['description'],
+                                  path = request.form['path'])
+            if form.validate_on_submit():
+                # Check if the path already exists here instead of forms.py
+                # to simplify forms.py by not having database logic in it.
+                try:
+                    db_coll = session.query(Collection).filter_by(
+                                                    path=new_coll.path).one()
+                except:
+                    path = None
+                else:
+                    path = db_coll.path
+                if path != new_coll.path:
+                    session.add(new_coll)
+                    session.commit()
+                    flash('New collection created!', 'success')
+                    return redirect(url_for('index'))
+                else:
+                    form.path.errors.append('Path must be unique!')
+        collections = session.query(Collection) # Needed for sidebar
+        return render_template('collectionnew.html',
                             form=form,
                             collections=collections)
-
+    else:
+        # User is not admin, so redirect instead of showing form
+        flash('An error occurred accessing New Collection page. Please '
+              'contact site admin for assistance.', 'danger')
+        return redirect(url_for('index'))
 
 @app.route('/links/<collection>/<category>/edit/', methods=['GET', 'POST'])
 def edit_category(collection, category):
@@ -260,77 +357,92 @@ def edit_category(collection, category):
     if 'username' not in login_session:
         flash('You must login before editing a category.', 'warning')
         return redirect('/login')
-    form = forms.EditCategoryForm()
-    try:
-        selected_coll = session.query(Collection).filter_by(path=collection).one()
-        selected_cat = (
-            session.query(Category).filter_by(
-                                        path=category,
-                                        coll_id=selected_coll.coll_id).one())
-    except:
-        abort(404)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            cat_name = request.form['name']
-            cat_desc = request.form['description']
-            # Make sure at least one field was changed before updating the
-            # database. Also, don't update fields that were not changed.
-            # This logic deals with multiple fields so did not add it
-            # to forms.py
-            if (selected_cat.name != cat_name
-                or selected_cat.description != cat_desc):
-                if selected_cat.name != cat_name:
-                    selected_cat.name = cat_name
-                if selected_cat.description != cat_desc:
-                    selected_cat.description = cat_desc
-                session.add(selected_cat)
-                session.commit()
-                flash('Category has been edited!', 'success')
-            else:
-                flash('No change was made to Category!', 'warning')
-            return redirect(url_for('show_category_links', collection=collection, category=category))
+    if is_site_admin(login_session['user_id']):
+        form = forms.EditCategoryForm()
+        try:
+            selected_coll = session.query(Collection).filter_by(path=collection).one()
+            selected_cat = (
+                session.query(Category).filter_by(
+                                            path=category,
+                                            coll_id=selected_coll.coll_id).one())
+        except:
+            abort(404)
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                cat_name = request.form['name']
+                cat_desc = request.form['description']
+                # Make sure at least one field was changed before updating the
+                # database. Also, don't update fields that were not changed.
+                # This logic deals with multiple fields so did not add it
+                # to forms.py
+                if (selected_cat.name != cat_name
+                    or selected_cat.description != cat_desc):
+                    if selected_cat.name != cat_name:
+                        selected_cat.name = cat_name
+                    if selected_cat.description != cat_desc:
+                        selected_cat.description = cat_desc
+                    session.add(selected_cat)
+                    session.commit()
+                    flash('Category has been edited!', 'success')
+                else:
+                    flash('No change was made to Category!', 'warning')
+                return redirect(url_for('show_category_links', collection=collection, category=category))
+        else:
+            # Populate description field from database when method is GET.
+            # Description gets updated here since it is a TextArea; name is updated
+            # in the template.
+            form.description.data = selected_cat.description
+        # Both collections and categories are needed for sidebar
+        categories = (
+            session.query(Category).filter_by(coll_id=selected_coll.coll_id))
+        collections = session.query(Collection)
+        return render_template('categoryedit.html', selected_coll=selected_coll,
+                                                    selected_cat=selected_cat,
+                                                    categories=categories,
+                                                    collections=collections,
+                                                    form=form)
     else:
-        # Populate description field from database when method is GET.
-        # Description gets updated here since it is a TextArea; name is updated
-        # in the template.
-        form.description.data = selected_cat.description
-    # Both collections and categories are needed for sidebar
-    categories = (
-        session.query(Category).filter_by(coll_id=selected_coll.coll_id))
-    collections = session.query(Collection)
-    return render_template('categoryedit.html', selected_coll=selected_coll,
-                                                selected_cat=selected_cat,
-                                                categories=categories,
-                                                collections=collections,
-                                                form=form)
+        flash('An error occurred accessing Edit Category page. Please '
+              'contact site admin for assistance.', 'danger')
+        return redirect(url_for('show_category_links', collection=collection,
+                                                       category=category))
 
 
 @app.route('/links/<collection>/<category>/delete/', methods=['POST'])
 def delete_category(collection, category):
     """Delete a Category"""
-    flash('You must login before deleting a category.', 'warning')
     if 'username' not in login_session:
+        flash('You must login before deleting a category.', 'warning')
         return redirect('/login')
-    try:
-        selected_coll = session.query(Collection).filter_by(path=collection).one()
-        selected_cat = (
-            session.query(Category).filter_by(
-                                        path=category,
-                                        coll_id=selected_coll.coll_id).one())
-    except:
-        abort(404)
-    links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
-    if selected_cat != []:
-        # Delete the Category's associated links first.
-        for link in links:
-            session.delete(link)
+    if is_site_admin(login_session['user_id']):
+        try:
+            selected_coll = session.query(Collection).filter_by(path=collection).one()
+            selected_cat = (
+                session.query(Category).filter_by(
+                                            path=category,
+                                            coll_id=selected_coll.coll_id).one())
+        except:
+            abort(404)
+        links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
+        if selected_cat != []:
+            # Delete the Category's associated links first.
+            for link in links:
+                session.delete(link)
+                session.commit()
+            session.delete(selected_cat)
             session.commit()
-        session.delete(selected_cat)
-        session.commit()
-        flash('Category has been deleted!', 'success')
+            flash('Category has been deleted!', 'success')
+        else:
+            flash('An error has occurred deleting category.', 'danger')
+            return redirect(url_for('show_category_links',
+                                        collection=collection,
+                                        category=category))
+        return redirect(url_for('show_category_links', collection=collection))
     else:
-        flash('An error has occurred deleting category', 'danger')
-    return redirect(url_for('show_category_links', collection=collection))
+        flash('You do not have permission to perform that task. Please '
+              'contact site admin for assistance.', 'danger')
+        return redirect(url_for('show_category_links', collection=collection,
+                                                           category=category))
 
 
 @app.route('/links/<collection>/category/new/', methods=['GET', 'POST'])
@@ -339,49 +451,55 @@ def new_category(collection, previous_cat=''):
     if 'username' not in login_session:
         flash('You must login before adding a new category.', 'warning')
         return redirect('/login')
-    form = forms.NewCategoryForm()
-    try:
-        selected_coll = session.query(Collection).filter_by(path=collection).one()
-    except:
-        abort(404)
-    if request.method == 'POST':
-        new_cat= Category(name = request.form['name'],
-                          description = request.form['description'],
-                          path = request.form['path'].lower(),
-                          coll_id = selected_coll.coll_id)
+    if is_site_admin(login_session['user_id']):
+        form = forms.NewCategoryForm()
+        try:
+            selected_coll = session.query(Collection).filter_by(
+                                                        path=collection).one()
+        except:
+            abort(404)
+        if request.method == 'POST':
+            new_cat= Category(name = request.form['name'],
+                              description = request.form['description'],
+                              path = request.form['path'].lower(),
+                              coll_id = selected_coll.coll_id)
 
-        if form.validate_on_submit():
-            # Check if the path already exists here instead of forms.py
-            # to simplify forms.py by not having database logic in it.
-            try:
-                db_cat = (
-                    session.query(Category).filter_by(
-                                    path=new_cat.path,
-                                    coll_id=selected_coll.coll_id).one())
-            except:
-                path = None
-            else:
-                path = db_cat.path
-            if new_cat.path != path:
-                session.add(new_cat)
-                session.commit()
-                flash('New category created!', 'success')
-                return redirect(url_for('show_category_links',
-                    collection=collection,
-                    category=new_cat.path))
-            else:
-                form.path.errors.append("Path must be unique!")
-    # Both categories and collections are needed for sidebar
-    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
-    collections = session.query(Collection)
-    return render_template('categorynew.html',
-                                selected_coll=selected_coll,
-                                previous_cat=previous_cat,
-                                selected_cat=previous_cat,
-                                categories=categories,
-                                collections=collections,
-                                form=form)
-
+            if form.validate_on_submit():
+                # Check if the path already exists here instead of forms.py
+                # to simplify forms.py by not having database logic in it.
+                try:
+                    db_cat = (
+                        session.query(Category).filter_by(
+                                        path=new_cat.path,
+                                        coll_id=selected_coll.coll_id).one())
+                except:
+                    path = None
+                else:
+                    path = db_cat.path
+                if new_cat.path != path:
+                    session.add(new_cat)
+                    session.commit()
+                    flash('New category created!', 'success')
+                    return redirect(url_for('show_category_links',
+                        collection=collection,
+                        category=new_cat.path))
+                else:
+                    form.path.errors.append("Path must be unique!")
+        # Both categories and collections are needed for sidebar
+        categories = session.query(Category).filter_by(
+                                                coll_id=selected_coll.coll_id)
+        collections = session.query(Collection)
+        return render_template('categorynew.html',
+                                    selected_coll=selected_coll,
+                                    previous_cat=previous_cat,
+                                    selected_cat=previous_cat,
+                                    categories=categories,
+                                    collections=collections,
+                                    form=form)
+    else:
+        flash('An error occurred accessing New Category page. Please '
+              'contact site admin for assistance.', 'danger')
+        return redirect(url_for('show_category_links', collection=collection))
 
 @app.route('/links/<collection>/<category>/<link_id>/edit/', methods=['GET', 'POST'])
 def edit_link(collection, category, link_id):
@@ -402,35 +520,45 @@ def edit_link(collection, category, link_id):
                                           cat_id=selected_cat.cat_id).one())
     except:
         abort(404)
-    if request.method == 'POST':
-        if form.validate_on_submit():
-            link_name = request.form['name']
-            link_url = request.form['url']
-            link_desc = request.form['description']
-            # Make sure at least one field was changed before updating the
-            # database. Also, don't update fields that were not changed.
-            # This logic deals with multiple fields so did not add it
-            # to forms.py
-            if (selected_link.name != link_name
-                or selected_link.url != link_url
-                or selected_link.description != link_desc):
-                if selected_link.name != link_name:
-                    selected_link.name = link_name
-                if selected_link.url != link_url:
-                    selected_link.url = link_url
-                if selected_link.description != link_desc:
-                    selected_link.description = link_desc
-                session.add(selected_link)
-                session.commit()
-                flash('Link has been edited!', 'success')
-            else:
-                flash('No change was made to Link!', 'warning')
-            return redirect(url_for('show_category_links', collection=collection, category=category))
+    is_admin = is_site_admin(login_session['user_id'])
+    is_link_submitter = login_session['user_id'] == selected_link.user_id
+    if is_link_submitter or is_admin:
+        if request.method == 'POST':
+            if form.validate_on_submit():
+                link_name = request.form['name']
+                link_url = request.form['url']
+                link_desc = request.form['description']
+                # Make sure at least one field was changed before updating the
+                # database. Also, don't update fields that were not changed.
+                # This logic deals with multiple fields so did not add it
+                # to forms.py
+                if (selected_link.name != link_name
+                    or selected_link.url != link_url
+                    or selected_link.description != link_desc):
+                    if selected_link.name != link_name:
+                        selected_link.name = link_name
+                    if selected_link.url != link_url:
+                        selected_link.url = link_url
+                    if selected_link.description != link_desc:
+                        selected_link.description = link_desc
+                    session.add(selected_link)
+                    session.commit()
+                    flash('Link has been edited!', 'success')
+                else:
+                    flash('No change was made to Link!', 'warning')
+                return redirect(url_for('show_category_links',
+                                            collection=collection,
+                                            category=category))
+        else:
+            # Populate description field from database when method is GET.
+            # Description gets updated here since it is a TextArea;
+            # name and url are updated in the template.
+            form.description.data = selected_link.description
     else:
-        # Populate description field from database when method is GET.
-        # Description gets updated here since it is a TextArea;
-        # name and url are updated in the template.
-        form.description.data = selected_link.description
+        flash('An error occurred accessing Edit Link page. Please '
+              'contact site admin for assistance.', 'danger')
+        return redirect(url_for('show_category_links', collection=collection,
+                                                       category=category))
     # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
     collections = session.query(Collection)
@@ -458,9 +586,15 @@ def delete_link(collection, category, link_id):
         selected_link = session.query(Link).filter_by(link_id=link_id).one()
     except:
         abort(404)
-    session.delete(selected_link)
-    session.commit()
-    flash('Link has been deleted.', 'success')
+    is_admin = is_site_admin(login_session['user_id'])
+    is_link_submitter = login_session['user_id'] == selected_link.user_id
+    if is_link_submitter or is_admin:
+        session.delete(selected_link)
+        session.commit()
+        flash('Link has been deleted.', 'success')
+    else:
+        flash('You do not have permission to perform that task. Please '
+              'contact site admin for assistance.', 'danger')
     return redirect(url_for('show_category_links', collection=collection,
                                                     category=category))
 
@@ -471,60 +605,60 @@ def new_link(collection, category):
     if 'username' not in login_session:
         flash('You must login before adding a new link.', 'warning')
         return redirect('/login')
-    form = forms.NewLinkForm()
-    try:
-        selected_coll = session.query(Collection).filter_by(
-                                                    path=collection).one()
-        selected_cat = (
-            session.query(Category).filter_by(
-                                        path=category,
-                                        coll_id = selected_coll.coll_id).one())
-    except:
-        abort(404)
-    if request.method == 'POST':
-        new_link= Link(name = request.form['name'],
-                       url = request.form['url'],
-                       description = request.form['description'],
-                       submitter = 'example@example.com', # WILL CHANGE WHEN AUTH IMPLEMENTED
-                       cat_id = selected_cat.cat_id,
-                       coll_id = selected_coll.coll_id)
-        if form.validate_on_submit():
-            session.add(new_link)
-            session.commit()
-            flash('New link added!', 'success')
-            return redirect(url_for('show_category_links',
-                                      collection=collection,
-                                      category=category))
-    # Both categories and collections are needed for sidebar
-    categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
-    collections = session.query(Collection)
-    return render_template('linknew.html',
-                            collection=collection,
-                            category=category,
-                            selected_coll=selected_coll,
-                            selected_cat=selected_cat,
-                            categories=categories,
-                            collections=collections,
-                            form=form)
+    else:
+        form = forms.NewLinkForm()
+        try:
+            selected_coll = session.query(Collection).filter_by(
+                                                        path=collection).one()
+            selected_cat = (
+                session.query(Category).filter_by(
+                                            path=category,
+                                            coll_id = selected_coll.coll_id).one())
+        except:
+            abort(404)
+        if request.method == 'POST':
+            new_link= Link(name = request.form['name'],
+                           url = request.form['url'],
+                           description = request.form['description'],
+                           cat_id = selected_cat.cat_id,
+                           coll_id = selected_coll.coll_id,
+                           user_id = login_session['user_id'])
+            if form.validate_on_submit():
+                session.add(new_link)
+                session.commit()
+                flash('New link added!', 'success')
+                return redirect(url_for('show_category_links',
+                                          collection=collection,
+                                          category=category))
+        # Both categories and collections are needed for sidebar
+        categories = session.query(Category).filter_by(coll_id=selected_coll.coll_id)
+        collections = session.query(Collection)
+        return render_template('linknew.html',
+                                collection=collection,
+                                category=category,
+                                selected_coll=selected_coll,
+                                selected_cat=selected_cat,
+                                categories=categories,
+                                collections=collections,
+                                form=form)
+
 
 # Login and connection/disconnection code adapted from Udacity's
 # Authentication & Authorization: OAuth Course
 # www.udacity.com/course/authentication-authorization-oauth--ud330
-
 @app.route('/login')
 def login():
     """Render Login page"""
     state = ''.join(random.choice
                 (string.ascii_uppercase + string.digits) for x in xrange(32))
     login_session['state'] = state
-    return render_template('login.html', CLIENT_ID = CLIENT_ID)
+    return render_template('login.html', CLIENT_ID=CLIENT_ID)
 
 
 @csrf.exempt
 @app.route('/gconnect', methods=['POST'])
 def gconnect():
     """Process Google+ account Login"""
-    print 'in gconnect'
     # Validate state token
     if request.args.get('state') != login_session['state']:
         response = make_response(json.dumps('Invalid state parameter.'), 401)
@@ -594,22 +728,30 @@ def gconnect():
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
-   # see if user exists, if it doesn't make a new one
+    # see if user exists, if it doesn't make a new one
     user_id = getUserID(login_session['email'])
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
+    if user_id:
+        output = ''
+        output += '<h3>Welcome, '
+        output += login_session['username']
+        output += '!</h3>'
+        output += '<img src="'
+        output += login_session['picture']
+        output += ' " style = "width: 100px; height: 100px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
+        flash("You are now logged in as %s" % login_session['username'], 'success')
+        print "done!"
+        return output
+    else:
+        output=''
+        output+= '<p>An error occured logging you in.</p>'
+        gdisconnect()
+        flash('An error occurred logging you in. Please contact site admin '
+              'for assistance.', 'danger')
+        return output
 
-    output = ''
-    output += '<h3>Welcome, '
-    output += login_session['username']
-    output += '!</h3>'
-    output += '<img src="'
-    output += login_session['picture']
-    output += ' " style = "width: 100px; height: 100px;border-radius: 150px;-webkit-border-radius: 150px;-moz-border-radius: 150px;"> '
-    flash("You are now logged in as %s" % login_session['username'], 'success')
-    print "done!"
-    return output
 
 
 @app.route('/gdisconnect')
@@ -627,6 +769,7 @@ def gdisconnect():
         del login_session['access_token']
         del login_session['gplus_id']
         del login_session['username']
+        del login_session['user_id']
         del login_session['email']
         del login_session['picture']
         response = make_response(json.dumps('Successfully disconnected.'), 200)
@@ -637,32 +780,6 @@ def gdisconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
 
-# Code for Helper Functions adapted from Udacity's
-# Authentication & Authorization: OAuth Course
-# www.udacity.com/course/authentication-authorization-oauth--ud330
-def createUser(login_session):
-    """Add logged in user to database"""
-    newUser = User(name=login_session['username'], provider='google', email=login_session[
-                   'email'], picture=login_session['picture'])
-    session.add(newUser)
-    session.commit()
-    user = session.query(User).filter_by(email=login_session['email']).one()
-    return user.user_id
-
-
-def getUserInfo(user_id):
-    """Look up user in database by user id and return record"""
-    user = session.query(User).filter_by(id=user_id).one()
-    return user
-
-
-def getUserID(email):
-    """Look up user in database by email and return record"""
-    try:
-        user = session.query(User).filter_by(email=email).one()
-        return user.user_id
-    except:
-        return None
 
 
 if __name__ == '__main__':

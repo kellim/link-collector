@@ -4,8 +4,10 @@
   {% if selected_cat %}
     <div class="cats">
       <h2 class="page-title">{{ selected_cat.name }}
-        <a href="{{ url_for('edit_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Edit Category</span><span class="fa fa-pencil update" aria-hidden="true"></span></a>
-        <a href="#categorydelete" data-toggle="modal" data-target="#categorydelete"><span class="sr-only">Delete Category</span><span class="fa fa-trash-o update" aria-hidden="true"></span></a>
+      {% if is_admin %}
+          <a href="{{ url_for('edit_category', collection=selected_coll.path, category=selected_cat.path) }}"><span class="sr-only">Edit Category</span><span class="fa fa-pencil update" aria-hidden="true"></span></a>
+          <a href="#categorydelete" data-toggle="modal" data-target="#categorydelete"><span class="sr-only">Delete Category</span><span class="fa fa-trash-o update" aria-hidden="true"></span></a>
+      {% endif %}
         </h2>
         <small><em> {{ selected_cat.description }}</em></small>
         <hr>
@@ -13,7 +15,9 @@
   {% else %}
       <p class="lead text-center">There are currently no categories for this collection.</p>
       <p class="text-center">
+      {% if is_admin %}
         <a class="btn btn-primary btn-lg" href="{{ url_for('new_category', collection=selected_coll.path) }}">Add New Category</a>
+      {% endif %}
       </p>
   {% endif %}
 
@@ -23,8 +27,10 @@
       {% for link in links %}
         <li class="link main-item">
           <a href="{{ link.url }}" target="_blank" rel="nofollow">{{ link.name }}</a>
-          <a href="{{ url_for('edit_link', collection=selected_coll.path, category=selected_cat.path, link_id=link.link_id) }}"><span class="sr-only">Edit Link</span><span class="fa fa-pencil update" aria-hidden="true"></span></a>
-          <a href="/links/{{selected_coll.path}}/{{selected_cat.path}}/_del-link/{{ link.link_id }}" data-target="#linkdelete"><span class="sr-only">Delete Link</span><span class="fa fa-trash-o update" aria-hidden="true"></span></a>
+          {% if is_admin or link.user_id == session.user_id %}
+            <a href="{{ url_for('edit_link', collection=selected_coll.path, category=selected_cat.path, link_id=link.link_id) }}"><span class="sr-only">Edit Link</span><span class="fa fa-pencil update" aria-hidden="true"></span></a>
+            <a href="/links/{{selected_coll.path}}/{{selected_cat.path}}/_del-link/{{ link.link_id }}" data-target="#linkdelete"><span class="sr-only">Delete Link</span><span class="fa fa-trash-o update" aria-hidden="true"></span></a>
+          {% endif %}
           <br>{{ link.description }}
         </li>
       {% endfor %}
@@ -34,13 +40,21 @@
   {% if selected_cat %}
     <div class="add-link">
     {% if links.count() >= 1 %}
-      <a class="btn btn-primary btn-add" href="{{ url_for('new_link', collection=collection, category=selected_cat.path) }}">
+      {% if session.user_id %}
+        <a class="btn btn-primary btn-add" href="{{ url_for('new_link', collection=collection, category=selected_cat.path) }}">
          Add New Link</a>
-    {% else %}
+       {% else %}
+        <a class="btn btn-primary" href="{{ url_for('login') }}">Login to add link</a>
+       {% endif %}
+     {% else %}
       <p class="lead text-center">There are currently no links for this category.</p>
-      <p class="text-center">
-        <a class="btn btn-primary btn-lg" href="{{ url_for('new_link', collection=collection, category=selected_cat.path) }}">Add New Link</a>
-      </p>
+      {% if session.user_id %}
+        <p class="text-center">
+          <a class="btn btn-primary btn-lg" href="{{ url_for('new_link', collection=collection, category=selected_cat.path) }}">Add New Link</a>
+        </p>
+      {% else %}
+        <p class="text-center"><a class="btn btn-primary btn-lg" href="{{ url_for('login') }}">Login to add link</a></p>
+      {% endif %}
     {% endif %}
     </div>
   {% endif %}

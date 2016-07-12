@@ -3,7 +3,6 @@
 {% block main %}
   <h2 class="form-title">Edit Collection: {{ selected_coll.name }}</h2>
   <hr>
-  {% include "flashmessages.html" %}
     <form class="form-horizontal main-form" action="{{ url_for('edit_collection', collection=selected_coll.path) }}" method = "POST" role="form">
         {{ form.csrf_token }}
         <div>
