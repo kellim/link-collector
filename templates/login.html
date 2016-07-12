@@ -29,7 +29,7 @@
       if (authResult['code']) {
         // Hide the sign-in buttons now that the user is authorized
         $('#signInButton').attr('style', 'display: none');
-        $('#fbSignInButton').attr('style', 'display: none');
+        $('.fb-login-button').attr('style', 'display: none');
         // Send the one-time-use code to the server, if the server responds, write a 'login successful' message to the web page and then redirect back to the main page
         $.ajax({
           type: 'POST',
@@ -71,10 +71,11 @@
     var js, fjs = d.getElementsByTagName(s)[0];
     if (d.getElementById(id)) return;
     js = d.createElement(s); js.id = id;
-    js.src = "//connect.facebook.net/en_US/sdk.js";
+    js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&version=v2.6";
     fjs.parentNode.insertBefore(js, fjs);
   }(document, 'script', 'facebook-jssdk'));
-  // Here we run a very simple test of the Graph API after login is
+
+    // Here we run a very simple test of the Graph API after login is
   // successful.  See statusChangeCallback() for when this call is made.
   function sendTokenToServer() {
     var access_token = FB.getAuthResponse()['accessToken'];
@@ -93,7 +94,7 @@
         if (result) {
           // Hide the sign-in buttons now that the user is authorized
           $('#signInButton').attr('style', 'display: none');
-          $('#fbSignInButton').attr('style', 'display: none');
+          $('.fb-login-button').attr('style', 'display: none');
           $('#result').html('Login Successful!</br>'+ result + '</br>Redirecting...')
          setTimeout(function() {
           window.location.href = "{{ url_for('index') }}";
@@ -108,18 +109,9 @@
     });
   }
 </script>
-
-
-<button id="fbSignInButton">
-
-
-          <fb:login-button scope="public_profile,email" onlogin="sendTokenToServer();">
-<a href='javascript:sendTokenToServer()'>Login with Facebook</a>
-
-</fb:login-button>
-
-
-        </button>
+<div class="fb-login-button" data-max-rows="1" data-size="xlarge" data-show-faces="false"
+     scope="public_profile,email" onlogin="sendTokenToServer();" data-auto-logout-link="false" >
+</div>
 <!--END FACEBOOK SIGN IN -->
 
 {% include "csrftoken.html" %}
