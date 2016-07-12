@@ -13,8 +13,10 @@
           <div class="coll col-sm-6">
             <h2 class="coll-name">
               <a href="{{ url_for('show_category_links', collection=coll.path) }}">{{ coll.name }}</a>
-              <a href="{{ url_for('edit_collection', collection=coll.path) }}"><span class="sr-only">Edit Collection:</span><span class="fa fa-pencil update" aria-hidden="true"></span></a>
-              <a href="/_del-coll/{{ coll.path }}" data-target="#collectiondelete"><span class="sr-only">Delete Collection:</span><span class="fa fa-trash-o update" aria-hidden="true"></span></a>
+              {% if is_admin %}
+                <a href="{{ url_for('edit_collection', collection=coll.path) }}"><span class="sr-only">Edit Collection:</span><span class="fa fa-pencil update" aria-hidden="true"></span></a>
+                <a href="/_del-coll/{{ coll.path }}" data-target="#collectiondelete"><span class="sr-only">Delete Collection:</span><span class="fa fa-trash-o update" aria-hidden="true"></span></a>
+              {% endif %}
             </h2>
             {{ coll.description }}
           </div>
@@ -23,14 +25,18 @@
       {% endif %}
         {% set count = count + 1 %}
     {% endfor %}
-    <div class="col-sm-12 text-center">
-      <a class="btn btn-primary btn-add" href="{{ url_for('new_collection') }}">Add New Collection</a>
-    </div>
+    {% if is_admin %}
+      <div class="col-sm-12 text-center">
+        <a class="btn btn-primary btn-add" href="{{ url_for('new_collection') }}">Add New Collection</a>
+      </div>
+    {% endif %}
   {% else %}
     <p class="lead text-center">There are currently no Collections.</p>
-    <p class="text-center">
-      <a class="btn btn-primary btn-lg" href="{{ url_for('new_collection') }}">Add New Collection</a>
-    </p>
+    {% if is_admin %}
+      <p class="text-center">
+        <a class="btn btn-primary btn-lg" href="{{ url_for('new_collection') }}">Add New Collection</a>
+      </p>
+    {% endif %}
   {% endif %}
   {% include "csrftoken.html" %}
   {% block modal %}

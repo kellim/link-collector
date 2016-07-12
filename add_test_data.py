@@ -9,7 +9,7 @@ DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # add dummy user
-User1 = User(provider="test", name="A. Test", email="test@example.com")
+User1 = User(provider="test", name="A. Test", email="test@example.com", is_admin=False)
 session.add(User1)
 session.commit()
 

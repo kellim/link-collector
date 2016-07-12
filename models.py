@@ -1,7 +1,7 @@
 import os
 import sys
 from sqlalchemy import (Column, DateTime, ForeignKey, Integer, String,
-                        create_engine, func)
+                        Boolean, create_engine, func)
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import relationship
 
@@ -17,6 +17,7 @@ class User(Base):
   name = Column(String(250), nullable=False)
   email = Column(String(250), nullable=False)
   picture = Column(String(250))
+  is_admin = Column(Boolean, nullable=False)
 
 
 class Collection(Base):
