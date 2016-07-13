@@ -17,6 +17,9 @@ hr {
   margin: 10px 15px 15px 0;
 }
 
+a {
+  color: #337ab7;
+}
 /* Removes the blue border around delete (trash icon) link after
  * clicking cancel button on modal */
 a:active,
@@ -24,6 +27,9 @@ a:focus {
   outline: none;
 }
 
+small {
+  color: #777;
+}
 
 /* Removes the blue border around buttons in modal after
  * the buttons are clicked */
@@ -62,6 +68,17 @@ button:focus {
   width: 97%;
 }
 
+.form-title,
+.page-title,
+.help {
+  font-family: 'Lora', serif;
+  color: #777;
+}
+
+.coll-name {
+  font-family: 'Lora', serif;
+}
+
 .page-title {
   margin: 0 0 3px 0;
 }
@@ -71,7 +88,7 @@ button:focus {
 }
 
 .info {
-  font-size: 18px;
+  font-size: 1.1em;
   width: 98.5%;
 }
 
@@ -108,6 +125,7 @@ button:focus {
 }
 
 .selected-cat {
+  color: #777;
   font-weight: bold;
 }
 
@@ -145,6 +163,25 @@ button:focus {
 
 .alert {
   margin: 0 0 15px -30px;
+}
+
+.navbar-nav,
+.navbar-brand,
+.panel-title,
+.control-label,
+.modal-title,
+.btn {
+  font-family: 'Lora', serif;
+}
+
+.panel-title,
+.control-label,
+.modal-title {
+  color: #777;
+}
+
+.control-label {
+  font-weight: normal;
 }
 
 /* Media Queries */
