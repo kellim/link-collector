@@ -219,18 +219,21 @@ def link_redirect():
 @app.route('/about')
 def about():
     """Render about page"""
-    return render_template('about.html')
+    collections = session.query(Collection)  # Needed for sidebar
+    return render_template('about.html', collections=collections)
 
 
 @app.route('/contact')
 def contact():
     """Render contact page"""
-    return render_template('contact.html')
+    collections = session.query(Collection)  # Needed for sidebar
+    return render_template('contact.html', collections=collections)
 
 @app.route('/help')
 def help():
     """Render help page"""
-    return render_template('help.html')
+    collections = session.query(Collection)  # Needed for sidebar
+    return render_template('help.html', collections=collections)
 
 
 @csrf.exempt
