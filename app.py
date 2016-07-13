@@ -463,7 +463,7 @@ def delete_category(collection, category):
         try:
             selected_coll = session.query(Collection).filter_by(
                                                         path=collection).one()
-            session.query(Category).filter_by(
+            selected_cat = session.query(Category).filter_by(
                                         path=category,
                                         coll_id=selected_coll.coll_id).one()
         except:
