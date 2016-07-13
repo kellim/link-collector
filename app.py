@@ -227,6 +227,11 @@ def contact():
     """Render contact page"""
     return render_template('contact.html')
 
+@app.route('/help')
+def help():
+    """Render help page"""
+    return render_template('help.html')
+
 
 @csrf.exempt
 @app.route('/links/collection/select/', methods=['GET', 'POST'])

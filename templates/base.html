@@ -21,7 +21,7 @@
     <!-- <li><a href="{{ url_for('index') }}">Home</a></li> -->
       <li><a href="{{ url_for('about') }}">About</a></li>
       <li><a href="{{ url_for('contact') }}">Contact</a></li>
-      <li><a href="#">Help</a></li>
+      <li><a href="{{ url_for('help') }}">Help</a></li>
       <li><p class="navbar-btn">
           {% if not session.user_id %}
             <a href="{{ url_for('login') }}" class="btn btn-primary btn-login">Login</a>
