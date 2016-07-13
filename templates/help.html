@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+{% block title %}{{ super() }} Help{% endblock %}
+{% block main %}
+<h2 class="page-title">Help</h2>
+<hr>
+<h3>Collections, Categories, and Links</h3>
+<p>Collections are a parent category of the type of links you want to
+save, with categories being subcategories of the collection. Each category
+has links within it that relate to that category.</p>
+
+<p>For instance you might have a Collection called "Recipes", and
+within that collection you have categories like "Breakfast", "Entrees", and "Desserts".
+You would then add links to breakfast recipes in the "Breakfast" category, and links to
+"Desserts" in the desserts category, etc.</p>
+
+<h3>Navigating the Site</h3>
+<p>The homepage lists collections. Once you click on a collection, it'll take you to
+a page that lists categories with links. You'll start out on the default category, but
+can choose a different category from the sidebar. You can also choose a
+different collection from the sidebar.</p>
+
+<h3>Logging in to the Site</h3>
+<p>Currently, you can log in to the site with a Google+ or a Facebook account. If you
+do not have either of these types of accounts, you'll need to obtain one to be able to
+login to this site.</p>
+
+<h3>Adding, Editing, and Deleting Links</h3>
+<p>Login with either Google+ or Facebook to add a link to the appropriate Collection and
+Category. Once you sign in, you'll see an "Add New Link" button at the bottom of the
+page for the page that has a category and it's associated links on it.</p>
+
+<p>You can only edit and delete links that you have added. If you added the link, it
+will have a pencil icon and a trash can icon next to it. The pencil icon will take you
+to a form where you can edit the link. The trash can icon will delete the link once
+you confirm you want to delete it.</p>
+
+<h3>Issues, Suggestions, etc</h3>
+If you have any issues with the site, or have suggestions, such as collections or
+categories you'd like to see added to the site, click the Contact link in the top
+navbar to contact the site developer/admin about it.
+
+
+{% include "csrftoken.html" %}
+{% endblock %}
