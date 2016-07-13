@@ -75,6 +75,10 @@ button:focus {
   width: 98.5%;
 }
 
+.help {
+  font-size: 20px;
+}
+
 /* Forms */
 
 .form-buttons {
