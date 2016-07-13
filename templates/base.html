@@ -3,9 +3,8 @@
 {% block html_attribs %} lang="en"{% endblock %}
 {% block styles %}
   {{ super() }}
-  <link href="//netdna.bootstrapcdn.com/font-awesome/4.0.3/css/font-awesome.css" rel="stylesheet">
-  <link rel="stylesheet" href="/static/font-awesome/css/font-awesome.min.css">
   <link rel="stylesheet" href="{{url_for('static', filename='font-awesome/css/font-awesome.min.css') }}">
+  <link href="https://fonts.googleapis.com/css?family=Lora" rel="stylesheet">
   <link rel="stylesheet" href="{{ url_for('static', filename='styles.css') }}">
 {% endblock %}
 {% block scripts %}
