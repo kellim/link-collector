@@ -93,6 +93,66 @@ def is_site_admin(user_id):
     return user.is_admin
 
 
+@app.route('/links/JSON')
+def collectionsJSON():
+    """Return all collections in JSON."""
+    try:
+        collections = session.query(Collection)
+    except:
+        collections=[]
+    return jsonify(collections=[coll.serialize for coll in collections])
+
+
+@app.route('/links/<collection>/JSON')
+def categoriesJSON(collection):
+    """Return categories for a collection in JSON."""
+    try:
+        selected_coll = session.query(Collection).filter_by(
+                                            path=collection).one()
+        categories = session.query(Category).filter_by(
+                                            coll_id=selected_coll.coll_id)
+    except:
+        categories=[]
+    return jsonify(categories=[cat.serialize for cat in categories])
+
+
+@app.route('/links/<collection>/<category>/JSON')
+def linksJSON(collection, category):
+    """Return links for a collection/category in JSON."""
+    try:
+        selected_coll = session.query(Collection).filter_by(
+                                                    path=collection).one()
+        selected_cat = (
+        session.query(Category).filter_by(
+                            path=category,
+                            coll_id=selected_coll.coll_id).one())
+
+        links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
+    except:
+        links=[]
+    return jsonify(links=[link.serialize for link in links])
+
+
+@app.route('/links/<collection>/<category>/<link_id>/JSON')
+def linkJSON(collection, category, link_id):
+    """Return link for given collection/category and link ID in
+       JSON."""
+    try:
+        selected_coll = session.query(Collection).filter_by(
+                                                    path=collection).one()
+        selected_cat = (
+        session.query(Category).filter_by(
+                            path=category,
+                            coll_id=selected_coll.coll_id).one())
+
+        selected_link = session.query(Link).filter_by(
+                                            link_id=link_id).one()
+    except:
+        return jsonify(link='')
+    else:
+        return jsonify(link=selected_link.serialize)
+
+
 @app.route('/_auth-to-del')
 def is_auth_to_deleteJSON():
     """Returns True in JSON if user is authorized to delete item"""
