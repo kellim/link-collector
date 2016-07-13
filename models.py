@@ -8,16 +8,15 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
-
 class User(Base):
-  __tablename__ = 'user'
+    __tablename__ = 'user'
 
-  user_id = Column(Integer, primary_key=True)
-  provider = Column(String(8), nullable=False)
-  name = Column(String(250), nullable=False)
-  email = Column(String(250), nullable=False)
-  picture = Column(String(250))
-  is_admin = Column(Boolean, nullable=False)
+    user_id = Column(Integer, primary_key=True)
+    provider = Column(String(8), nullable=False)
+    name = Column(String(250), nullable=False)
+    email = Column(String(250), nullable=False)
+    picture = Column(String(250))
+    is_admin = Column(Boolean, nullable=False)
 
 
 class Collection(Base):
@@ -28,16 +27,16 @@ class Collection(Base):
     description = Column(String(130))
     submit_date = Column(DateTime, default=func.now())
     path = Column(String(50), nullable=False)
-    user_id = Column(Integer,ForeignKey('user.user_id'))
+    user_id = Column(Integer, ForeignKey('user.user_id'))
     user = relationship(User)
 
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'name'         : self.name,
-            'description'  : self.description,
-            'path'         : self.path
+            'name':         self.name,
+            'description':  self.description,
+            'path':         self.path
         }
 
 
@@ -51,16 +50,16 @@ class Category(Base):
     path = Column(String(50), nullable=False)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
-    user_id = Column(Integer,ForeignKey('user.user_id'))
+    user_id = Column(Integer, ForeignKey('user.user_id'))
     user = relationship(User)
 
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'name'         : self.name,
-            'description'  : self.description,
-            'path'         : self.path
+            'name':          self.name,
+            'description':   self.description,
+            'path':          self.path
         }
 
 
@@ -76,17 +75,17 @@ class Link(Base):
     category = relationship(Category)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
-    user_id = Column(Integer,ForeignKey('user.user_id'))
+    user_id = Column(Integer, ForeignKey('user.user_id'))
     user = relationship(User)
 
     @property
     def serialize(self):
         """Return object data in easily serializeable format"""
         return {
-            'id'           : self.link_id,
-            'name'         : self.name,
-            'url'          : self.url,
-            'description'  : self.description,
+            'id':           self.link_id,
+            'name':         self.name,
+            'url':          self.url,
+            'description':  self.description,
         }
 
 

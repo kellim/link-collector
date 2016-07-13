@@ -39,9 +39,9 @@
     {% endif %}
   {% endif %}
   {% include "csrftoken.html" %}
-  {% block modal %}
+{% endblock %}
+{% block modal %}
     {% if selected_coll %}
       {% include "collectiondelete.html" %}
     {% endif %}
-  {% endblock %}
 {% endblock %}
