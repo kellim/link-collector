@@ -99,7 +99,7 @@ def collectionsJSON():
     try:
         collections = session.query(Collection)
     except:
-        collections=[]
+        collections = []
     return jsonify(collections=[coll.serialize for coll in collections])
 
 
@@ -112,7 +112,7 @@ def categoriesJSON(collection):
         categories = session.query(Category).filter_by(
                                             coll_id=selected_coll.coll_id)
     except:
-        categories=[]
+        categories = []
     return jsonify(categories=[cat.serialize for cat in categories])
 
 
@@ -123,13 +123,13 @@ def linksJSON(collection, category):
         selected_coll = session.query(Collection).filter_by(
                                                     path=collection).one()
         selected_cat = (
-        session.query(Category).filter_by(
-                            path=category,
-                            coll_id=selected_coll.coll_id).one())
+            session.query(Category).filter_by(
+                                path=category,
+                                coll_id=selected_coll.coll_id).one())
 
         links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
     except:
-        links=[]
+        links = []
     return jsonify(links=[link.serialize for link in links])
 
 
@@ -141,7 +141,7 @@ def linkJSON(collection, category, link_id):
         selected_coll = session.query(Collection).filter_by(
                                                     path=collection).one()
         selected_cat = (
-        session.query(Category).filter_by(
+            session.query(Category).filter_by(
                             path=category,
                             coll_id=selected_coll.coll_id).one())
 

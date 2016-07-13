@@ -10,19 +10,21 @@ class EditCollectionForm(Form):
 
     name = (
         StringField('Name: ',
-                    validators=[DataRequired(),
-                                Length(min=2, max=50),
-                                Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
-                                       message=input_error)
-                                ]))
+                    validators=[
+                        DataRequired(),
+                        Length(min=2, max=50),
+                        Regexp(regex=r'^[a-zA-Z0-9_,\-_();:\' ]+$',
+                               message=input_error)
+                               ]))
     description = (
         TextAreaField('Description: ',
-                      validators=[DataRequired(),
-                                  Length(min=2, max=130),
-                                 Regexp(
-                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
-                                    message=input_error)
-                                 ]))
+                      validators=[
+                          DataRequired(),
+                          Length(min=2, max=130),
+                          Regexp(regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                 message=input_error)
+                                  ]))
+
 
 class NewCollectionForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
@@ -42,21 +44,22 @@ class NewCollectionForm(Form):
                                        message=input_error)
                                 ]))
     path = StringField('Path: ',
-                        description=path_desc,
-                        validators = [DataRequired(),
-                                      Length(min=2, max=50),
-                                     Regexp(regex=r'^[a-zA-Z0-9\-]+$',
-                                            message=path_input_error +
-                                                    ' ' + path_desc)
-                                     ])
+                       description=path_desc,
+                       validators=[
+                           DataRequired(),
+                           Length(min=2, max=50),
+                           Regexp(regex=r'^[a-zA-Z0-9\-]+$',
+                                  message=path_input_error +
+                                  ' ' + path_desc)
+                                   ])
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
                                   Length(min=2, max=130),
                                   Regexp(
-                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
-                                    message=input_error)
-                                 ]))
+                                      regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                      message=input_error)
+                                  ]))
 
 
 class EditCategoryForm(Form):
@@ -74,10 +77,11 @@ class EditCategoryForm(Form):
         TextAreaField('Description: ',
                       validators=[DataRequired(),
                                   Length(min=2, max=200),
-                                 Regexp(
-                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
-                                    message=input_error)
-                                 ]))
+                                  Regexp(
+                                      regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                      message=input_error)
+                                  ]))
+
 
 class NewCategoryForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
@@ -97,21 +101,21 @@ class NewCategoryForm(Form):
                                        message=input_error)
                                 ]))
     path = StringField('Path: ',
-                        description=path_desc,
-                        validators = [DataRequired(),
-                                      Length(min=2, max=50),
-                                      Regexp(regex=r'^[a-zA-Z0-9\-]+$',
-                                            message=path_input_error + ' ' +
-                                                    path_desc)
-                                     ])
+                       description=path_desc,
+                       validators=[DataRequired(),
+                                   Length(min=2, max=50),
+                                   Regexp(regex=r'^[a-zA-Z0-9\-]+$',
+                                          message=path_input_error + ' ' +
+                                          path_desc)
+                                   ])
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
                                   Length(min=2, max=200),
                                   Regexp(
-                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
-                                    message=input_error)
-                                 ]))
+                                      regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                      message=input_error)
+                                  ]))
 
 
 class EditLinkForm(Form):
@@ -130,21 +134,23 @@ class EditLinkForm(Form):
                                        message=input_error)
                                 ]))
     url = StringField('URL: ',
-                        description = url_desc,
-                        validators = [DataRequired(),
-                                      Length(min=10, max=200),
-                                      URL(require_tld=True,
-                                          message=url_input_error + ' ' +
-                                                  url_desc)
-                                     ])
+                      description=url_desc,
+                      validators=[DataRequired(),
+                                  Length(min=10, max=200),
+                                  URL(require_tld=True,
+                                      message=url_input_error + ' ' +
+                                      url_desc)
+                                  ])
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
                                   Length(min=2, max=200),
                                   Regexp(
-                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
-                                    message=input_error)
-                                 ]))
+                                      regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                      message=input_error)
+                                  ]))
+
+
 class NewLinkForm(Form):
     input_error = ('Invalid input. Please remove special characters and '
                    'try again.')
@@ -161,18 +167,18 @@ class NewLinkForm(Form):
                                        message=input_error)
                                 ]))
     url = StringField('URL: ',
-                        description = url_desc,
-                        validators = [DataRequired(),
-                                      Length(min=10, max=200),
-                                      URL(require_tld=True,
-                                          message=url_input_error + ' ' +
-                                                  url_desc)
-                                     ])
+                      description=url_desc,
+                      validators=[DataRequired(),
+                                  Length(min=10, max=200),
+                                  URL(require_tld=True,
+                                      message=url_input_error + ' ' +
+                                      url_desc)
+                                  ])
     description = (
         TextAreaField('Description: ',
                       validators=[DataRequired(),
                                   Length(min=2, max=200),
-                                 Regexp(
-                                    regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
-                                    message=input_error)
-                                 ]))
+                                  Regexp(
+                                      regex=r'^[a-zA-Z0-9_.,\-_();:\'?! ]+$',
+                                      message=input_error)
+                                  ]))
