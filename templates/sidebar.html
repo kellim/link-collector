@@ -7,9 +7,10 @@
     <div class="panel-body">
       <form id="frm-select-coll" action="{{ url_for('select_collection') }}" method="POST">
       <select id="select-coll" name="select-coll" class="form-control">
+        <option {% if not selected_coll %}selected="selected"{% endif %} disabled="disabled">Select Collection</option>
         {% for coll in collections %}
           <option value="{{ coll.path }}"
-                  {% if selected_cat and coll == selected_coll %}selected="selected"{% endif %}>{{ coll.name }}
+                  {% if coll == selected_coll %}selected="selected"{% endif %}>{{ coll.name }}
           </option>
         {% endfor %}
       </select>
