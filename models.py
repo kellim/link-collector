@@ -31,6 +31,15 @@ class Collection(Base):
     user_id = Column(Integer,ForeignKey('user.user_id'))
     user = relationship(User)
 
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name'         : self.name,
+            'description'  : self.description,
+            'path'         : self.path
+        }
+
 
 class Category(Base):
     __tablename__ = 'category'
@@ -44,6 +53,15 @@ class Category(Base):
     collection = relationship(Collection)
     user_id = Column(Integer,ForeignKey('user.user_id'))
     user = relationship(User)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'name'         : self.name,
+            'description'  : self.description,
+            'path'         : self.path
+        }
 
 
 class Link(Base):
@@ -60,6 +78,17 @@ class Link(Base):
     collection = relationship(Collection)
     user_id = Column(Integer,ForeignKey('user.user_id'))
     user = relationship(User)
+
+    @property
+    def serialize(self):
+        """Return object data in easily serializeable format"""
+        return {
+            'id'           : self.link_id,
+            'name'         : self.name,
+            'url'          : self.url,
+            'description'  : self.description,
+        }
+
 
 engine = create_engine('sqlite:///links.db')
 
