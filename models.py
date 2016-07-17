@@ -8,8 +8,8 @@ from sqlalchemy.orm import relationship
 Base = declarative_base()
 
 
-class User(Base):
-    __tablename__ = 'user'
+class Users(Base):
+    __tablename__ = 'users'
 
     user_id = Column(Integer, primary_key=True)
     provider = Column(String(8), nullable=False)
@@ -26,9 +26,9 @@ class Collection(Base):
     name = Column(String(50), nullable=False)
     description = Column(String(130))
     submit_date = Column(DateTime, default=func.now())
-    path = Column(String(50), nullable=False)
-    user_id = Column(Integer, ForeignKey('user.user_id'))
-    user = relationship(User)
+    path = Column(String(50), nullable=False, unique=True)
+    user_id = Column(Integer, ForeignKey('users.user_id'))
+    users = relationship(Users)
 
     @property
     def serialize(self):
@@ -44,14 +44,14 @@ class Category(Base):
     __tablename__ = 'category'
 
     cat_id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
+    name = Column(String(100), nullable=False)
     description = Column(String(200))
     submit_date = Column(DateTime, default=func.now())
     path = Column(String(50), nullable=False)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
-    user_id = Column(Integer, ForeignKey('user.user_id'))
-    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('users.user_id'))
+    users = relationship(Users)
 
     @property
     def serialize(self):
@@ -67,16 +67,16 @@ class Link(Base):
     __tablename__ = 'link'
 
     link_id = Column(Integer, primary_key=True)
-    name = Column(String(50), nullable=False)
+    name = Column(String(100), nullable=False)
     url = Column(String(200), nullable=False)
-    description = Column(String(200))
+    description = Column(String(300))
     submit_date = Column(DateTime, default=func.now())
     cat_id = Column(Integer, ForeignKey('category.cat_id'))
     category = relationship(Category)
     coll_id = Column(Integer, ForeignKey('collection.coll_id'))
     collection = relationship(Collection)
-    user_id = Column(Integer, ForeignKey('user.user_id'))
-    user = relationship(User)
+    user_id = Column(Integer, ForeignKey('users.user_id'))
+    users = relationship(Users)
 
     @property
     def serialize(self):
@@ -89,6 +89,6 @@ class Link(Base):
         }
 
 
-engine = create_engine('sqlite:///links.db')
+engine = create_engine('postgresql:///links')
 
 Base.metadata.create_all(engine)

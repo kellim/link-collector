@@ -1,15 +1,15 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
-from models import User, Base, Collection, Category, Link
+from models import Users, Base, Collection, Category, Link
 
-engine = create_engine('sqlite:///links.db')
+engine = create_engine('postgresql:///links')
 Base.metadata.bind = engine
 DBSession = sessionmaker(bind=engine)
 session = DBSession()
 
 # add dummy user
-User1 = User(provider="test", name="A. Test", email="test@example.com", is_admin=False)
+User1 = Users(provider="test", name="A. Test", email="test@example.com", is_admin=False)
 session.add(User1)
 session.commit()
 
