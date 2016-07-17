@@ -4,7 +4,7 @@ from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from models import User, Base, Collection, Category, Link
+from models import Users, Base, Collection, Category, Link
 
 from oauth2client.client import flow_from_clientsecrets
 from oauth2client.client import FlowExchangeError
@@ -35,7 +35,7 @@ APPLICATION_NAME = "Link Collector"
 FB_APP_ID = json.loads(open('fb_client_secrets.json', 'r').read())[
         'web']['app_id']
 
-engine = create_engine('sqlite:///links.db')
+engine = create_engine('postgresql:///links')
 Base.metadata.bind = engine
 
 DBSession = sessionmaker(bind=engine)
@@ -50,7 +50,7 @@ def createUser(login_session):
     # Added provider to keep Google+ and Facebook accounts separate in
     # the database and app.
     try:
-        newUser = User(name=login_session['username'],
+        newUser = Users(name=login_session['username'],
                        provider=login_session['provider'],
                        email=login_session['email'],
                        picture=login_session['picture'],
@@ -59,7 +59,7 @@ def createUser(login_session):
         session.commit()
     except:
         return None
-    user = session.query(User).filter_by(
+    user = session.query(Users).filter_by(
                                 email=login_session['email'],
                                 provider=login_session['provider']).one()
     return user.user_id
@@ -69,7 +69,7 @@ def getUserInfo(user_id):
     """Look up user in database by user ID and return record"""
     # Code from Udacity's Authentication & Authorization: OAuth Course
     # www.udacity.com/course/authentication-authorization-oauth--ud330
-    user = session.query(User).filter_by(user_id=user_id).one()
+    user = session.query(Users).filter_by(user_id=user_id).one()
     return user
 
 
@@ -81,7 +81,7 @@ def getUserID(email, provider):
     # treat Facebook and Google+ accounts with the same e-mail address as
     # the same account in this app.
     try:
-        user = session.query(User).filter_by(email=email,
+        user = session.query(Users).filter_by(email=email,
                                              provider=provider).one()
         return user.user_id
     except:
