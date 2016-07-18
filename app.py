@@ -2,7 +2,7 @@ from flask import (Flask, render_template, request, redirect, url_for, flash,
                    jsonify, abort, session as login_session, make_response)
 from flask_bootstrap import Bootstrap
 from flask_wtf.csrf import CsrfProtect
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, asc
 from sqlalchemy.orm import sessionmaker
 from models import Users, Base, Collection, Category, Link
 
@@ -101,7 +101,7 @@ def is_site_admin(user_id):
 def collectionsJSON():
     """Return all collections in JSON."""
     try:
-        collections = session.query(Collection)
+        collections = session.query(Collection).order_by(asc(Collection.name))
     except:
         collections = []
     return jsonify(collections=[coll.serialize for coll in collections])
@@ -179,7 +179,7 @@ def is_auth_to_deleteJSON():
 def index(collection=''):
     """Render the index page and provide some validation after user clicks
        the delete button for a collection"""
-    collections = session.query(Collection)
+    collections = session.query(Collection).order_by(asc(Collection.name))
     try:
         is_admin = is_site_admin(login_session['user_id'])
     except:
@@ -225,21 +225,24 @@ def link_redirect():
 @app.route('/about')
 def about():
     """Render about page"""
-    collections = session.query(Collection)  # Needed for sidebar
+    # collections is needed for sidebar
+    collections = session.query(Collection).order_by(asc(Collection.name))
     return render_template('about.html', collections=collections)
 
 
 @app.route('/contact')
 def contact():
     """Render contact page"""
-    collections = session.query(Collection)  # Needed for sidebar
+    # collections is needed for sidebar
+    collections = session.query(Collection).order_by(asc(Collection.name))
     return render_template('contact.html', collections=collections)
 
 
 @app.route('/help')
 def help():
     """Render help page"""
-    collections = session.query(Collection)  # Needed for sidebar
+    # collections is needed for sidebar
+    collections = session.query(Collection).order_by(asc(Collection.name))
     return render_template('help.html', collections=collections)
 
 
@@ -310,7 +313,8 @@ def show_category_links(collection, category='', link_id=0):
         links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
     else:
         links = None
-    collections = session.query(Collection)  # Needed for sidebar
+    # collections is needed for sidebar
+    collections = session.query(Collection).order_by(asc(Collection.name))
     return render_template('links.html',
                            categories=categories,
                            collection=collection,
@@ -333,7 +337,8 @@ def edit_collection(collection):
         return redirect(url_for('login'))
     if is_site_admin(login_session['user_id']):
         form = forms.EditCollectionForm()
-        collections = session.query(Collection)  # Needed for sidebar
+        # collections is needed for sidebar
+        collections = session.query(Collection).order_by(asc(Collection.name))
         try:
             selected_coll = session.query(Collection).filter_by(
                                                         path=collection).one()
@@ -450,7 +455,8 @@ def new_collection():
                     return redirect(url_for('index'))
                 else:
                     form.path.errors.append('Path must be unique!')
-        collections = session.query(Collection)  # Needed for sidebar
+        # collections is needed for sidebar
+        collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('collectionnew.html',
                                form=form,
                                collections=collections)
@@ -511,7 +517,7 @@ def edit_category(collection, category):
         # Both collections and categories are needed for sidebar
         categories = (
             session.query(Category).filter_by(coll_id=selected_coll.coll_id))
-        collections = session.query(Collection)
+        collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('categoryedit.html',
                                selected_coll=selected_coll,
                                selected_cat=selected_cat,
@@ -612,7 +618,7 @@ def new_category(collection, previous_cat=''):
         # Both categories and collections are needed for sidebar
         categories = session.query(Category).filter_by(
                                                 coll_id=selected_coll.coll_id)
-        collections = session.query(Collection)
+        collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('categorynew.html',
                                selected_coll=selected_coll,
                                previous_cat=previous_cat,
@@ -692,7 +698,7 @@ def edit_link(collection, category, link_id):
     # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(
                                             coll_id=selected_coll.coll_id)
-    collections = session.query(Collection)
+    collections = session.query(Collection).order_by(asc(Collection.name))
     return render_template('linkedit.html',
                            selected_link=selected_link,
                            selected_cat=selected_cat,
@@ -772,7 +778,7 @@ def new_link(collection, category):
         # Both categories and collections are needed for sidebar
         categories = session.query(Category).filter_by(
                                             coll_id=selected_coll.coll_id)
-        collections = session.query(Collection)
+        collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('linknew.html',
                                collection=collection,
                                category=category,
