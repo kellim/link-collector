@@ -244,7 +244,7 @@ def help():
 
 
 @csrf.exempt
-@app.route('/links/collection/select/', methods=['GET', 'POST'])
+@app.route('/links/collection/select/', methods=['POST'])
 def select_collection():
     """Redirect to show_category_links based on collection selected
        in sidebar dropwdown"""
