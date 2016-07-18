@@ -886,7 +886,6 @@ def gconnect():
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
     if user_id:
-        print "login_session at google login: %s" % login_session
         output = ''
         output += '<h3>Welcome, '
         output += login_session['username']
@@ -898,7 +897,6 @@ def gconnect():
                    '-moz-border-radius: 150px;">')
         flash('You are now logged in as %s' %
               login_session['username'], 'success')
-        print 'done!'
         return output
     else:
         output = ''
@@ -922,7 +920,6 @@ def fbconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
-    print "access token received %s " % access_token
 
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
@@ -939,8 +936,6 @@ def fbconnect():
     url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
     h = httplib2.Http()
     result = h.request(url, 'GET')[1]
-    # print "url sent for API access:%s"% url
-    # print "API JSON result: %s" % result
     data = json.loads(result)
     login_session['provider'] = 'facebook'
     login_session['username'] = data["name"]
@@ -964,13 +959,11 @@ def fbconnect():
 
     # See if user exists
     user_id = getUserID(login_session['email'], 'facebook')
-    print "user_id: %s" % user_id
     if not user_id:
         user_id = createUser(login_session)
     login_session['user_id'] = user_id
 
     if user_id:
-        print "login_session at google login: %s" % login_session
         output = ''
         output += '<h3>Welcome, '
         output += login_session['username']
@@ -1013,7 +1006,6 @@ def disconnect(login_failure=False):
         del login_session['picture']
         del login_session['user_id']
         del login_session['provider']
-        print 'login_session after logout: %s ' % login_session
         # Don't show successful log out message when disconnect called
         # because of failure logging in.
         if not login_failure:
