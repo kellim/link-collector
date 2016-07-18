@@ -51,10 +51,10 @@ def createUser(login_session):
     # the database and app.
     try:
         newUser = Users(name=login_session['username'],
-                       provider=login_session['provider'],
-                       email=login_session['email'],
-                       picture=login_session['picture'],
-                       is_admin=False)
+                        provider=login_session['provider'],
+                        email=login_session['email'],
+                        picture=login_session['picture'],
+                        is_admin=False)
         session.add(newUser)
         session.commit()
     except:
@@ -82,7 +82,7 @@ def getUserID(email, provider):
     # the same account in this app.
     try:
         user = session.query(Users).filter_by(email=email,
-                                             provider=provider).one()
+                                              provider=provider).one()
         return user.user_id
     except:
         return None
@@ -188,7 +188,7 @@ def index(collection=''):
     # If the delete link was clicked, get the selected collection
     # for the delete collection modal
     if len(collection) > 0:
-        del_coll = True;  # used in sidebar
+        del_coll = True  # used in sidebar
         if 'username' not in login_session:
             flash('You must login before deleting a collection.', 'warning')
             return redirect(url_for('login'))
