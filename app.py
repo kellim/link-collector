@@ -188,6 +188,7 @@ def index(collection=''):
     # If the delete link was clicked, get the selected collection
     # for the delete collection modal
     if len(collection) > 0:
+        del_coll = True;  # used in sidebar
         if 'username' not in login_session:
             flash('You must login before deleting a collection.', 'warning')
             return redirect(url_for('login'))
@@ -207,7 +208,8 @@ def index(collection=''):
                                collections=collections,
                                selected_coll=selected_coll,
                                cats=categories,
-                               is_admin=is_admin)
+                               is_admin=is_admin,
+                               del_coll=del_coll)
     else:
         return render_template('index.html',
                                collections=collections,
