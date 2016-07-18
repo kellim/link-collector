@@ -109,12 +109,12 @@ def collectionsJSON():
 
 @app.route('/links/<collection>/JSON')
 def categoriesJSON(collection):
-    """Return categories for a collection in JSON."""
+    """Return categories for given collection in JSON."""
     try:
         selected_coll = session.query(Collection).filter_by(
                                             path=collection).one()
         categories = session.query(Category).filter_by(
-                                            coll_id=selected_coll.coll_id)
+            coll_id=selected_coll.coll_id).order_by(asc(Category.name))
     except:
         categories = []
     return jsonify(categories=[cat.serialize for cat in categories])
@@ -122,7 +122,7 @@ def categoriesJSON(collection):
 
 @app.route('/links/<collection>/<category>/JSON')
 def linksJSON(collection, category):
-    """Return links for a collection/category in JSON."""
+    """Return links for given collection/category in JSON."""
     try:
         selected_coll = session.query(Collection).filter_by(
                                                     path=collection).one()
@@ -203,7 +203,7 @@ def index(collection=''):
             flash('You do not have permission to perform that task. Please '
                   'contact site admin for assistance.', 'danger')
         categories = session.query(Category).filter_by(
-                                                coll_id=selected_coll.coll_id)
+            coll_id=selected_coll.coll_id).order_by(asc(Category.name))
         return render_template('index.html',
                                collections=collections,
                                selected_coll=selected_coll,
@@ -278,9 +278,10 @@ def show_category_links(collection, category='', link_id=0):
         except:
             abort(404)
     else:
-        # Set default category as the first category in the category table.
+        # Set default category as the first category in the category
+        # table after being sorted by name
         selected_cat = session.query(Category).filter_by(
-            coll_id=selected_coll.coll_id).order_by(Category.cat_id).first()
+            coll_id=selected_coll.coll_id).order_by(Category.name).first()
     try:
         is_admin = is_site_admin(login_session['user_id'])
     except:
@@ -308,7 +309,7 @@ def show_category_links(collection, category='', link_id=0):
     else:
         selected_link = None
     categories = session.query(Category).filter_by(
-                                            coll_id=selected_coll.coll_id)
+        coll_id=selected_coll.coll_id).order_by(asc(Category.name))
     if categories.count() >= 1:
         links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
     else:
@@ -516,7 +517,8 @@ def edit_category(collection, category):
             form.description.data = selected_cat.description
         # Both collections and categories are needed for sidebar
         categories = (
-            session.query(Category).filter_by(coll_id=selected_coll.coll_id))
+            session.query(Category).filter_by(
+                coll_id=selected_coll.coll_id)).order_by(asc(Category.name))
         collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('categoryedit.html',
                                selected_coll=selected_coll,
@@ -617,7 +619,7 @@ def new_category(collection, previous_cat=''):
                     form.path.errors.append("Path must be unique!")
         # Both categories and collections are needed for sidebar
         categories = session.query(Category).filter_by(
-                                                coll_id=selected_coll.coll_id)
+            coll_id=selected_coll.coll_id).order_by(asc(Category.name))
         collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('categorynew.html',
                                selected_coll=selected_coll,
@@ -697,7 +699,7 @@ def edit_link(collection, category, link_id):
                                 category=category))
     # Both categories and collections are needed for sidebar
     categories = session.query(Category).filter_by(
-                                            coll_id=selected_coll.coll_id)
+        coll_id=selected_coll.coll_id).order_by(asc(Category.name))
     collections = session.query(Collection).order_by(asc(Collection.name))
     return render_template('linkedit.html',
                            selected_link=selected_link,
@@ -777,7 +779,7 @@ def new_link(collection, category):
                                         category=category))
         # Both categories and collections are needed for sidebar
         categories = session.query(Category).filter_by(
-                                            coll_id=selected_coll.coll_id)
+            coll_id=selected_coll.coll_id).order_by(asc(Category.name))
         collections = session.query(Collection).order_by(asc(Collection.name))
         return render_template('linknew.html',
                                collection=collection,
