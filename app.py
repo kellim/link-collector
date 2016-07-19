@@ -405,14 +405,6 @@ def delete_collection(collection):
         cats = session.query(Category).filter_by(
                                             coll_id=selected_coll.coll_id)
         if selected_coll != []:
-            # Delete the Collection's categories and associated links first.
-            for cat in cats:
-                links = session.query(Link).filter_by(cat_id=cat.cat_id)
-                for link in links:
-                    session.delete(link)
-                    session.commit()
-                session.delete(cat)
-                session.commit()
             session.delete(selected_coll)
             session.commit()
             flash('Collection has been deleted!', 'success')
@@ -551,12 +543,7 @@ def delete_category(collection, category):
                                         coll_id=selected_coll.coll_id).one()
         except:
             abort(404)
-        links = session.query(Link).filter_by(cat_id=selected_cat.cat_id)
         if selected_cat != []:
-            # Delete the Category's associated links first.
-            for link in links:
-                session.delete(link)
-                session.commit()
             session.delete(selected_cat)
             session.commit()
             flash('Category has been deleted!', 'success')
