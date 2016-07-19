@@ -29,6 +29,8 @@ class Collection(Base):
     path = Column(String(50), nullable=False, unique=True)
     user_id = Column(Integer, ForeignKey('users.user_id'))
     users = relationship(Users)
+    category = relationship("Category", cascade="all, delete-orphan")
+    link = relationship("Link", cascade="all, delete-orphan")
 
     @property
     def serialize(self):
@@ -52,6 +54,7 @@ class Category(Base):
     collection = relationship(Collection)
     user_id = Column(Integer, ForeignKey('users.user_id'))
     users = relationship(Users)
+    link = relationship("Link", cascade="all, delete-orphan")
 
     @property
     def serialize(self):
