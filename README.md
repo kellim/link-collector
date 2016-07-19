@@ -37,11 +37,11 @@ In the app, links are contained in categories, and categories are all part of a 
 <em>See my notes with more detailed instructions at https://docs.google.com/document/d/1jfBH5okUEHx-MW7WD1in-dOQ2YhCGzeqDySd_E1Kz2g/edit?usp=sharing</em>.
 
 ### Run the Project
-* In your `vagrant` directory run these commands:
+* In the `link-collector` directory run these commands:
  * `vagrant up`
  * `vagrant ssh`
- * `cd /vagrant/link-collector`
-* In the `link-collector` directory run these commands:
+ * `cd /vagrant`
+* Then, run these Python files:
  * `python models.py` - creates the database
  * `python add_test_data.py` - adds test data to database
  * `python app.py` - runs app using Flask's built-in server
@@ -55,7 +55,6 @@ If you get errors indicating `Flask-WTF`, `Flask-Bootstrap` or `sqlalchemy-utils
  * `sudo pip install sqlalchemy-utils`
 
 <em>Note: It's possible you may not need to run these as sudo on your system</em>
-
 
 ### Testing Admin Functionality
 When you login to the site with Google+ or Facebook, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
