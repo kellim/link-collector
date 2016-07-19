@@ -9,7 +9,7 @@ In the app, links are contained in categories, and categories are all part of a 
 ## Run the Project Locally
 
 ### Initial Steps for setting up this Repo
-* Setup Vagrant on your local machine. See https://www.udacity.com/wiki/ud197/install-vagrant for instructions.
+* Setup Vagrant on your local machine. See https://www.udacity.com/wiki/ud197/install-vagrant for instructions. Please note that when running the virtual machine, do not follow those instructions exactly. Instead, run the virtual machine from the `link-collector` directory since there is a config file in that directory for this project.
 * Download this repo as `link-collector` to your local machine and put it in the `vagrant` directory.
 * Rename the file `secret.py.config` in the `link-collector` directory to `secret.py`.
 * Enter your own secret key of randomly generated characters in `secret.py` as the value for the variable `SECRET_KEY`.
@@ -45,21 +45,19 @@ In the app, links are contained in categories, and categories are all part of a 
  * `python models.py` - creates the database
  * `python add_test_data.py` - adds test data to database
  * `python app.py` - runs app using Flask's built-in server
-* In a web browser, go to http://localhost:5000 to use the app.
+* In a web browser, go to `http://localhost:5000` to use the app.
 
 ### Troubleshooting 
-If you get errors indicating `Flask-WTF`, `Flask-Bootstrap` or `sqlalchemy-utils` are missing, here is how you would install them. 
-* In the `vagrant` directory, run these commands to install `Flask-WTF`, `Flask-Bootstrap` and `sqlalchemy-utils`:
+* If you get errors indicating `Flask-WTF`, `Flask-Bootstrap` or `sqlalchemy-utils` are missing, install them from the `link-collector directory` using these commands:
  * `sudo pip install Flask-WTF`
  * `sudo pip install Flask-Bootstrap`
  * `sudo pip install sqlalchemy-utils`
-
-<em>Note: It's possible you may not need to run these as sudo on your system</em>
+<br><em>Note: It's possible you may not need to run these as sudo on your system</em>
 
 ### Testing Admin Functionality
 When you login to the site with Google+ or Facebook, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
 
-From the `link_collector` directory within the vagrant box:
+After you `cd` to the `/vagrant` directory in your vagrant virtual machine:
 * Type `psql links` to open the `links` database in `psql`.
 * At the `psql` command prompt, type `SELECT * FROM users;` to see what the `user_id` is of the account you want to make an admin. Press `enter` when done.
 * At the `psql` command prompt, type `UPDATE users SET is_admin = True WHERE user_id = #;`, replacing # with the `user_id` of the user you wish to make an admin. Press `enter` when done.
