@@ -16,7 +16,7 @@ In the app, links are contained in categories, and categories are all part of a 
 
 ### Setup Steps for Google+ Login
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
-* Add http://localhost:5000 under Authorized JavaScript Origins 
+* Add `http://localhost:5000` under Authorized JavaScript Origins 
 * Add these Authorized Redirect URIs:
  * `http://localhost:5000/gconnect`
  * `http://localhost:5000/login`
