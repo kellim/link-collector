@@ -1,7 +1,7 @@
 # Link Collector
 
 ## About
-Link Collector is a project I created for Udacity's Full Stack Web Developer Nanodegree that is built with Flask, a Python Microframework. The assignment was to create an item catalog and I chose links for my items because I have come across so many links related to different programming languages, frameworks, courses, etc, that I am always looking for ways to organize and share these links.
+Link Collector is a multi-user bookmarking web app built with Flask, a Python Microframework. 
 
 ### Important Terms: Collections, Categories and Links
 In the app, links are contained in categories, and categories are all part of a more general collection. For instance, you might have a collection called <em>Recipes</em>, and within that collection you have categories like <em>Breakfast</em>, <em>Entrees</em>, and <em>Desserts</em>. You would then add links to breakfast recipes in the <em>Breakfast</em> category, and links to desserts in the <em>Desserts</em> category, etc.
