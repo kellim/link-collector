@@ -2,7 +2,7 @@
 
 ## About
 Link Collector is a multi-user bookmarking web app built with Flask, a Python Microframework.<br> 
-DEMO: http://links.pythonanywhere.com <br>
+DEMO: http://links.pythonanywhere.com (Note: The demo was previously deployed to a Linux AWS Server that I configured and secured, but that server was provided by Udacity only for a limited time. Now it's on pythonanywhere and had to be slightly altered to work on this service, such as going back to using an SQLite database.)
 
 ### Important Terms: Collections, Categories and Links
 In the app, links are contained in categories, and categories are all part of a more general collection. For instance, you might have a collection called <em>Recipes</em>, and within that collection you have categories like <em>Breakfast</em>, <em>Entrees</em>, and <em>Desserts</em>. You would then add links to breakfast recipes in the <em>Breakfast</em> category, and links to desserts in the <em>Desserts</em> category, etc.
