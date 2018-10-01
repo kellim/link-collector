@@ -1,12 +1,7 @@
 # Link Collector
 
-## About
-<<<<<<< HEAD
-Link Collector is a project I created for Udacity's Full Stack Web Developer Nanodegree that is built with Flask, a Python Microframework. The assignment was to create an item catalog and I chose links for my items because I have come across so many links related to different programming languages, frameworks, courses, etc, that I am always looking for ways to organize and share these links.
-=======
 Link Collector is a multi-user bookmarking web app built with Flask, a Python Microframework.<br> 
 **DEMO:** https://links.pythonanywhere.com
->>>>>>> efff08ee8b4bc1f5a806263fc9160c88b4fa1784
 
 ### Important Terms: Collections, Categories and Links
 In the app, links are contained in categories, and categories are all part of a more general collection. For instance, you might have a collection called <em>Recipes</em>, and within that collection you have categories like <em>Breakfast</em>, <em>Entrees</em>, and <em>Desserts</em>. You would then add links to breakfast recipes in the <em>Breakfast</em> category, and links to desserts in the <em>Desserts</em> category, etc.
@@ -21,10 +16,6 @@ In the app, links are contained in categories, and categories are all part of a 
 
 ### Setup Steps for Google+ Login
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
-<<<<<<< HEAD
-=======
-* Add `http://localhost:5000` under Authorized JavaScript Origins 
->>>>>>> efff08ee8b4bc1f5a806263fc9160c88b4fa1784
 * Add these Authorized Redirect URIs:
  * `http://localhost:5000/gconnect`
  * `http://localhost:5000/login`
