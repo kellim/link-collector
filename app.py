@@ -860,10 +860,14 @@ def gconnect():
     userinfo_url = "https://www.googleapis.com/oauth2/v1/userinfo"
     params = {'access_token': credentials.access_token, 'alt': 'json'}
     answer = requests.get(userinfo_url, params=params)
-
     data = answer.json()
     login_session['provider'] = 'google'
-    login_session['username'] = data['name']
+    # All accounts no longer have a name property, so using e-mail
+    # for the username if 'name' isn't returned.
+    if hasattr(data, 'name'):
+        login_session['username'] = data['name']
+    else:
+        login_session['username'] = data['email']
     login_session['picture'] = data['picture']
     login_session['email'] = data['email']
 
@@ -907,7 +911,6 @@ def fbconnect():
         response.headers['Content-Type'] = 'application/json'
         return response
     access_token = request.data
-
     app_secret = json.loads(
         open('fb_client_secrets.json', 'r').read())['web']['app_secret']
     url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
