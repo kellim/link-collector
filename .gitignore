@@ -47,3 +47,6 @@ Thumbs.db
 secret.py
 client_secrets.json
 fb_client_secrets.json
+*.db
+*.dmp
+.vagrant
