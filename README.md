@@ -1,10 +1,12 @@
 # Link Collector
 
-Link Collector is a multi-user bookmarking web app built with Flask, a Python Microframework.<br> 
-**DEMO:** https://links.pythonanywhere.com
+Link Collector is a multi-user bookmarking web app built with Flask, a Python Microframework where users can login with their Google account. Admin users can create categories and collections, and non-admin users can add links and update or delete their own links. Admins can edit or delete any links.
 
-### Important Terms: Collections, Categories and Links
 In the app, links are contained in categories, and categories are all part of a more general collection. For instance, you might have a collection called <em>Recipes</em>, and within that collection you have categories like <em>Breakfast</em>, <em>Entrees</em>, and <em>Desserts</em>. You would then add links to breakfast recipes in the <em>Breakfast</em> category, and links to desserts in the <em>Desserts</em> category, etc.
+
+## Demo
+
+Check out the demo at https://links.pythonanywhere.com
 
 ## Run the Project Locally
 
@@ -25,16 +27,6 @@ In the app, links are contained in categories, and categories are all part of a 
 * Add the `client_secrets.json` file to the `link-collector` directory.
 
 <em>See my notes with more detailed instructions at https://docs.google.com/document/d/1bTbW_KyrQ5BOhboJU4fhm6sdMnq7MZuoWPGcBAo8wR0/edit?usp=sharing</em>.
-
-### Setup Steps for Facebook Login
-* Create a Facebook Web App at [developers.facebook.com](https://developers.facebook.com).
-* Save the `fb_client_secrets.json` skeleton file from 
-`https://github.com/udacity/ud330/blob/master/Lesson4/step2/fb_client_secrets.json` to the `link-collector` directory.
-* Update `fb_client_secrets.json` with your `App ID` and `Client Secret`.
-* Add `Facebook Login` as a `Product`.
-* Add `http://localhost:5000/` to the `OAuth redirect URIs` section.
-
-<em>See my notes with more detailed instructions at https://docs.google.com/document/d/1jfBH5okUEHx-MW7WD1in-dOQ2YhCGzeqDySd_E1Kz2g/edit?usp=sharing</em>.
 
 ### Run the Project
 * In the `link-collector` directory run these commands:
