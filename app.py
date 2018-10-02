@@ -31,9 +31,6 @@ Bootstrap(app)
 CLIENT_ID = json.loads(
     open('client_secrets.json', 'r').read())['web']['client_id']
 APPLICATION_NAME = "Link Collector"
-# Facebook App ID
-FB_APP_ID = json.loads(open('fb_client_secrets.json', 'r').read())[
-        'web']['app_id']
 
 engine = create_engine('postgresql:///links')
 Base.metadata.bind = engine
@@ -48,7 +45,8 @@ def createUser(login_session):
     # Adapted from Udacity's Authentication & Authorization: OAuth Course
     # www.udacity.com/course/authentication-authorization-oauth--ud330
     # Added provider to keep Google+ and Facebook accounts separate in
-    # the database and app.
+    # the database and app. Update: Facebook login removed - nobody was
+    # using it and the code would need to be changed to work with https.
     try:
         newUser = Users(name=login_session['username'],
                         provider=login_session['provider'],
@@ -79,7 +77,8 @@ def getUserID(email, provider):
     # www.udacity.com/course/authentication-authorization-oauth--ud330
     # Updated to use provider in addition to e-mail so that it does not
     # treat Facebook and Google+ accounts with the same e-mail address as
-    # the same account in this app.
+    # the same account in this app. Update: Facebook login removed - nobody
+    # was using it and the code would need to be changed to work with https.
     try:
         user = session.query(Users).filter_by(email=email,
                                               provider=provider).one()
@@ -789,8 +788,7 @@ def login():
                     for x in xrange(32))
     login_session['state'] = state
     return render_template('login.html',
-                           CLIENT_ID=CLIENT_ID,
-                           FB_APP_ID=FB_APP_ID)
+                           CLIENT_ID=CLIENT_ID)
 
 
 @csrf.exempt
@@ -901,85 +899,6 @@ def gconnect():
               'for assistance.', 'danger')
         return output
 
-
-@csrf.exempt
-@app.route('/fbconnect', methods=['POST'])
-def fbconnect():
-    """Login with Facebook after user clicks Facebook login button"""
-    if request.args.get('state') != login_session['state']:
-        response = make_response(json.dumps('Invalid state parameter.'), 401)
-        response.headers['Content-Type'] = 'application/json'
-        return response
-    access_token = request.data
-    app_secret = json.loads(
-        open('fb_client_secrets.json', 'r').read())['web']['app_secret']
-    url = 'https://graph.facebook.com/oauth/access_token?grant_type=fb_exchange_token&client_id=%s&client_secret=%s&fb_exchange_token=%s' % (
-        FB_APP_ID, app_secret, access_token)
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-
-    # Use token to get user info from API
-    userinfo_url = "https://graph.facebook.com/v2.4/me"
-    # strip expire tag from access token
-    token = result.split("&")[0]
-
-    url = 'https://graph.facebook.com/v2.4/me?%s&fields=name,id,email' % token
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    data = json.loads(result)
-    login_session['provider'] = 'facebook'
-    login_session['username'] = data["name"]
-    login_session['email'] = data["email"]
-    login_session['facebook_id'] = data["id"]
-
-    # The token must be stored in the login_session in order to properly
-    # logout. Let's strip out the information before the equals sign in
-    # our token.
-    stored_token = token.split("=")[1]
-    login_session['access_token'] = stored_token
-
-    # Get user picture
-    url = ('https://graph.facebook.com/v2.4/me/picture?%s&redirect=0&height=200&width=200'
-           % token)
-    h = httplib2.Http()
-    result = h.request(url, 'GET')[1]
-    data = json.loads(result)
-
-    login_session['picture'] = data["data"]["url"]
-
-    # See if user exists
-    user_id = getUserID(login_session['email'], 'facebook')
-    if not user_id:
-        user_id = createUser(login_session)
-    login_session['user_id'] = user_id
-
-    if user_id:
-        output = ''
-        output += '<h3>Welcome, '
-        output += login_session['username']
-
-        output += '!</h3>'
-        output += '<img src="'
-        output += login_session['picture']
-        output += (' " style = "width: 100px; height: 100px; '
-                   'border-radius: 150px;-webkit-border-radius: 150px;'
-                   '-moz-border-radius: 150px;"> ')
-        flash('You are now logged in as %s' % login_session['username'],
-              'success')
-        return output
-    else:
-        output = ''
-        output += '<p>An error occured logging you in.</p>'
-        # An error occurred writing to database, but user was already
-        # logged in to Google+ and login_session values were populated,
-        # so need to disconnect or there will be issues using the site
-        # without a user_id.
-        disconnect(True)
-        flash('An error occurred logging you in. Please contact site admin '
-              'for assistance.', 'danger')
-        return output
-
-
 @app.route('/disconnect')
 def disconnect(login_failure=False):
     """Logout based on login provider"""
@@ -987,9 +906,6 @@ def disconnect(login_failure=False):
         if login_session['provider'] == 'google':
             gdisconnect(True)
             del login_session['gplus_id']
-        if login_session['provider'] == 'facebook':
-            fbdisconnect(True)
-            del login_session['facebook_id']
         del login_session['access_token']
         del login_session['username']
         del login_session['email']
@@ -1028,24 +944,6 @@ def gdisconnect(called_from_disconnect=False):
     else:
         flash('Attempt to logout was unsuccessful.', 'danger')
         return redirect(url_for('index'))
-
-
-@app.route('/fbdisconnect')
-def fbdisconnect(called_from_disconnect=False):
-    """Called from disconnect() to Logout of Facebook Account"""
-    if called_from_disconnect:
-        facebook_id = login_session['facebook_id']
-        # The access token must be included to successfully logout
-        access_token = login_session['access_token']
-        url = ('https://graph.facebook.com/%s/permissions?access_token=%s'
-               % (facebook_id, access_token))
-        h = httplib2.Http()
-        result = h.request(url, 'DELETE')[1]
-        return 'You have been logged out.'
-    else:
-        flash('Attempt to logout was unsuccessful.', 'danger')
-        return redirect(url_for('index'))
-
 
 if __name__ == '__main__':
     app.secret_key = secret.SECRET_KEY
