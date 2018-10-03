@@ -12,13 +12,32 @@ Check out the demo at https://links.pythonanywhere.com
 
 ## Run the Project in a Local Development Environment
 
-### Initial Steps for setting up this Repo
-* Setup Vagrant on your local machine. See https://www.udacity.com/wiki/ud197/install-vagrant for instructions. Please note that when running the virtual machine, do not follow those instructions exactly. Instead, run the virtual machine from the `link-collector` directory since there is a config file in that directory for this project.
-* Download this repo as `link-collector` to your local machine and put it in the `vagrant` directory.
-* Rename the file `secret.py.config` in the `link-collector` directory to `secret.py`.
+* Clone, fork, or download this repository.
+* Rename the file `secret.py.config`to `secret.py`.
 * Edit `secret.py` and enter your own secret key of randomly generated characters as the value for the variable `SECRET_KEY`. _Note: `secret.py` is in the `.gitignore` - take care to ensure it's named properly and that it doesn't get committed to an online repository._
 
-### Setup Steps for Google+ Login
+
+### Database Setup
+
+* Install [PostgreSQL](https://www.postgresql.org/) if not already installed.
+* Create a PostgreSQL user ID to use for app. 
+  * To quickly test it out locally, you could create a Postgres superuser role. On Windows you can create a username with the same name as your login to get it to work easily for development purposes (you'd want to limit permissions in production). Here's how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt (Note: On a Windows machine, this was tested using Git Bash. You may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`.
+  Replace `username` below with desired username:
+
+   ```
+   CREATE ROLE "username" superuser;
+   ALTER ROLE "username" WITH LOGIN;
+   ```
+* Create `links` database from psql command prompt 
+```
+CREATE DATABASE links;
+```
+* Note: Press `CTRL-D` to exit the psql command prompt when done.
+* Create tables and populate database with initial test data:
+ * `python models.py` 
+ * `python add_test_data.py`
+ 
+### Setup Steps for Google Sign-in
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
 * Add these Authorized Redirect URIs (you'd want to change these to appropriate URLs using https for your server if using in production.):
  * `http://localhost:5000/gconnect`
@@ -26,17 +45,15 @@ Check out the demo at https://links.pythonanywhere.com
  * `http://localhost:5000/gdisconnect`
  * `https://localhost:5000/oauth2callback`
 * Download JSON for your web application from Google and name it `client_secrets.json`.
-* Add the `client_secrets.json` file to the `link-collector` directory.
+* Add `client_secrets.json` to the root of the project directory.
+
+### Install dependencies
+
+* In the project directory, run:  
+`pip install -r requirements.txt`
 
 ### Run the Project
-* In the `link-collector` directory run these commands:
- * `vagrant up`
- * `vagrant ssh`
- * `cd /vagrant`
-* Then, run these Python files:
- * `python models.py` - creates the database
- * `python add_test_data.py` - adds test data to database
- * `python app.py` - runs app using Flask's built-in server
+* `python app.py` - runs app using Flask's built-in server. You wouldn't want to use the built in server or have the app in debug mode in production.
 * In a web browser, go to `http://localhost:5000` to use the app.
 
 ### Testing Admin Functionality
@@ -48,4 +65,6 @@ After you `cd` to the `/vagrant` directory in your vagrant virtual machine:
 * At the `psql` command prompt, type `UPDATE users SET is_admin = True WHERE user_id = #;`, replacing # with the `user_id` of the user you wish to make an admin. Press `enter` when done.
 * Type `\q` into the `psql` command prompt and press `enter` to exit `psql`.
 
- <em>Please note the app is set to debug mode, which you would not want to use in production. You would also not want to use Flask's built-in server in production.</em>
+### Considerations for putting app into production
+
+Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
