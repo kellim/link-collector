@@ -14,7 +14,7 @@ Check out the demo at https://links.pythonanywhere.com
 * Setup Vagrant on your local machine. See https://www.udacity.com/wiki/ud197/install-vagrant for instructions. Please note that when running the virtual machine, do not follow those instructions exactly. Instead, run the virtual machine from the `link-collector` directory since there is a config file in that directory for this project.
 * Download this repo as `link-collector` to your local machine and put it in the `vagrant` directory.
 * Rename the file `secret.py.config` in the `link-collector` directory to `secret.py`.
-* Edit `secret.py` and enter your own secret key of randomly generated characters as the value for the variable `SECRET_KEY`.
+* Edit `secret.py` and enter your own secret key of randomly generated characters as the value for the variable `SECRET_KEY`. _Note: `secret.py` is in the `.gitignore` - take care to ensure it's named properly and that it doesn't get committed to an online repository._
 
 ### Setup Steps for Google+ Login
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
