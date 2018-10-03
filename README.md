@@ -8,6 +8,8 @@ In the app, links are contained in categories, and categories are all part of a 
 
 Check out the demo at https://links.pythonanywhere.com
 
+![Link Collector Screenshot](screenshots/link-collector.png)
+
 ## Run the Project in a Local Development Environment
 
 ### Initial Steps for setting up this Repo
