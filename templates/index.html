@@ -5,8 +5,8 @@
   <small><em>Link collections hold associated categories and links.</em></small>
   <hr>
   {% if collections.count() >= 1 %}
-    {% set count = 1 %}
     {% for coll in collections %}
+      {% set count = loop.index %}
       {% if count % 2 == 1 %}
         <div class="row">
       {% endif %}
@@ -23,7 +23,6 @@
       {% if count % 2 == 0 or count == collections.count() %}
         </div>
       {% endif %}
-        {% set count = count + 1 %}
     {% endfor %}
     {% if is_admin %}
       <div class="col-sm-12 text-center">
