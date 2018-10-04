@@ -81,7 +81,7 @@ When you login to the site with Google, you'll be a regular user and can only ad
 
 ## Considerations if Putting App into Production
 
-Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
+Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2)) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
 
 ## Contributions
 
