@@ -12,7 +12,7 @@ Check out the demo at https://links.pythonanywhere.com
 
 ## Run the Project in a Local Development Environment
 
-These instructions assume you have Python 2.7 installed and that python 2 is the version of Python running the files.
+These instructions assume you have Python 2.7 installed and that Python 2 is the version of Python running the files. There may be errors if Python 3 is used as this app has not been updated to use Python 3 yet.
 
 * Clone, fork, or download this repository.
 * Rename the file `secret.py.config`to `secret.py`.
@@ -83,3 +83,11 @@ After you `cd` to the `/vagrant` directory in your vagrant virtual machine:
 ### Considerations for putting app into production
 
 Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
+
+## Contributions
+
+Contributions will not be accepted for the project at this time.
+
+## License
+
+I have not included a license for this project because there's some Google Sign-In related code adapted from a Udacity course that they expect students to use for their projects but do not provide a license for it. This code is mixed in with my own code in `app.js`. 
