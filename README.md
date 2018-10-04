@@ -12,6 +12,8 @@ Check out the demo at https://links.pythonanywhere.com
 
 ## Run the Project in a Local Development Environment
 
+These instructions assume you have Python 2.7 installed and that python 2 is the version of Python running the files.
+
 * Clone, fork, or download this repository.
 * Rename the file `secret.py.config`to `secret.py`.
 * Edit `secret.py` and enter your own secret key of randomly generated characters as the value for the variable `SECRET_KEY`. _Note: `secret.py` is in the `.gitignore` - take care to ensure it's named properly and that it doesn't get committed to an online repository._
@@ -21,7 +23,7 @@ Check out the demo at https://links.pythonanywhere.com
 
 * Install [PostgreSQL](https://www.postgresql.org/) if not already installed.
 * Create a PostgreSQL user ID to use for app. 
-  * To quickly test it out locally, you could create a Postgres superuser role. On Windows you can create a username with the same name as your login to get it to work easily for development purposes (you'd want to limit permissions in production). Here's how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt (Note: On a Windows machine, this was tested using Git Bash. You may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`.
+  * To quickly test it out locally, you could create a Postgres superuser role. On Windows, you can create a username with the same name as your login to get it to work easily for development purposes only. Here's how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`. Also, this was tested using Git Bash on Windows 7._
   Replace `username` below with desired username:
 
    ```
@@ -48,13 +50,26 @@ CREATE DATABASE links;
 * Add `client_secrets.json` to the root of the project directory.
 
 ### Install dependencies
-
+* Create a virtual development environment that uses Python 2 if desired.
+  * Command that can be used for creating a virtual environment using Python 2 on Windows (replace the path to the Python directory if different on your system)
+  ```
+  virtualenv venv --python=c:\python27\python.exe
+  ```
+* If you created a virtual environment, start it.
+  * Mac/Linux: `source env/bin/activate`
+  * Windows: `.\env\Scripts\activate`
 * In the project directory, run:  
 `pip install -r requirements.txt`
+* When ready to exit the virtual environment enter `deactivate`.
 
 ### Run the Project
-* `python app.py` - runs app using Flask's built-in server. You wouldn't want to use the built in server or have the app in debug mode in production.
+* If you created a virtual environment before installing dependencies, start it:
+  * Mac/Linux: `source env/bin/activate`
+  * Windows: `.\env\Scripts\activate`
+* `python app.py` - runs app using Flask's built-in server. _Note: You wouldn't want to use the built in server or have the app in debug mode in production._
 * In a web browser, go to `http://localhost:5000` to use the app.
+* To stop the server when done, press `CTRL-C`.
+* To exit the virtual environment when done, Enter `deactivate`.
 
 ### Testing Admin Functionality
 When you login to the site with Google, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
