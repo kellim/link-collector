@@ -34,7 +34,7 @@ These instructions assume you have Python 2.7 installed and that Python 2 is the
 ```
 CREATE DATABASE links;
 ```
-* Note: Press `CTRL-D` to exit the psql command prompt when done.
+* Type `\q` into the psql command prompt and press `enter` to exit `psql`.
 * Create tables and populate database with initial test data:
  * `python models.py` 
  * `python add_test_data.py`
@@ -71,16 +71,15 @@ CREATE DATABASE links;
 * To stop the server when done, press `CTRL-C`.
 * To exit the virtual environment when done, Enter `deactivate`.
 
-### Testing Admin Functionality
+## Testing Admin Functionality
 When you login to the site with Google, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
 
-After you `cd` to the `/vagrant` directory in your vagrant virtual machine:
-* Type `psql links` to open the `links` database in `psql`.
-* At the `psql` command prompt, type `SELECT * FROM users;` to see what the `user_id` is of the account you want to make an admin. Press `enter` when done.
-* At the `psql` command prompt, type `UPDATE users SET is_admin = True WHERE user_id = #;`, replacing # with the `user_id` of the user you wish to make an admin. Press `enter` when done.
+* In the terminal/command prompt Type `psql links` to open the `links` database in `psql`. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running the command.
+* Enter `SELECT * FROM users;` to see what the `user_id` is of the account you want to make an admin. Press `enter` when done.
+* Enter `UPDATE users SET is_admin = True WHERE user_id = #;`, replacing # with the `user_id` of the user you wish to make an admin. Press `enter` when done.
 * Type `\q` into the `psql` command prompt and press `enter` to exit `psql`.
 
-### Considerations for putting app into production
+## Considerations if Putting App into Production
 
 Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
 
