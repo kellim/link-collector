@@ -65,7 +65,7 @@ CREATE DATABASE links;
 * If you created a virtual environment before installing dependencies, start it:
   * Mac/Linux: `source venv/bin/activate`
   * Windows: `source venv/scripts/activate`
-* Runs app using Flask's built-in server: `python app.py` 
+* Run app using Flask's built-in server: `python app.py` 
 * In a web browser, go to `http://localhost:5000` to use the app.
 * To stop the server when done, press `CTRL-C`.
 * To exit the virtual environment when done, enter `deactivate`.
