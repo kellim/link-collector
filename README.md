@@ -23,7 +23,7 @@ These instructions assume you have Python 2.7 installed and that Python 2 is the
 
 * Install [PostgreSQL](https://www.postgresql.org/) if not already installed.
 * Create a PostgreSQL user ID to use for app. 
-  * To quickly test it out locally, you could create a Postgres superuser role. On Windows, you can create a username with the same name as your login to get it to work easily for development purposes only. Here's how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`. Also, this was tested using Git Bash on Windows 7._
+  * To quickly test it out locally, you could create a Postgres superuser role. On Windows, you can create a username with the same name as your login to get it to work easily for development purposes only. See below for how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`. Also, this was tested using Git Bash on Windows 7._
   Replace `username` below with desired username:
 
    ```
@@ -35,9 +35,8 @@ These instructions assume you have Python 2.7 installed and that Python 2 is the
 CREATE DATABASE links;
 ```
 * Type `\q` into the psql command prompt and press `enter` to exit `psql`.
-* Create tables and populate database with initial test data:
- * `python models.py` 
- * `python add_test_data.py`
+* Create tables: `python models.py` 
+* Populate database with initial data: `python add_test_data.py`
  
 ### Setup Steps for Google Sign-in
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
@@ -60,16 +59,16 @@ CREATE DATABASE links;
   * Windows: ` source venv/scripts/activate`
 * In the project directory, run:  
 `pip install -r requirements.txt`
-* When ready to exit the virtual environment enter `deactivate`.
+* When ready to exit the virtual environment, enter `deactivate`.
 
-### Run the Project
+### Run the Project in Development Mode
 * If you created a virtual environment before installing dependencies, start it:
   * Mac/Linux: `source venv/bin/activate`
   * Windows: `source venv/scripts/activate`
-* `python app.py` - runs app using Flask's built-in server. _Note: You wouldn't want to use the built in server or have the app in debug mode in production._
+* Runs app using Flask's built-in server: `python app.py` 
 * In a web browser, go to `http://localhost:5000` to use the app.
 * To stop the server when done, press `CTRL-C`.
-* To exit the virtual environment when done, Enter `deactivate`.
+* To exit the virtual environment when done, enter `deactivate`.
 
 ## Testing Admin Functionality
 When you login to the site with Google, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
@@ -79,7 +78,7 @@ When you login to the site with Google, you'll be a regular user and can only ad
 * Enter `UPDATE users SET is_admin = True WHERE user_id = #;`, replacing # with the `user_id` of the user you wish to make an admin. 
 * Type `\q` into the `psql` command prompt and press `enter` to exit `psql`.
 
-## Considerations if Putting App into Production
+## Considerations when Deploying App into a Production Environment
 
 Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2)) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
 
@@ -89,4 +88,4 @@ Contributions will not be accepted for the project at this time.
 
 ## License
 
-I have not included a license for this project because there's some Google Sign-In related code adapted from a Udacity course that they expect students to use for their projects but do not provide a license for it. This code is mixed in with my own code in `app.js`. 
+I have not included a license for this project because there's some Google Sign-In related code adapted from a Udacity course that they expect students to use for their projects but do not provide a license for it. 
