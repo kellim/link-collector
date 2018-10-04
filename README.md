@@ -74,7 +74,7 @@ CREATE DATABASE links;
 ## Testing Admin Functionality
 When you login to the site with Google, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
 
-* In the terminal/command prompt Type `psql links` to open the `links` database in `psql`. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running the command.
+* In the terminal/command prompt Type `psql links` to open the `links` database in `psql`. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running the command._
 * Enter `SELECT * FROM users;` to see what the `user_id` is of the account you want to make an admin. Press `enter` when done.
 * Enter `UPDATE users SET is_admin = True WHERE user_id = #;`, replacing # with the `user_id` of the user you wish to make an admin. Press `enter` when done.
 * Type `\q` into the `psql` command prompt and press `enter` to exit `psql`.
