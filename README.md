@@ -50,22 +50,22 @@ CREATE DATABASE links;
 * Add `client_secrets.json` to the root of the project directory.
 
 ### Install dependencies
-* Create a virtual development environment that uses Python 2 if desired.
-  * Command that can be used for creating a virtual environment using Python 2 on Windows (replace the path to the Python directory if different on your system)
+* Create a virtual development environment that uses Python 2. (Optional but highly suggested)
+  * Command that can be used for creating a virtual environment using Python 2 (This example uses Windows. Replace the path to the Python directory if different on your system)
   ```
   virtualenv venv --python=c:\python27\python.exe
   ```
 * If you created a virtual environment, start it.
-  * Mac/Linux: `source env/bin/activate`
-  * Windows: `.\env\Scripts\activate`
+  * Mac/Linux: `source venv/bin/activate`
+  * Windows: ` source venv/scripts/activate`
 * In the project directory, run:  
 `pip install -r requirements.txt`
 * When ready to exit the virtual environment enter `deactivate`.
 
 ### Run the Project
 * If you created a virtual environment before installing dependencies, start it:
-  * Mac/Linux: `source env/bin/activate`
-  * Windows: `.\env\Scripts\activate`
+  * Mac/Linux: `source venv/bin/activate`
+  * Windows: `. source venv/scripts/activate`
 * `python app.py` - runs app using Flask's built-in server. _Note: You wouldn't want to use the built in server or have the app in debug mode in production._
 * In a web browser, go to `http://localhost:5000` to use the app.
 * To stop the server when done, press `CTRL-C`.
