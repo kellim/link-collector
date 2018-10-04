@@ -65,7 +65,7 @@ CREATE DATABASE links;
 ### Run the Project
 * If you created a virtual environment before installing dependencies, start it:
   * Mac/Linux: `source venv/bin/activate`
-  * Windows: `. source venv/scripts/activate`
+  * Windows: `source venv/scripts/activate`
 * `python app.py` - runs app using Flask's built-in server. _Note: You wouldn't want to use the built in server or have the app in debug mode in production._
 * In a web browser, go to `http://localhost:5000` to use the app.
 * To stop the server when done, press `CTRL-C`.
