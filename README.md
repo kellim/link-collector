@@ -88,4 +88,4 @@ Contributions will not be accepted for the project at this time.
 
 ## License
 
-I have not included a license for this project because there's some Google Sign-In related code adapted from a Udacity course that they expect students to use for their projects but do not provide a license for it. 
+I have not included a license for this project because it adapts some Google Sign-In related code from Udacity's Full Stack Nanodegree that does not have an open source license.
