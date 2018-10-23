@@ -41,22 +41,22 @@ CREATE DATABASE links;
 ### Setup Steps for Google Sign-in
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
 * Add these Authorized Redirect URIs (you'd want to change these to appropriate URLs using https for your server if using in production.):
- * `http://localhost:5000/gconnect`
- * `http://localhost:5000/login`
- * `http://localhost:5000/gdisconnect`
- * `https://localhost:5000/oauth2callback`
+  * `http://localhost:5000/gconnect`
+  * `http://localhost:5000/login`
+  * `http://localhost:5000/gdisconnect`
+  * `https://localhost:5000/oauth2callback`
 * Download JSON for your web application from Google and name it `client_secrets.json`.
 * Add `client_secrets.json` to the root of the project directory.
 
 ### Install dependencies
-* Create a virtual development environment that uses Python 2. (Optional but highly suggested)
+* Create a virtual development environment that uses Python 2. (Using a virtual enviornment is suggested but optional.)
   * Command that can be used for creating a virtual environment using Python 2 (This example uses Windows. Replace the path to the Python directory if different on your system)
   ```
   virtualenv venv --python=c:\python27\python.exe
   ```
 * If you created a virtual environment, start it.
   * Mac/Linux: `source venv/bin/activate`
-  * Windows: ` source venv/scripts/activate`
+  * Windows: `source venv/scripts/activate`
 * In the project directory, run:  
 `pip install -r requirements.txt`
 * When ready to exit the virtual environment, enter `deactivate`.
