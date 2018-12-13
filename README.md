@@ -6,9 +6,9 @@ In the app, links are contained in categories, and categories are all part of a 
 
 ## Demo
 
-Check out the demo at https://links.pythonanywhere.com
+Try out the app at https://links.pythonanywhere.com
 
-![Link Collector Screenshot](screenshots/link-collector.png)
+![Link Collector Demo](screenshots/link-collector-demo.gif)
 
 ## Run the Project in a Local Development Environment
 
