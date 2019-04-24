@@ -39,6 +39,7 @@ CREATE DATABASE links;
 * Populate database with initial data: `python add_test_data.py`
  
 ### Setup Steps for Google Sign-in
+
 * Create your own Google Web Application project at [console.developers.google.com](https://console.developers.google.com) using `OAuth Client ID` for credentials.
 * Add these Authorized Redirect URIs (you'd want to change these to appropriate URLs using https for your server if using in production.):
   * `http://localhost:5000/gconnect`
@@ -49,6 +50,7 @@ CREATE DATABASE links;
 * Add `client_secrets.json` to the root of the project directory.
 
 ### Install dependencies
+
 * Create a virtual development environment that uses Python 2. (Using a virtual enviornment is suggested but optional.)
   * Command that can be used for creating a virtual environment using Python 2 (This example uses Windows. Replace the path to the Python directory if different on your system)
   ```
@@ -62,6 +64,7 @@ CREATE DATABASE links;
 * When ready to exit the virtual environment, enter `deactivate`.
 
 ### Run the Project in Development Mode
+
 * If you created a virtual environment for this project, start it:
   * Mac/Linux: `source venv/bin/activate`
   * Windows: `source venv/scripts/activate`
@@ -71,6 +74,7 @@ CREATE DATABASE links;
 * To exit the virtual environment when done, enter `deactivate`.
 
 ## Testing Admin Functionality
+
 When you login to the site with Google, you'll be a regular user and can only add links or edit your own links. After you've logged in to the site successfully, you can update the database to make yourself an admin so that you can add, edit, and delete collections and categories.
 
 * In the terminal/command prompt Type `psql links` to open the `links` database in `psql`. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running the command._
