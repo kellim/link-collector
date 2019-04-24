@@ -12,7 +12,7 @@ Try out the app at https://links.pythonanywhere.com
 
 ## Run the Project in a Local Development Environment
 
-These instructions assume you have Python 2.7 installed and that Python 2 is the version of Python running the files. There may be errors if Python 3 is used as this app has not been updated to use Python 3 yet.
+These instructions assume you have Python 2.7 installed and that Python 2 is the version of Python running the files. There may be errors if Python 3 is used.
 
 * Clone, fork, or download this repository.
 * Rename the file `secret.py.config`to `secret.py`.
@@ -23,7 +23,7 @@ These instructions assume you have Python 2.7 installed and that Python 2 is the
 
 * Install [PostgreSQL](https://www.postgresql.org/) if not already installed.
 * Create a PostgreSQL user ID to use for app. 
-  * To quickly test it out locally, you could create a Postgres superuser role. On Windows, you can create a username with the same name as your login to get it to work easily for development purposes only. See below for how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`. Also, this was tested using Git Bash on Windows 7._
+  * To quickly test it out locally, you could create a Postgres superuser role. On Windows, you can create a username with the same name as your login to get it to work easily for development purposes only. See below for how to do this from the psql command prompt which you'd get by entering `psql` in the terminal/command prompt. _Note: On a Windows machine, you may need to change to the directory where PostgreSQL is installed (ie. `C:\PostgreSQL`) in the command prompt before running `psql`._
   Replace `username` below with desired username:
 
    ```
@@ -62,7 +62,7 @@ CREATE DATABASE links;
 * When ready to exit the virtual environment, enter `deactivate`.
 
 ### Run the Project in Development Mode
-* If you created a virtual environment before installing dependencies, start it:
+* If you created a virtual environment for this project, start it:
   * Mac/Linux: `source venv/bin/activate`
   * Windows: `source venv/scripts/activate`
 * Run app using Flask's built-in server: `python app.py` 
@@ -80,7 +80,7 @@ When you login to the site with Google, you'll be a regular user and can only ad
 
 ## Considerations when Deploying App into a Production Environment
 
-Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2)) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/) . You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
+Make sure you create database roles (This may be helpful: [how to use roles and manage permissions in PostgreSQL on a vps]( https://www.digitalocean.com/community/tutorials/how-to-use-roles-and-manage-grant-permissions-in-postgresql-on-a-vps--2)) with appropriate limited privledges and don't use Flask's built in server - see [Flask documentation on deploying](http://flask.pocoo.org/docs/1.0/deploying/). You'd also want to take the app out of debug mode - near the bottom of `app.py` there's a line that says `app.debug = True` and you'd want that to be `False` in production. Also, make sure you have added appropriate authorized redirect URIs for your server as discussed above in "Setup Steps for Google Sign-in"
 
 ## Contributions
 
