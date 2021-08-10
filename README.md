@@ -1,3 +1,5 @@
+I'm archiving this project because logging in no longer works. It used to have both Google and Facebook login, but Facebook login broke a long time ago and I removed it. Now  Google login is broken as well. I know I could fix the login, but I don't plan on maintaining this project long term since it was originally created as an assignment for Udacity's Full Stack Nanodegree and it was mainly for learning purposes. I'm also removing the link to the live site from the Demo section as I don't plan on leaving it up.
+
 # Link Collector
 
 Link Collector is a multi-user bookmarking web app built with Flask, a Python Microframework where users can login with their Google account. Admin users can create categories and collections, and non-admin users can add links and update or delete their own links. Admins can edit or delete any links.
@@ -6,7 +8,7 @@ In the app, links are contained in categories, and categories are all part of a 
 
 ## Demo
 
-Try out the app at https://links.pythonanywhere.com
+Try out the app at <LINK REMOVED SINCE THIS IS BEING ARCHIVED>
 
 ![Link Collector Demo](screenshots/link-collector-demo.gif)
 
