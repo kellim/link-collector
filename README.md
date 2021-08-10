@@ -8,8 +8,6 @@ In the app, links are contained in categories, and categories are all part of a 
 
 ## Demo
 
-Try out the app at <LINK REMOVED SINCE THIS IS BEING ARCHIVED>
-
 ![Link Collector Demo](screenshots/link-collector-demo.gif)
 
 ## Run the Project in a Local Development Environment
